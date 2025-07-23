@@ -7,9 +7,14 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope  // ADD THIS LINE
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.aksara.aksaranotes.databinding.FragmentDatabaseBinding
 import com.aksara.aksaranotes.ui.database.builder.TableBuilderActivity
+import com.aksara.aksaranotes.ui.database.view.TableViewActivity
+import com.aksara.aksaranotes.ui.database.items.ItemEditorActivity
 import com.aksara.aksaranotes.data.database.entities.CustomTable
+import kotlinx.coroutines.launch  // ADD THIS LINE
 
 class DatabaseFragment : Fragment() {
 
@@ -17,6 +22,7 @@ class DatabaseFragment : Fragment() {
     private val binding get() = _binding!!
 
     private lateinit var databaseViewModel: DatabaseViewModel
+    private lateinit var tableAdapter: TableOverviewAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -32,8 +38,36 @@ class DatabaseFragment : Fragment() {
 
         databaseViewModel = ViewModelProvider(this)[DatabaseViewModel::class.java]
 
+        setupRecyclerView()
         setupClickListeners()
         observeData()
+    }
+
+    // In setupRecyclerView() method, update the adapter creation:
+
+    private fun setupRecyclerView() {
+        tableAdapter = TableOverviewAdapter(
+            onTableClick = { table ->
+                // Open table view showing all items in this table
+                val intent = Intent(requireContext(), TableViewActivity::class.java)
+                intent.putExtra("table_id", table.id)
+                startActivity(intent)
+            },
+            onCreateItemClick = { table ->
+                // Open item editor for this specific table
+                val intent = Intent(requireContext(), ItemEditorActivity::class.java)
+                intent.putExtra("table_id", table.id)
+                startActivity(intent)
+            },
+            onDeleteTable = { table ->  // ADD THIS CALLBACK
+                databaseViewModel.deleteTable(table)
+            }
+        )
+
+        binding.rvTables.apply {
+            adapter = tableAdapter
+            layoutManager = LinearLayoutManager(requireContext())
+        }
     }
 
     private fun setupClickListeners() {
@@ -46,7 +80,7 @@ class DatabaseFragment : Fragment() {
         }
 
         binding.btnViewAllItems.setOnClickListener {
-            // TODO: Open unified items view
+            // TODO: Open unified items view across all tables
             android.widget.Toast.makeText(requireContext(), "All Items view coming soon!", android.widget.Toast.LENGTH_SHORT).show()
         }
 
@@ -59,6 +93,10 @@ class DatabaseFragment : Fragment() {
         databaseViewModel.allTables.observe(viewLifecycleOwner) { tables ->
             updateUI(tables)
         }
+
+        databaseViewModel.allItems.observe(viewLifecycleOwner) { items ->
+            binding.tvTotalItems.text = "${items.size} total items"
+        }
     }
 
     private fun updateUI(tables: List<CustomTable>) {
@@ -68,11 +106,18 @@ class DatabaseFragment : Fragment() {
         } else {
             binding.layoutEmptyState.visibility = View.GONE
             binding.rvTables.visibility = View.VISIBLE
-            // TODO: Setup table adapter when we create it
+
+            // Convert tables to TableOverviewItems with item counts
+            lifecycleScope.launch {
+                val tableItems = tables.map { table ->
+                    val itemCount = databaseViewModel.getItemCountForTable(table.id)
+                    TableOverviewItem(table, itemCount)
+                }
+                tableAdapter.submitList(tableItems)
+            }
         }
 
         binding.tvTablesCount.text = "${tables.size} tables created"
-        binding.tvTotalItems.text = "0 total items" // Placeholder for now
     }
 
     private fun showQuickTableDialog() {
