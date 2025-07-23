@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">Aksara Notes</string>
+    <string name="title_notes">Notes</string>
+    <string name="title_calendar">Calendar</string>
+    <string name="title_database">Database</string>
+    <string name="setup_password">Setup Password</string>
+    <string name="enter_password">Enter Password</string>
+    <string name="confirm_password">Confirm Password</string>
+    <string name="biometric_title">Biometric Authentication</string>
+    <string name="biometric_subtitle">Use your fingerprint or face to unlock</string>
+</resources>
