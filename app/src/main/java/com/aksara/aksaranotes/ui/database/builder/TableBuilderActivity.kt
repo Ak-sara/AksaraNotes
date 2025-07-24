@@ -444,6 +444,10 @@ class TableBuilderActivity : AppCompatActivity() {
                 editText.isEnabled = false
                 editText.hint = "true/false (set via checkbox in forms)"
             }
+            ColumnType.FORMULA -> {
+                editText.isEnabled = false
+                editText.hint = "Calculated automatically (configure formula above)"
+            }
             else -> {
                 editText.inputType = InputType.TYPE_CLASS_TEXT
                 editText.hint = "Default value"

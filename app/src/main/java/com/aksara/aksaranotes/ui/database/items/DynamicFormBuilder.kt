@@ -5,6 +5,7 @@ import android.content.Context
 import android.text.Editable
 import android.text.InputType
 import android.text.TextWatcher
+import android.util.Log
 import android.view.View
 import android.widget.*
 import com.aksara.aksaranotes.data.models.TableColumn
@@ -15,9 +16,9 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import java.text.DecimalFormat
 import java.text.NumberFormat
+import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.math.pow
 
 class DynamicFormBuilder(
     private val context: Context,
@@ -29,9 +30,62 @@ class DynamicFormBuilder(
     private val columnsList = mutableListOf<TableColumn>() // Store all columns for formula calculation
     private val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
 
-    // Currency formatters
-    private val usdFormatter = DecimalFormat("#,##0.00")
-    private val idrFormatter = DecimalFormat("#,##0.00") // Use standard pattern, we'll handle display manually
+    // Locale-aware formatters
+    private val currentLocale = Locale.getDefault()
+    private val numberFormat = NumberFormat.getNumberInstance(currentLocale).apply {
+        minimumFractionDigits = 2
+        maximumFractionDigits = 2
+    }
+    private val decimalFormat = numberFormat as DecimalFormat
+    private val decimalSeparator = decimalFormat.decimalFormatSymbols.decimalSeparator
+    private val groupingSeparator = decimalFormat.decimalFormatSymbols.groupingSeparator
+
+    init {
+        // Debug locale info on initialization
+        debugLocaleInfo()
+    }
+
+    // Locale-aware currency formatter
+    private fun getCurrencyFormatter(currencyCode: String): NumberFormat {
+        return NumberFormat.getCurrencyInstance(currentLocale).apply {
+            try {
+                currency = Currency.getInstance(currencyCode)
+            } catch (e: Exception) {
+                // Keep default currency if code not supported
+            }
+        }
+    }
+
+    // Safe number parsing that respects locale
+    private fun parseNumberSafely(text: String): Double {
+        if (text.isBlank()) return 0.0
+
+        Log.d("DynamicForm", "parseNumberSafely input: '$text'")
+
+        return try {
+            // Method 1: Try parsing with current locale
+            val result1 = numberFormat.parse(text.trim())?.toDouble() ?: 0.0
+            Log.d("DynamicForm", "Locale parsing result: $result1")
+            result1
+        } catch (e: ParseException) {
+            Log.d("DynamicForm", "Locale parsing failed: ${e.message}")
+            try {
+                // Method 2: Normalize to US format then parse
+                val normalized = text
+                    .replace(groupingSeparator.toString(), "") // Remove thousands separators
+                    .replace(decimalSeparator.toString(), ".") // Convert decimal to dot
+                    .replace(Regex("[^0-9.-]"), "") // Remove non-numeric chars except dot and minus
+
+                Log.d("DynamicForm", "Normalized text: '$normalized'")
+                val result2 = normalized.toDoubleOrNull() ?: 0.0
+                Log.d("DynamicForm", "Normalized parsing result: $result2")
+                result2
+            } catch (ex: Exception) {
+                Log.e("DynamicForm", "All parsing methods failed: ${ex.message}")
+                0.0
+            }
+        }
+    }
 
     fun buildForm(columns: List<TableColumn>) {
         parentLayout.removeAllViews()
@@ -41,12 +95,37 @@ class DynamicFormBuilder(
         columnsList.clear()
         columnsList.addAll(columns)
 
+        // DEBUG: Print all columns and their details
+        Log.d("DynamicForm", "=== ALL COLUMNS DEBUG ===")
+        columns.forEach { column ->
+            Log.d("DynamicForm", "Column: '${column.name}' | Type: ${column.type} | Required: ${column.required}")
+            Log.d("DynamicForm", "Default Value: '${column.defaultValue}'")
+            Log.d("DynamicForm", "Options keys: ${column.options.keys}")
+            if (column.type == ColumnType.FORMULA) {
+                Log.d("DynamicForm", "*** FORMULA COLUMN DETAILS ***")
+                column.options.forEach { (key, value) ->
+                    Log.d("DynamicForm", "  '$key' -> '$value' (${value?.javaClass?.simpleName})")
+                }
+            }
+        }
+        Log.d("DynamicForm", "=== END ALL COLUMNS ===")
+
         columns.forEach { column ->
             val fieldView = createFieldView(column)
             fieldView?.let {
                 parentLayout.addView(it)
             }
         }
+
+        // Debug: Print all field names
+        Log.d("DynamicForm", "=== FORM FIELDS DEBUG ===")
+        formFields.forEach { (fieldName, view) ->
+            Log.d("DynamicForm", "Field: '$fieldName' -> ${view.javaClass.simpleName}")
+        }
+        formulaFields.forEach { (fieldName, view) ->
+            Log.d("DynamicForm", "Formula Field: '$fieldName'")
+        }
+        Log.d("DynamicForm", "=== END FORM FIELDS ===")
 
         // Calculate initial formula values
         updateAllFormulas()
@@ -121,6 +200,28 @@ class DynamicFormBuilder(
         return layout
     }
 
+    private fun createCurrencyTextWatcher(currencyCode: String, currencyLabel: TextView): TextWatcher {
+        return object : TextWatcher {
+            private var isUpdating = false
+
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+
+            override fun afterTextChanged(s: Editable?) {
+                if (isUpdating) return
+
+                val inputText = s.toString()
+                val number = parseNumberSafely(inputText)
+
+                // Use locale-aware currency formatting
+                val formatted = getCurrencyFormatter(currencyCode).format(number)
+                currencyLabel.text = formatted
+
+                updateAllFormulas()
+            }
+        }
+    }
+
     private fun createCurrencyInput(column: TableColumn): View {
         val container = LinearLayout(context).apply {
             orientation = LinearLayout.VERTICAL
@@ -155,46 +256,14 @@ class DynamicFormBuilder(
 
         // Currency display label
         val currencyLabel = TextView(context).apply {
-            text = "0.00 $currencyCode"
+            text = getCurrencyFormatter(currencyCode).format(0.0)
             textSize = 14f
             setTextColor(context.getColor(android.R.color.darker_gray))
             setPadding(16, 8, 16, 0)
         }
 
-        // Add currency formatting text watcher
-        editText.addTextChangedListener(object : TextWatcher {
-            private var isUpdating = false
-
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
-
-            override fun afterTextChanged(s: Editable?) {
-                if (isUpdating) return
-
-                val input = s.toString().replace(",", "").replace(".", "")
-                if (input.isNotEmpty() && input.all { it.isDigit() }) {
-                    val number = input.toDoubleOrNull() ?: 0.0
-                    // Don't divide by 100 - user enters full amount
-                    val formatted = when (currencyCode) {
-                        "IDR" -> {
-                            val baseFormatted = usdFormatter.format(number)
-                            // Convert to Indonesian format: 1.234,56
-                            val idrFormatted = baseFormatted.replace(",", "TEMP").replace(".", ",").replace("TEMP", ".")
-                            "$idrFormatted $currencyCode"
-                        }
-                        else -> {
-                            "${usdFormatter.format(number)} $currencyCode"
-                        }
-                    }
-                    currencyLabel.text = formatted
-                } else {
-                    currencyLabel.text = "0,00 $currencyCode"
-                }
-
-                // Update formulas
-                updateAllFormulas()
-            }
-        })
+        // Use locale-aware text watcher
+        editText.addTextChangedListener(createCurrencyTextWatcher(currencyCode, currencyLabel))
 
         layout.addView(editText)
         container.addView(layout)
@@ -552,13 +621,37 @@ class DynamicFormBuilder(
     }
 
     private fun updateAllFormulas() {
+        Log.d("DynamicForm", "updateAllFormulas() called - formFields count: ${formFields.size}, formulaFields count: ${formulaFields.size}")
+
         // Calculate formulas multiple times to resolve dependencies
         // (formulas that reference other formulas)
-        repeat(3) { // Usually 2-3 iterations are enough for most dependencies
+        repeat(3) { iteration ->
+            Log.d("DynamicForm", "Formula calculation iteration: ${iteration + 1}")
             formulaFields.forEach { (columnName, textView) ->
                 val column = columnsList.find { it.name == columnName }
                 if (column != null) {
-                    val formula = column.options["formula"] as? String ?: ""
+                    // DEBUG: Print all column options to see what's available
+                    Log.d("DynamicForm", "=== COLUMN OPTIONS DEBUG for '$columnName' ===")
+                    Log.d("DynamicForm", "Column type: ${column.type}")
+                    Log.d("DynamicForm", "All options keys: ${column.options.keys}")
+                    column.options.forEach { (key, value) ->
+                        Log.d("DynamicForm", "Option '$key' -> '$value' (${value?.javaClass?.simpleName})")
+                    }
+                    Log.d("DynamicForm", "=== END COLUMN OPTIONS ===")
+
+                    // Try different possible keys for the formula
+                    val formula = when {
+                        column.options["formula"] != null -> column.options["formula"] as? String ?: ""
+                        column.options["formulaExpression"] != null -> column.options["formulaExpression"] as? String ?: ""
+                        column.options["expression"] != null -> column.options["expression"] as? String ?: ""
+                        column.options["calculation"] != null -> column.options["calculation"] as? String ?: ""
+                        else -> {
+                            Log.w("DynamicForm", "No formula found in options for column '$columnName'")
+                            ""
+                        }
+                    }
+
+                    Log.d("DynamicForm", "Processing formula for column '$columnName': '$formula'")
                     val result = calculateFormula(formula)
 
                     // Store raw numeric value for other formulas to reference
@@ -567,6 +660,7 @@ class DynamicFormBuilder(
                     // Format and display the result
                     val formattedResult = formatFormulaResult(result, formula, column)
                     textView.text = formattedResult
+                    Log.d("DynamicForm", "Formula '$columnName' result: $result, formatted: '$formattedResult'")
                 }
             }
         }
@@ -579,20 +673,10 @@ class DynamicFormBuilder(
         if (isCurrencyResult) {
             // Get currency from referenced fields or default to USD
             val currencyCode = getCurrencyCodeFromFormula(formula)
-
-            return when (currencyCode) {
-                "IDR" -> {
-                    val baseFormatted = usdFormatter.format(result)
-                    val idrFormatted = baseFormatted.replace(",", "TEMP").replace(".", ",").replace("TEMP", ".")
-                    "$idrFormatted $currencyCode"
-                }
-                else -> {
-                    "${usdFormatter.format(result)} $currencyCode"
-                }
-            }
+            return getCurrencyFormatter(currencyCode).format(result)
         } else {
-            // Regular number formatting
-            return String.format("%.2f", result)
+            // Regular number formatting using locale
+            return numberFormat.format(result)
         }
     }
 
@@ -642,6 +726,9 @@ class DynamicFormBuilder(
 
     private fun calculateFormula(formula: String): Double {
         try {
+            Log.d("DynamicForm", "=== FORMULA CALCULATION DEBUG ===")
+            Log.d("DynamicForm", "Original formula: $formula")
+
             // Replace column references with actual values
             var expression = formula
 
@@ -650,7 +737,12 @@ class DynamicFormBuilder(
                 val placeholder = "{$fieldName}"
                 if (expression.contains(placeholder)) {
                     val value = getFieldValue(view)
+                    Log.d("DynamicForm", "Field '$fieldName' -> value: $value (view type: ${view.javaClass.simpleName})")
+                    if (view is TextInputEditText) {
+                        Log.d("DynamicForm", "TextInputEditText content: '${view.text}'")
+                    }
                     expression = expression.replace(placeholder, value.toString())
+                    Log.d("DynamicForm", "After replacing '$placeholder': $expression")
                 }
             }
 
@@ -658,9 +750,12 @@ class DynamicFormBuilder(
             formulaValues.forEach { (fieldName, rawValue) ->
                 val placeholder = "{$fieldName}"
                 if (expression.contains(placeholder)) {
+                    Log.d("DynamicForm", "Formula field '$fieldName' -> value: $rawValue")
                     expression = expression.replace(placeholder, rawValue.toString())
                 }
             }
+
+            Log.d("DynamicForm", "Final expression before evaluation: '$expression'")
 
             // Handle percentage properly - convert any number followed by % to decimal
             expression = expression.replace(Regex("(\\d+(?:\\.\\d+)?)%")) { matchResult ->
@@ -672,34 +767,47 @@ class DynamicFormBuilder(
             expression = expression.replace(" ", "")
 
             // Evaluate the mathematical expression
-            return evaluateExpression(expression)
+            val result = evaluateExpression(expression)
+            Log.d("DynamicForm", "Final calculation result: $result")
+            Log.d("DynamicForm", "=== END FORMULA DEBUG ===")
+
+            return result
         } catch (e: Exception) {
+            Log.e("DynamicForm", "Formula calculation error: ${e.message}", e)
             return 0.0
         }
     }
 
     private fun getFieldValue(view: Any): Double {
-        return when (view) {
+        val result = when (view) {
             is TextInputEditText -> {
-                val text = view.text?.toString()?.replace(",", "")?.replace("[^0-9.-]".toRegex(), "") ?: ""
-                text.toDoubleOrNull() ?: 0.0
+                val text = view.text?.toString() ?: ""
+                val parsed = parseNumberSafely(text)
+                Log.d("DynamicForm", "TextInputEditText parsing: '$text' -> $parsed")
+                parsed
             }
             is CheckBox -> if (view.isChecked) 1.0 else 0.0
             is RatingBar -> view.rating.toDouble()
             is Spinner -> {
                 // For spinner, try to extract numeric value from selection
                 val selected = view.selectedItem?.toString() ?: ""
-                selected.replace("[^0-9.-]".toRegex(), "").toDoubleOrNull() ?: 0.0
+                parseNumberSafely(selected)
             }
             else -> 0.0
         }
+        Log.d("DynamicForm", "getFieldValue result: $result")
+        return result
     }
 
     private fun evaluateExpression(expression: String): Double {
-        // Simple expression evaluator for basic math operations
         try {
-            val cleanExpression = expression.replace(" ", "")
-            return evaluateWithProperPrecedence(cleanExpression)
+            // Normalize expression to US format for calculation
+            val normalizedExpression = expression
+                .replace(groupingSeparator.toString(), "") // Remove thousands separators
+                .replace(decimalSeparator.toString(), ".") // Convert decimal to dot
+                .replace(" ", "")
+
+            return evaluateWithProperPrecedence(normalizedExpression)
         } catch (e: Exception) {
             return 0.0
         }
@@ -851,7 +959,18 @@ class DynamicFormBuilder(
                     val view = formFields[fieldName]
                     when (view) {
                         is TextInputEditText -> {
-                            view.setText(value.toString())
+                            // Check if this is a number/currency field for proper formatting
+                            val column = columnsList.find { it.name == fieldName }
+                            if (column?.type == ColumnType.NUMBER || column?.type == ColumnType.CURRENCY) {
+                                val numericValue = when (value) {
+                                    is Number -> value.toDouble()
+                                    is String -> parseNumberSafely(value)
+                                    else -> 0.0
+                                }
+                                view.setText(numberFormat.format(numericValue))
+                            } else {
+                                view.setText(value.toString())
+                            }
                         }
                         is CheckBox -> {
                             view.isChecked = value.toString().toBoolean()
@@ -902,7 +1021,13 @@ class DynamicFormBuilder(
                         is TextInputEditText -> {
                             val value = view.text?.toString()?.trim() ?: ""
                             if (value.isNotEmpty()) {
-                                data[fieldName] = value
+                                // For number/currency fields, store the parsed numeric value
+                                val column = columnsList.find { it.name == fieldName }
+                                if (column?.type == ColumnType.NUMBER || column?.type == ColumnType.CURRENCY) {
+                                    data[fieldName] = parseNumberSafely(value)
+                                } else {
+                                    data[fieldName] = value
+                                }
                             }
                         }
                         is CheckBox -> {
@@ -950,5 +1075,18 @@ class DynamicFormBuilder(
             calendar.get(Calendar.MONTH),
             calendar.get(Calendar.DAY_OF_MONTH)
         ).show()
+    }
+
+    // Debug method to help identify locale issues
+    fun debugLocaleInfo() {
+        Log.d("DynamicForm", "=== LOCALE DEBUG INFO ===")
+        Log.d("DynamicForm", "Current Locale: ${currentLocale.country}_${currentLocale.language}")
+        Log.d("DynamicForm", "Display Name: ${currentLocale.displayName}")
+        Log.d("DynamicForm", "Decimal Separator: '$decimalSeparator'")
+        Log.d("DynamicForm", "Grouping Separator: '$groupingSeparator'")
+        Log.d("DynamicForm", "Number format example: ${numberFormat.format(1234.56)}")
+        Log.d("DynamicForm", "USD Currency format: ${getCurrencyFormatter("USD").format(1234.56)}")
+        Log.d("DynamicForm", "IDR Currency format: ${getCurrencyFormatter("IDR").format(1234.56)}")
+        Log.d("DynamicForm", "========================")
     }
 }
