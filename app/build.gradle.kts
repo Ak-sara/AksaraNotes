@@ -5,11 +5,11 @@ plugins {
 }
 
 android {
-    namespace = "com.aksara.aksaranotes"
+    namespace = "com.aksara.notes"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.aksara.aksaranotes"
+        applicationId = "com.aksara.notes"
         minSdk = 31
         targetSdk = 33
         versionCode = 1

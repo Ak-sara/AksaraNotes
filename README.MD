@@ -1,7 +1,7 @@
 # 🎯 Project Overview:
 
 App Name: Aksara Notes
-Package: com.aksara.aksaranotes
+Package: notes
 Android Studio: 2025.1.1.14-mac
 Target: Android 13 (API 33), Min: Android 12 (API 31)
 Architecture: MVVM with Room database, ViewBinding, Kotlin DSL

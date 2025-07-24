@@ -215,4 +215,33 @@
     <string name="content_description_delete_button">Delete item</string>
     <string name="content_description_edit_button">Edit item</string>
     <string name="content_description_share_button">Share item</string>
+
+    <!-- Strings for TableBuilderActivity -->
+    <string name="table_builder_title">Table Builder</string>
+    <string name="edit_table_title">Edit Table</string>
+    <string name="update_table_button">Update Table</string>
+    <string name="default_icon">📄</string>
+
+    <string name="delete_column_dialog_title">Delete Column</string>
+    <string name="delete_column_dialog_message">Are you sure you want to delete \'%1$s\'?</string>
+    <string name="delete_button">Delete</string>
+    <string name="cancel_button">Cancel</string>
+
+    <string name="edit_column_dialog_title">Edit Column</string>
+    <string name="add_column_dialog_title">Add Column</string>
+    <string name="save_button">Save</string>
+    <string name="column_name_required_toast">Column name is required</string>
+
+    <string name="table_not_found_toast">Table not found</string>
+    <string name="error_loading_table_toast">Error loading table: %1$s</string>
+
+    <!-- Strings for Column Type Options -->
+    <string name="column_options_dropdown_header">Dropdown Options (one per line):</string>
+    <string name="column_options_dropdown_hint">Option 1\nOption 2\nOption 3</string>
+
+    <!-- Existing strings -->
+
+    <!-- <string name="table_name_hint">Table Name</string> -->
+
+    <!-- <string name="table_description_hint">Table Description</string> -->
 </resources>

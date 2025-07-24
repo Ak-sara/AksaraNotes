@@ -32,20 +32,14 @@
                 android:gravity="center"
                 android:layout_marginBottom="32dp">
 
-                <ImageView
-                    android:layout_width="120dp"
-                    android:layout_height="120dp"
-                    android:src="@mipmap/ic_launcher"
-                    android:layout_marginBottom="16dp" />
-
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Aksara Notes"
-                    android:textSize="28sp"
-                    android:textStyle="bold"
+                    android:layout_marginBottom="8dp"
+                    android:text="Notes"
                     android:textColor="@color/primary_blue"
-                    android:layout_marginBottom="8dp" />
+                    android:textSize="28sp"
+                    android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/tv_version"
@@ -60,65 +54,16 @@
                     android:id="@+id/tv_build_info"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Built for Android 12+"
-                    android:textSize="14sp"
+                    android:layout_marginBottom="16dp"
+                    android:text="by Ak'sara"
                     android:textColor="@color/text_secondary"
-                    android:layout_marginBottom="16dp" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Secure • Smart • Simple"
-                    android:textSize="16sp"
-                    android:textColor="@color/primary_blue"
-                    android:textStyle="italic" />
+                    android:textSize="14sp" />
 
             </LinearLayout>
 
             <!-- Description -->
-            <com.google.android.material.card.MaterialCardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                app:cardElevation="4dp"
-                app:cardCornerRadius="12dp">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="16dp">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="📖 About This App"
-                        android:textSize="18sp"
-                        android:textStyle="bold"
-                        android:textColor="@color/primary_blue"
-                        android:layout_marginBottom="12dp" />
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Aksara Notes is a comprehensive productivity app that combines secure note-taking, dynamic database management, and smart calendar functionality. Built with privacy and security at its core, it uses military-grade encryption to protect your data while providing an intuitive and powerful user experience."
-                        android:textSize="14sp"
-                        android:textColor="@color/text_primary"
-                        android:lineSpacingExtra="2dp" />
-
-                </LinearLayout>
-
-            </com.google.android.material.card.MaterialCardView>
 
             <!-- App Actions -->
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="📱 App Actions"
-                android:textSize="18sp"
-                android:textStyle="bold"
-                android:textColor="@color/primary_blue"
-                android:layout_marginBottom="12dp" />
 
             <!-- Rate App -->
             <com.google.android.material.card.MaterialCardView
@@ -434,47 +379,6 @@
             </com.google.android.material.card.MaterialCardView>
 
             <!-- Contact Developer -->
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/card_contact_developer"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                app:cardElevation="2dp"
-                app:cardCornerRadius="8dp"
-                android:clickable="true"
-                android:focusable="true"
-                android:foreground="?android:attr/selectableItemBackground">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:padding="16dp"
-                    android:gravity="center_vertical">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="✉️"
-                        android:textSize="24sp"
-                        android:layout_marginEnd="16dp" />
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="Contact Developer"
-                        android:textSize="16sp"
-                        android:textColor="@color/text_primary" />
-
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:src="@drawable/ic_chevron_right" />
-
-                </LinearLayout>
-
-            </com.google.android.material.card.MaterialCardView>
 
             <!-- GitHub Repository -->
             <com.google.android.material.card.MaterialCardView
@@ -520,15 +424,6 @@
             </com.google.android.material.card.MaterialCardView>
 
             <!-- Footer -->
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Made with ❤️ for productivity enthusiasts"
-                android:textSize="14sp"
-                android:textColor="@color/text_secondary"
-                android:gravity="center"
-                android:layout_marginTop="16dp"
-                android:layout_marginBottom="16dp" />
 
         </LinearLayout>
 
