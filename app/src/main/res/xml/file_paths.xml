@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<paths xmlns:android="http://schemas.android.com/apk/res/android">
+<!-- Internal app storage for sharing temporary files -->
+<files-path name="internal_files" path="." />
+
+<!-- Cache directory for temporary sharing files -->
+<cache-path name="cache_files" path="." />
+
+<!-- External files directory for backup/export -->
+<external-files-path name="external_files" path="." />
+
+<!-- External cache directory for temporary files -->
+<external-cache-path name="external_cache" path="." />
+
+<!-- Downloads directory for backup files -->
+<external-path name="downloads" path="Download/" />
+
+<!-- Documents directory for backup files -->
+<external-path name="documents" path="Documents/AksaraNotes/" />
+</paths>

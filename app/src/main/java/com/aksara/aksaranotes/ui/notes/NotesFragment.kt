@@ -6,11 +6,13 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import com.aksara.aksaranotes.MainActivity
 import com.aksara.aksaranotes.databinding.FragmentNotesBinding
 import com.aksara.aksaranotes.data.database.entities.Note
 
@@ -47,9 +49,11 @@ class NotesFragment : Fragment() {
     private fun setupRecyclerView() {
         notesAdapter = NotesAdapter(
             onNoteClick = { note ->
+                // Always open note detail - let NoteDetailActivity handle authentication
                 openNoteDetail(note)
             },
             onNoteLongClick = { note ->
+                // Show options without authentication - actions will handle auth if needed
                 showNoteOptionsDialog(note)
             }
         )
@@ -147,14 +151,47 @@ class NotesFragment : Fragment() {
             updatedAt = System.currentTimeMillis()
         )
         notesViewModel.updateNote(updatedNote)
+
+        val message = if (updatedNote.isFavorite) "⭐ Added to favorites" else "☆ Removed from favorites"
+        showToast(message)
     }
 
     private fun togglePinProtection(note: Note) {
+        if (!note.requiresPin) {
+            // Enabling PIN protection - ask for authentication to confirm
+            val mainActivity = activity as? MainActivity
+            mainActivity?.requestPinAuthentication(
+                onSuccess = {
+                    updateNotePinProtection(note, true)
+                },
+                onError = { error ->
+                    showToast("Cannot enable PIN protection: $error")
+                }
+            ) ?: run {
+                showToast("Authentication unavailable")
+            }
+        } else {
+            // Disabling PIN protection - just confirm
+            AlertDialog.Builder(requireContext())
+                .setTitle("Remove PIN Protection")
+                .setMessage("Are you sure you want to remove PIN protection from '${note.title}'?")
+                .setPositiveButton("Remove") { _, _ ->
+                    updateNotePinProtection(note, false)
+                }
+                .setNegativeButton("Cancel", null)
+                .show()
+        }
+    }
+
+    private fun updateNotePinProtection(note: Note, requiresPin: Boolean) {
         val updatedNote = note.copy(
-            requiresPin = !note.requiresPin,
+            requiresPin = requiresPin,
             updatedAt = System.currentTimeMillis()
         )
         notesViewModel.updateNote(updatedNote)
+
+        val message = if (requiresPin) "🔒 PIN protection enabled" else "🔓 PIN protection disabled"
+        showToast(message)
     }
 
     private fun shareNote(note: Note) {
@@ -173,9 +210,14 @@ class NotesFragment : Fragment() {
             .setMessage("Are you sure you want to delete '${note.title}'?")
             .setPositiveButton("Delete") { _, _ ->
                 notesViewModel.deleteNote(note)
+                showToast("🗑️ Note deleted")
             }
             .setNegativeButton("Cancel", null)
             .show()
+    }
+
+    private fun showToast(message: String) {
+        Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
     }
 
     override fun onResume() {

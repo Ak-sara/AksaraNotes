@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fillViewport="true">
+    android:fillViewport="true"
+    android:background="@color/white">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -11,100 +13,212 @@
         android:padding="32dp"
         android:gravity="center">
 
-        <!-- App Logo/Title -->
+        <!-- App Logo -->
+        <ImageView
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:src="@mipmap/ic_launcher"
+            android:layout_marginBottom="24dp" />
+
+        <!-- Welcome Title -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="🔐 Aksara Notes"
-            android:textSize="36sp"
+            android:text="Welcome to Aksara Notes"
+            android:textSize="24sp"
             android:textStyle="bold"
             android:textColor="@color/primary_blue"
             android:layout_marginBottom="8dp" />
 
+        <!-- Subtitle -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Secure Notes &amp; Data Manager"
+            android:text="Secure your notes, database, and calendar with a master password"
             android:textSize="16sp"
             android:textColor="@color/text_secondary"
-            android:layout_marginBottom="48dp" />
-
-        <!-- Setup Instructions -->
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Create your master password to secure your data"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            android:textColor="@color/black"
             android:gravity="center"
             android:layout_marginBottom="32dp" />
 
-        <!-- Password Input -->
+        <!-- Security Info -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:background="@drawable/chip_background"
+            android:padding="16dp"
+            android:layout_marginBottom="32dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="🔐"
+                android:textSize="20sp"
+                android:layout_marginEnd="12dp" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Your data will be encrypted and protected. This password cannot be recovered if forgotten."
+                android:textSize="14sp"
+                android:textColor="@color/text_secondary" />
+
+        </LinearLayout>
+
+        <!-- Master Password Input -->
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Master Password"
+            app:startIconDrawable="@drawable/ic_lock"
+            app:endIconMode="password_toggle"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-            android:layout_marginBottom="16dp">
+            android:layout_marginBottom="8dp">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/et_password"
+                android:id="@+id/et_master_password"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="textPassword"
-                android:minLines="1" />
+                android:maxLines="1" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
+        <!-- Password Strength Indicator -->
+        <TextView
+            android:id="@+id/tv_password_strength"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Enter a password"
+            android:textSize="12sp"
+            android:textColor="@color/text_secondary"
+            android:layout_marginBottom="16dp" />
+
         <!-- Confirm Password Input -->
         <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/til_confirm_password"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Confirm Password"
+            app:startIconDrawable="@drawable/ic_lock"
+            app:endIconMode="password_toggle"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-            android:layout_marginBottom="16dp">
+            android:layout_marginBottom="24dp">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/et_confirm_password"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="textPassword"
-                android:minLines="1" />
+                android:maxLines="1" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
-        <!-- Error Message -->
-        <TextView
-            android:id="@+id/tv_error"
+        <!-- Biometric Section -->
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text=""
-            android:textColor="@android:color/holo_red_dark"
-            android:gravity="center"
-            android:layout_marginBottom="24dp"
-            android:visibility="gone" />
+            android:orientation="vertical"
+            android:background="@drawable/chip_background"
+            android:padding="16dp"
+            android:layout_marginBottom="32dp">
 
-        <!-- Setup Button -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="👆"
+                    android:textSize="20sp"
+                    android:layout_marginEnd="12dp" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Enable Biometric Authentication"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/primary_blue" />
+
+                    <TextView
+                        android:id="@+id/tv_biometric_status"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Checking biometric availability..."
+                        android:textSize="14sp"
+                        android:textColor="@color/text_secondary"
+                        android:layout_marginTop="4dp" />
+
+                </LinearLayout>
+
+                <Switch
+                    android:id="@+id/switch_enable_biometric"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:enabled="false" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <!-- Password Requirements -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginBottom="32dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Password Requirements:"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:textColor="@color/text_secondary"
+                android:layout_marginBottom="8dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="• At least 8 characters long\n• Mix of uppercase and lowercase letters\n• Include numbers and special characters\n• Avoid common passwords"
+                android:textSize="12sp"
+                android:textColor="@color/text_secondary"
+                android:lineSpacingExtra="2dp" />
+
+        </LinearLayout>
+
+        <!-- Create Password Button -->
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/btn_set_password"
+            android:id="@+id/btn_create_password"
             android:layout_width="match_parent"
             android:layout_height="56dp"
-            android:text="Create Password &amp; Continue"
-            android:textColor="@color/white"
+            android:text="Create Master Password"
             android:textSize="16sp"
-            android:backgroundTint="@color/primary_blue"
-            android:layout_marginBottom="24dp" />
+            android:textStyle="bold"
+            android:enabled="false"
+            app:backgroundTint="@color/primary_blue"
+            app:cornerRadius="8dp" />
 
-        <!-- Security Info -->
+        <!-- Security Notice -->
         <TextView
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="• Password must be at least 8 characters\n• Your data will be encrypted with this password\n• Make sure to remember it - cannot be recovered!"
-            android:textSize="14sp"
+            android:text="⚠️ Important: This password cannot be recovered. Please store it securely."
+            android:textSize="12sp"
             android:textColor="@color/text_secondary"
-            android:gravity="start"
-            android:lineSpacingExtra="4dp" />
+            android:gravity="center"
+            android:layout_marginTop="16dp" />
 
     </LinearLayout>
 

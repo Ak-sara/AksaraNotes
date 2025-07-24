@@ -34,8 +34,16 @@ class NotesAdapter(
         private val indicatorsTextView: TextView = itemView.findViewById(R.id.tv_note_indicators)
 
         fun bind(note: Note) {
-            titleTextView.text = note.title.ifEmpty { "Untitled" }
-            contentTextView.text = note.content.take(100) + if (note.content.length > 100) "..." else ""
+            // Handle PIN-protected notes
+            if (note.requiresPin) {
+                titleTextView.text = "🔒 ${note.title.ifEmpty { "Untitled" }}"
+                contentTextView.text = "Tap to unlock and view content..."
+                contentTextView.setTextColor(itemView.context.getColor(android.R.color.darker_gray))
+            } else {
+                titleTextView.text = note.title.ifEmpty { "Untitled" }
+                contentTextView.text = note.content.take(100) + if (note.content.length > 100) "..." else ""
+                contentTextView.setTextColor(itemView.context.getColor(android.R.color.black))
+            }
 
             // Format date
             val dateFormat = SimpleDateFormat("MMM dd, yyyy", Locale.getDefault())
@@ -49,6 +57,15 @@ class NotesAdapter(
             }
             indicatorsTextView.text = indicators
             indicatorsTextView.visibility = if (indicators.isNotEmpty()) View.VISIBLE else View.GONE
+
+            // Visual styling for PIN-protected notes
+            if (note.requiresPin) {
+                itemView.alpha = 0.8f
+                itemView.setBackgroundColor(itemView.context.getColor(android.R.color.background_light))
+            } else {
+                itemView.alpha = 1.0f
+                itemView.setBackgroundColor(itemView.context.getColor(android.R.color.white))
+            }
 
             // Click listeners
             itemView.setOnClickListener { onNoteClick(note) }
