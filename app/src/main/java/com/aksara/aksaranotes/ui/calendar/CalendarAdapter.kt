@@ -71,7 +71,7 @@ class CalendarAdapter(
                 }
             }
 
-            // Display events (Mac-style)
+            // Display events (Mac-style with table icons)
             displayEvents(day.events)
 
             // Click listener
@@ -85,10 +85,22 @@ class CalendarAdapter(
 
             events.take(3).forEach { event ->
                 val eventView = TextView(itemView.context).apply {
-                    text = "●"
-                    textSize = 8f
-                    setTextColor(getEventColor(event.type))
-                    setPadding(2, 0, 2, 1)
+                    // Use table icon if available, otherwise use colored dot
+                    text = if (!event.tableIcon.isNullOrEmpty()) {
+                        event.tableIcon
+                    } else {
+                        "●"
+                    }
+                    textSize = if (!event.tableIcon.isNullOrEmpty()) 10f else 8f
+
+                    // Set color and alpha based on event type
+                    val color = getEventColor(event.type)
+                    setTextColor(color)
+
+                    // Make recurring events semi-transparent to show they're predictions
+                    alpha = if (event.type == EventType.TABLE_RECURRING) 0.6f else 1.0f
+
+                    setPadding(1, 0, 1, 1)
                 }
                 eventsLayout.addView(eventView)
             }
@@ -105,11 +117,20 @@ class CalendarAdapter(
 
         private fun getEventColor(eventType: EventType): Int {
             return when (eventType) {
+                // Legacy event colors
                 EventType.SUBSCRIPTION_OVERDUE -> Color.RED
                 EventType.SUBSCRIPTION_DUE_TODAY -> Color.parseColor("#FFA500") // Orange
                 EventType.SUBSCRIPTION_UPCOMING -> Color.GREEN
                 EventType.CUSTOM_EVENT -> ContextCompat.getColor(itemView.context, R.color.primary_blue)
                 EventType.NOTE_REMINDER -> Color.parseColor("#800080") // Purple
+
+                // New table-based event colors
+                EventType.TABLE_SUBSCRIPTION -> Color.parseColor("#FF6B35") // Orange-red for subscriptions
+                EventType.TABLE_INVESTMENT -> Color.parseColor("#4CAF50") // Green for investments/bonds
+                EventType.TABLE_MEETING -> Color.parseColor("#2196F3") // Blue for meetings
+                EventType.TABLE_TASK -> Color.parseColor("#9C27B0") // Purple for tasks
+                EventType.TABLE_DATE -> Color.parseColor("#607D8B") // Blue-grey for generic dates
+                EventType.TABLE_RECURRING -> Color.parseColor("#9E9E9E") // Grey for recurring predictions
             }
         }
 

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Column Builder Dialog Dynamic IDs -->
+    <item name="et_select_options" type="id" />
+    <item name="spinner_max_rating" type="id" />
+    <item name="spinner_decimal_places" type="id" />
+    <item name="spinner_currency_symbol" type="id" />
+    <item name="et_formula" type="id" />
+</resources>

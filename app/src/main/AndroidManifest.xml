@@ -41,43 +41,19 @@
             android:name=".ui.auth.SetupActivity"
             android:exported="false"
             android:theme="@style/Theme.AksaraNotes" />
-        <!-- Add this inside <application> tag -->
+
         <activity
             android:name=".ui.notes.NoteDetailActivity"
             android:exported="false"
             android:theme="@style/Theme.AksaraNotes"
             android:parentActivityName=".MainActivity" />
-        <!-- Add these inside <application> tag -->
-<!--        <activity-->
-<!--            android:name=".ui.database.accounts.AccountsActivity"-->
-<!--            android:exported="false"-->
-<!--            android:theme="@style/Theme.AksaraNotes"-->
-<!--            android:parentActivityName=".MainActivity" />-->
 
-<!--        <activity-->
-<!--            android:name=".ui.database.subscriptions.SubscriptionsActivity"-->
-<!--            android:exported="false"-->
-<!--            android:theme="@style/Theme.AksaraNotes"-->
-<!--            android:parentActivityName=".MainActivity" />-->
-
-<!--        <activity-->
-<!--            android:name=".ui.database.tables.CustomTablesActivity"-->
-<!--            android:exported="false"-->
-<!--            android:theme="@style/Theme.AksaraNotes"-->
-<!--            android:parentActivityName=".MainActivity" />-->
-
-<!--        <activity-->
-<!--            android:name=".ui.database.calculators.BondCalculatorActivity"-->
-<!--            android:exported="false"-->
-<!--            android:theme="@style/Theme.AksaraNotes"-->
-<!--            android:parentActivityName=".MainActivity" />-->
-        <!-- Add this inside <application> tag -->
         <activity
             android:name=".ui.database.builder.TableBuilderActivity"
             android:exported="false"
             android:theme="@style/Theme.AksaraNotes"
             android:parentActivityName=".MainActivity" />
-        <!-- Add these inside <application> tag -->
+
         <activity
             android:name=".ui.database.view.TableViewActivity"
             android:exported="false"

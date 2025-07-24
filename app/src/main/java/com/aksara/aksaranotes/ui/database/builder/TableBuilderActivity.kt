@@ -1,14 +1,17 @@
 package com.aksara.aksaranotes.ui.database.builder
 
 import android.os.Bundle
+import android.text.InputType
 import android.util.Log
 import android.view.View
-import android.widget.Toast
+import android.view.ViewGroup
+import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.aksara.aksaranotes.R
 import com.aksara.aksaranotes.databinding.ActivityTableBuilderBinding
 import com.aksara.aksaranotes.data.models.TableColumn
 import com.aksara.aksaranotes.data.models.ColumnType
@@ -185,8 +188,6 @@ class TableBuilderActivity : AppCompatActivity() {
         updateColumnsDisplay()
     }
 
-    // ... rest of the methods stay the same ...
-
     private fun showAddColumnDialog() {
         showColumnDialog(null)
     }
@@ -208,8 +209,322 @@ class TableBuilderActivity : AppCompatActivity() {
     }
 
     private fun showColumnDialog(existingColumn: TableColumn?) {
-        Log.d("TableBuilder", "showColumnDialog called")
-        Toast.makeText(this, "Column builder coming soon!", Toast.LENGTH_SHORT).show()
+        val dialogView = layoutInflater.inflate(R.layout.dialog_column_builder, null)
+
+        // Find views (using your existing IDs)
+        val etColumnName = dialogView.findViewById<EditText>(R.id.et_column_name)
+        val spinnerColumnType = dialogView.findViewById<Spinner>(R.id.spinner_column_type)
+        val cbRequired = dialogView.findViewById<CheckBox>(R.id.cb_required)
+        val etDefaultValue = dialogView.findViewById<EditText>(R.id.et_default_value)
+
+        // Try to find the options layout (will be null if using your original layout)
+        val layoutOptions = dialogView.findViewById<LinearLayout>(R.id.layout_options)
+
+        // Setup column type spinner
+        val columnTypes = ColumnType.values()
+        val adapter = object : ArrayAdapter<ColumnType>(this, android.R.layout.simple_spinner_item, columnTypes) {
+            override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
+                val view = super.getView(position, convertView, parent)
+                val textView = view as TextView
+                textView.text = "${columnTypes[position].icon} ${columnTypes[position].displayName}"
+                return view
+            }
+
+            override fun getDropDownView(position: Int, convertView: View?, parent: ViewGroup): View {
+                val view = super.getDropDownView(position, convertView, parent)
+                val textView = view as TextView
+                textView.text = "${columnTypes[position].icon} ${columnTypes[position].displayName}"
+                return view
+            }
+        }
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        spinnerColumnType.adapter = adapter
+
+        // Populate existing data if editing
+        existingColumn?.let { column ->
+            etColumnName.setText(column.name)
+            spinnerColumnType.setSelection(columnTypes.indexOf(column.type))
+            cbRequired.isChecked = column.required
+            etDefaultValue.setText(column.defaultValue)
+        }
+
+        // Handle column type changes (only if layoutOptions exists)
+        spinnerColumnType.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                val selectedType = columnTypes[position]
+                updateDefaultValueInput(etDefaultValue, selectedType)
+
+                // Only setup advanced options if the container exists
+                layoutOptions?.let { container ->
+                    setupColumnTypeOptions(container, selectedType, existingColumn?.options ?: emptyMap())
+                }
+            }
+            override fun onNothingSelected(parent: AdapterView<*>?) {}
+        }
+
+        // Trigger initial setup
+        val initialType = if (existingColumn != null) existingColumn.type else ColumnType.TEXT
+        updateDefaultValueInput(etDefaultValue, initialType)
+        layoutOptions?.let { container ->
+            setupColumnTypeOptions(container, initialType, existingColumn?.options ?: emptyMap())
+        }
+
+        val dialog = AlertDialog.Builder(this)
+            .setTitle(if (existingColumn != null) "Edit Column" else "Add Column")
+            .setView(dialogView)
+            .setPositiveButton("Save") { _, _ ->
+                val name = etColumnName.text.toString().trim()
+                val type = columnTypes[spinnerColumnType.selectedItemPosition]
+                val required = cbRequired.isChecked
+                val defaultValue = etDefaultValue.text.toString().trim()
+
+                // Only collect advanced options if container exists
+                val options = layoutOptions?.let { collectColumnOptions(it, type) } ?: emptyMap()
+
+                if (name.isEmpty()) {
+                    Toast.makeText(this, "Column name is required", Toast.LENGTH_SHORT).show()
+                    return@setPositiveButton
+                }
+
+                val newColumn = TableColumn(
+                    id = existingColumn?.id ?: UUID.randomUUID().toString(),
+                    name = name,
+                    type = type,
+                    required = required,
+                    defaultValue = defaultValue,
+                    options = options
+                )
+
+                if (existingColumn != null) {
+                    val index = columns.indexOf(existingColumn)
+                    columns[index] = newColumn
+                } else {
+                    columns.add(newColumn)
+                }
+
+                updateColumnsDisplay()
+            }
+            .setNegativeButton("Cancel", null)
+            .create()
+
+        dialog.show()
+    }
+
+    private fun setupColumnTypeOptions(layout: LinearLayout, type: ColumnType, existingOptions: Map<String, Any>) {
+        layout.removeAllViews()
+
+        when (type) {
+            ColumnType.SELECT -> {
+                val optionsContainer = LinearLayout(this).apply {
+                    orientation = LinearLayout.VERTICAL
+                }
+
+                val headerText = TextView(this).apply {
+                    text = "Dropdown Options (one per line):"
+                    setPadding(0, 16, 0, 8)
+                }
+                optionsContainer.addView(headerText)
+
+                val optionsEditText = EditText(this).apply {
+                    hint = "Option 1\nOption 2\nOption 3"
+                    inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_MULTI_LINE
+                    minLines = 3
+                    maxLines = 8
+
+                    // Load existing options
+                    val existingOptionsList = existingOptions["options"] as? List<*>
+                    if (existingOptionsList != null) {
+                        setText(existingOptionsList.joinToString("\n"))
+                    }
+                }
+                optionsContainer.addView(optionsEditText)
+                layout.addView(optionsContainer)
+            }
+
+            ColumnType.CURRENCY -> {
+                val currencyLabel = TextView(this).apply {
+                    text = "Currency Symbol: "
+                    setPadding(0, 16, 0, 8)
+                }
+                layout.addView(currencyLabel)
+
+                val currencySpinner = Spinner(this).apply {
+                    adapter = ArrayAdapter(
+                        this@TableBuilderActivity,
+                        android.R.layout.simple_spinner_item,
+                        arrayOf("$ USD", "€ EUR", "£ GBP", "¥ JPY", "Rp IDR")
+                    ).also {
+                        it.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+                    }
+                }
+                layout.addView(currencySpinner)
+            }
+
+            ColumnType.DATE, ColumnType.DATETIME, ColumnType.TIME -> {
+                // Add calendar integration options for date fields
+                val calendarLabel = TextView(this).apply {
+                    text = "Calendar Integration:"
+                    setPadding(0, 16, 0, 8)
+                    setTextColor(getColor(android.R.color.black))
+                }
+                layout.addView(calendarLabel)
+
+                val showInCalendarCheckbox = CheckBox(this).apply {
+                    text = "📅 Show in Calendar"
+                    isChecked = existingOptions["showInCalendar"] as? Boolean ?: true
+
+                    setOnCheckedChangeListener { _, isChecked ->
+                        val recurringCheckbox = layout.findViewWithTag<CheckBox>("recurring_checkbox")
+                        val frequencySpinner = layout.findViewWithTag<Spinner>("frequency_spinner")
+                        recurringCheckbox?.visibility = if (isChecked) View.VISIBLE else View.GONE
+                        frequencySpinner?.visibility = if (isChecked && recurringCheckbox?.isChecked == true) View.VISIBLE else View.GONE
+                    }
+                }
+                layout.addView(showInCalendarCheckbox)
+
+                val recurringCheckbox = CheckBox(this).apply {
+                    text = "🔄 Recurring Event"
+                    tag = "recurring_checkbox"
+                    isChecked = existingOptions["isRecurring"] as? Boolean ?: false
+                    visibility = if (showInCalendarCheckbox.isChecked) View.VISIBLE else View.GONE
+
+                    setOnCheckedChangeListener { _, isChecked ->
+                        val frequencySpinner = layout.findViewWithTag<Spinner>("frequency_spinner")
+                        frequencySpinner?.visibility = if (isChecked) View.VISIBLE else View.GONE
+                    }
+                }
+                layout.addView(recurringCheckbox)
+
+                val frequencySpinner = Spinner(this).apply {
+                    tag = "frequency_spinner"
+                    adapter = ArrayAdapter(
+                        this@TableBuilderActivity,
+                        android.R.layout.simple_spinner_item,
+                        arrayOf("Monthly", "Weekly", "Yearly", "Every 2 weeks", "Every 3 months", "Every 6 months")
+                    ).also {
+                        it.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+                    }
+
+                    // Set existing value
+                    val currentFrequency = existingOptions["recurrenceFrequency"] as? String ?: "Monthly"
+                    val frequencyOptions = arrayOf("Monthly", "Weekly", "Yearly", "Every 2 weeks", "Every 3 months", "Every 6 months")
+                    setSelection(frequencyOptions.indexOf(currentFrequency).coerceAtLeast(0))
+
+                    visibility = if (showInCalendarCheckbox.isChecked && recurringCheckbox.isChecked) View.VISIBLE else View.GONE
+                }
+                layout.addView(frequencySpinner)
+            }
+
+            else -> {
+                // For now, only implement SELECT and CURRENCY
+                // Other types can be added later
+            }
+        }
+    }
+
+    private fun updateDefaultValueInput(editText: EditText, type: ColumnType) {
+        when (type) {
+            ColumnType.NUMBER, ColumnType.CURRENCY -> {
+                editText.inputType = InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_FLAG_DECIMAL
+                editText.hint = "0.00"
+            }
+            ColumnType.EMAIL -> {
+                editText.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS
+                editText.hint = "example@email.com"
+            }
+            ColumnType.PHONE -> {
+                editText.inputType = InputType.TYPE_CLASS_PHONE
+                editText.hint = "+1234567890"
+            }
+            ColumnType.URL -> {
+                editText.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_URI
+                editText.hint = "https://example.com"
+            }
+            ColumnType.BOOLEAN -> {
+                editText.isEnabled = false
+                editText.hint = "true/false (set via checkbox in forms)"
+            }
+            else -> {
+                editText.inputType = InputType.TYPE_CLASS_TEXT
+                editText.hint = "Default value"
+            }
+        }
+    }
+
+    private fun collectColumnOptions(layout: LinearLayout, type: ColumnType): Map<String, Any> {
+        val options = mutableMapOf<String, Any>()
+
+        when (type) {
+            ColumnType.SELECT -> {
+                // Find the options EditText by searching through child views
+                for (i in 0 until layout.childCount) {
+                    val child = layout.getChildAt(i)
+                    if (child is LinearLayout) {
+                        for (j in 0 until child.childCount) {
+                            val grandChild = child.getChildAt(j)
+                            if (grandChild is EditText) {
+                                val optionsList = grandChild.text.toString().split("\n")
+                                    .filter { it.trim().isNotEmpty() }
+                                options["options"] = optionsList
+                                break
+                            }
+                        }
+                    }
+                }
+            }
+
+            ColumnType.CURRENCY -> {
+                // Find the currency spinner
+                for (i in 0 until layout.childCount) {
+                    val child = layout.getChildAt(i)
+                    if (child is Spinner) {
+                        val currencySymbol = when (child.selectedItemPosition) {
+                            1 -> "€"
+                            2 -> "£"
+                            3 -> "¥"
+                            4 -> "Rp"
+                            else -> "$"
+                        }
+                        options["currencySymbol"] = currencySymbol
+                        break
+                    }
+                }
+            }
+
+            ColumnType.DATE, ColumnType.DATETIME, ColumnType.TIME -> {
+                // Collect calendar options
+                var showInCalendar = true
+                var isRecurring = false
+                var recurrenceFrequency = "Monthly"
+
+                for (i in 0 until layout.childCount) {
+                    val child = layout.getChildAt(i)
+                    when (child) {
+                        is CheckBox -> {
+                            when (child.text.toString()) {
+                                "📅 Show in Calendar" -> showInCalendar = child.isChecked
+                                "🔄 Recurring Event" -> isRecurring = child.isChecked
+                            }
+                        }
+                        is Spinner -> {
+                            if (child.tag == "frequency_spinner") {
+                                recurrenceFrequency = child.selectedItem?.toString() ?: "Monthly"
+                            }
+                        }
+                    }
+                }
+
+                options["showInCalendar"] = showInCalendar
+                options["isRecurring"] = isRecurring
+                options["recurrenceFrequency"] = recurrenceFrequency
+            }
+
+            else -> {
+                // No special options for basic types
+            }
+        }
+
+        return options
     }
 
     private fun updateColumnsDisplay() {
