@@ -33,22 +33,46 @@
             android:paddingBottom="80dp">
 
             <!-- Note Title -->
-            <com.google.android.material.textfield.TextInputLayout
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Title"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                android:layout_marginBottom="16dp">
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:baselineAligned="false">
 
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/et_note_title"
-                    android:layout_width="match_parent"
+                <com.google.android.material.textfield.TextInputLayout
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:inputType="textCapSentences"
-                    android:maxLines="2"
-                    android:enabled="false" />
+                    android:layout_marginBottom="16dp"
+                    android:layout_weight="2"
+                    android:hint="Title">
 
-            </com.google.android.material.textfield.TextInputLayout>
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/et_note_title"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:enabled="false"
+                        android:inputType="textCapSentences"
+                        android:maxLines="2"
+                        android:textColor="@color/text_primary"
+                        android:textSize="16sp" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.floatingactionbutton.FloatingActionButton
+                    android:id="@+id/fab_edit"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+
+                    android:layout_marginTop="8dp"
+                    android:layout_marginLeft="10dp"
+                    android:contentDescription="Edit Note"
+                    android:src="@drawable/ic_edit"
+                    app:fabSize="mini"
+                    app:elevation="6dp"
+                    app:backgroundTint="@color/primary_blue"
+                    app:tint="@color/white" />
+            </LinearLayout>
 
             <!-- Note Content -->
             <com.google.android.material.textfield.TextInputLayout
@@ -61,11 +85,13 @@
                     android:id="@+id/et_note_content"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="textCapSentences|textMultiLine"
+                    android:enabled="false"
                     android:gravity="top"
+                    android:inputType="textCapSentences|textMultiLine"
                     android:minLines="10"
                     android:scrollbars="vertical"
-                    android:enabled="false" />
+                    android:textColor="@color/text_primary"
+                    android:textSize="16sp" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -74,15 +100,5 @@
     </androidx.core.widget.NestedScrollView>
 
     <!-- Edit/Save FAB - FIXED ANCHOR -->
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fab_edit"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        android:src="@drawable/ic_edit"
-        android:contentDescription="Edit Note"
-        app:tint="@color/white"
-        app:backgroundTint="@color/primary_blue"
-        android:layout_gravity="bottom|end" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

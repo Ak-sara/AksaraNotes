@@ -22,7 +22,7 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.launch
 import java.util.UUID
-
+// manage Table Structure
 class TableBuilderActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityTableBuilderBinding
@@ -208,112 +208,64 @@ class TableBuilderActivity : AppCompatActivity() {
             .show()
     }
 
-    private fun showColumnDialog(existingColumn: TableColumn?) {
-        val dialogView = layoutInflater.inflate(R.layout.dialog_column_builder, null)
-
-        // Find views (using your existing IDs)
-        val etColumnName = dialogView.findViewById<EditText>(R.id.et_column_name)
-        val spinnerColumnType = dialogView.findViewById<Spinner>(R.id.spinner_column_type)
-        val cbRequired = dialogView.findViewById<CheckBox>(R.id.cb_required)
-        val etDefaultValue = dialogView.findViewById<EditText>(R.id.et_default_value)
-
-        // Try to find the options layout (will be null if using your original layout)
-        val layoutOptions = dialogView.findViewById<LinearLayout>(R.id.layout_options)
-
-        // Setup column type spinner
-        val columnTypes = ColumnType.values()
-        val adapter = object : ArrayAdapter<ColumnType>(this, android.R.layout.simple_spinner_item, columnTypes) {
-            override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
-                val view = super.getView(position, convertView, parent)
-                val textView = view as TextView
-                textView.text = "${columnTypes[position].icon} ${columnTypes[position].displayName}"
-                return view
-            }
-
-            override fun getDropDownView(position: Int, convertView: View?, parent: ViewGroup): View {
-                val view = super.getDropDownView(position, convertView, parent)
-                val textView = view as TextView
-                textView.text = "${columnTypes[position].icon} ${columnTypes[position].displayName}"
-                return view
-            }
-        }
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        spinnerColumnType.adapter = adapter
-
-        // Populate existing data if editing
-        existingColumn?.let { column ->
-            etColumnName.setText(column.name)
-            spinnerColumnType.setSelection(columnTypes.indexOf(column.type))
-            cbRequired.isChecked = column.required
-            etDefaultValue.setText(column.defaultValue)
-        }
-
-        // Handle column type changes (only if layoutOptions exists)
-        spinnerColumnType.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                val selectedType = columnTypes[position]
-                updateDefaultValueInput(etDefaultValue, selectedType)
-
-                // Only setup advanced options if the container exists
-                layoutOptions?.let { container ->
-                    setupColumnTypeOptions(container, selectedType, existingColumn?.options ?: emptyMap())
-                }
-            }
-            override fun onNothingSelected(parent: AdapterView<*>?) {}
-        }
-
-        // Trigger initial setup
-        val initialType = if (existingColumn != null) existingColumn.type else ColumnType.TEXT
-        updateDefaultValueInput(etDefaultValue, initialType)
-        layoutOptions?.let { container ->
-            setupColumnTypeOptions(container, initialType, existingColumn?.options ?: emptyMap())
-        }
-
-        val dialog = AlertDialog.Builder(this)
-            .setTitle(if (existingColumn != null) "Edit Column" else "Add Column")
-            .setView(dialogView)
-            .setPositiveButton("Save") { _, _ ->
-                val name = etColumnName.text.toString().trim()
-                val type = columnTypes[spinnerColumnType.selectedItemPosition]
-                val required = cbRequired.isChecked
-                val defaultValue = etDefaultValue.text.toString().trim()
-
-                // Only collect advanced options if container exists
-                val options = layoutOptions?.let { collectColumnOptions(it, type) } ?: emptyMap()
-
-                if (name.isEmpty()) {
-                    Toast.makeText(this, "Column name is required", Toast.LENGTH_SHORT).show()
-                    return@setPositiveButton
-                }
-
-                val newColumn = TableColumn(
-                    id = existingColumn?.id ?: UUID.randomUUID().toString(),
-                    name = name,
-                    type = type,
-                    required = required,
-                    defaultValue = defaultValue,
-                    options = options
-                )
-
-                if (existingColumn != null) {
-                    val index = columns.indexOf(existingColumn)
-                    columns[index] = newColumn
-                } else {
-                    columns.add(newColumn)
-                }
-
-                updateColumnsDisplay()
-            }
-            .setNegativeButton("Cancel", null)
-            .create()
-
-        dialog.show()
-    }
 
     private fun setupColumnTypeOptions(layout: LinearLayout, type: ColumnType, existingOptions: Map<String, Any>) {
         layout.removeAllViews()
 
         when (type) {
+            ColumnType.FORMULA -> {
+                // Formula input section
+                val formulaContainer = LinearLayout(this).apply {
+                    orientation = LinearLayout.VERTICAL
+                }
+
+                // Header
+                val headerText = TextView(this).apply {
+                    text = "Formula Expression"
+                    textSize = 16f
+                    setTextColor(getColor(android.R.color.black))
+                    setPadding(0, 16, 0, 8)
+                }
+                formulaContainer.addView(headerText)
+
+                // Formula input
+                val formulaEditText = EditText(this).apply {
+                    hint = "e.g., {Price} * {Quantity} or {Total} * 0.1"
+                    inputType = InputType.TYPE_CLASS_TEXT
+                    minLines = 2
+                    maxLines = 4
+
+                    // Load existing formula
+                    val existingFormula = existingOptions["formula"] as? String ?: ""
+                    setText(existingFormula)
+                }
+                formulaContainer.addView(formulaEditText)
+
+                // Help text
+                val helpText = TextView(this).apply {
+                    text = """
+                    Use {ColumnName} to reference other fields.
+                    Supported operations: +, -, *, /, (), %
+                    Examples:
+                    • {Price} * {Quantity}
+                    • ({Subtotal} + {Tax}) * 0.9
+                    • {Income} * 15%
+                """.trimIndent()
+                    textSize = 12f
+                    setTextColor(getColor(android.R.color.darker_gray))
+                    setPadding(0, 8, 0, 0)
+                }
+                formulaContainer.addView(helpText)
+
+                // Format as currency checkbox
+                val formatAsCurrencyCheckbox = CheckBox(this).apply {
+                    text = "💰 Format result as currency"
+                    isChecked = existingOptions["formatAsCurrency"] as? Boolean ?: false
+                }
+                formulaContainer.addView(formatAsCurrencyCheckbox)
+
+                layout.addView(formulaContainer)
+            }
             ColumnType.SELECT -> {
                 val optionsContainer = LinearLayout(this).apply {
                     orientation = LinearLayout.VERTICAL
@@ -421,9 +373,14 @@ class TableBuilderActivity : AppCompatActivity() {
             }
         }
     }
-
+    // -- Fix
+    // Update these methods in TableBuilderActivity.kt - remove debug logs
     private fun updateDefaultValueInput(editText: EditText, type: ColumnType) {
         when (type) {
+            ColumnType.FORMULA -> {
+                editText.inputType = InputType.TYPE_CLASS_TEXT
+                editText.hint = "e.g., {Price} * {Quantity} or {Total} * 0.1"
+            }
             ColumnType.NUMBER, ColumnType.CURRENCY -> {
                 editText.inputType = InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_FLAG_DECIMAL
                 editText.hint = "0.00"
@@ -451,10 +408,138 @@ class TableBuilderActivity : AppCompatActivity() {
         }
     }
 
+    private fun showColumnDialog(existingColumn: TableColumn?) {
+        val dialogView = layoutInflater.inflate(R.layout.dialog_column_builder, null)
+
+        val etColumnName = dialogView.findViewById<EditText>(R.id.et_column_name)
+        val spinnerColumnType = dialogView.findViewById<Spinner>(R.id.spinner_column_type)
+        val cbRequired = dialogView.findViewById<CheckBox>(R.id.cb_required)
+        val etDefaultValue = dialogView.findViewById<EditText>(R.id.et_default_value)
+        val layoutOptions = dialogView.findViewById<LinearLayout>(R.id.layout_options)
+
+        // Setup column type spinner
+        val columnTypes = ColumnType.values()
+        val adapter = object : ArrayAdapter<ColumnType>(this, android.R.layout.simple_spinner_item, columnTypes) {
+            override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
+                val view = super.getView(position, convertView, parent)
+                val textView = view as TextView
+                textView.text = "${columnTypes[position].icon} ${columnTypes[position].displayName}"
+                return view
+            }
+
+            override fun getDropDownView(position: Int, convertView: View?, parent: ViewGroup): View {
+                val view = super.getDropDownView(position, convertView, parent)
+                val textView = view as TextView
+                textView.text = "${columnTypes[position].icon} ${columnTypes[position].displayName}"
+                return view
+            }
+        }
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        spinnerColumnType.adapter = adapter
+
+        // Populate existing data
+        existingColumn?.let { column ->
+            etColumnName.setText(column.name)
+            spinnerColumnType.setSelection(columnTypes.indexOf(column.type))
+            cbRequired.isChecked = column.required
+            etDefaultValue.setText(column.defaultValue)
+        }
+
+        // Handle column type changes
+        spinnerColumnType.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                val selectedType = columnTypes[position]
+                updateDefaultValueInput(etDefaultValue, selectedType)
+
+                layoutOptions?.let { container ->
+                    setupColumnTypeOptions(container, selectedType, existingColumn?.options ?: emptyMap())
+                }
+            }
+            override fun onNothingSelected(parent: AdapterView<*>?) {}
+        }
+
+        // Trigger initial setup
+        val initialType = if (existingColumn != null) existingColumn.type else ColumnType.TEXT
+        updateDefaultValueInput(etDefaultValue, initialType)
+        layoutOptions?.let { container ->
+            setupColumnTypeOptions(container, initialType, existingColumn?.options ?: emptyMap())
+        }
+
+        val dialog = AlertDialog.Builder(this)
+            .setTitle(if (existingColumn != null) "Edit Column" else "Add Column")
+            .setView(dialogView)
+            .setPositiveButton("Save") { _, _ ->
+                val name = etColumnName.text.toString().trim()
+                val type = columnTypes[spinnerColumnType.selectedItemPosition]
+                val required = cbRequired.isChecked
+                val defaultValue = etDefaultValue.text.toString().trim()
+
+                if (name.isEmpty()) {
+                    Toast.makeText(this, "Column name is required", Toast.LENGTH_SHORT).show()
+                    return@setPositiveButton
+                }
+
+                // Collect additional options for non-formula columns
+                val options = if (type != ColumnType.FORMULA) {
+                    layoutOptions?.let { collectColumnOptions(it, type) } ?: emptyMap()
+                } else {
+                    emptyMap() // For formula columns, formula goes in defaultValue
+                }
+
+                val newColumn = TableColumn(
+                    id = existingColumn?.id ?: UUID.randomUUID().toString(),
+                    name = name,
+                    type = type,
+                    required = required,
+                    defaultValue = defaultValue, // Formula stored here for FORMULA columns
+                    options = options
+                )
+
+                if (existingColumn != null) {
+                    val index = columns.indexOf(existingColumn)
+                    columns[index] = newColumn
+                } else {
+                    columns.add(newColumn)
+                }
+
+                updateColumnsDisplay()
+            }
+            .setNegativeButton("Cancel", null)
+            .create()
+
+        dialog.show()
+    }
+    // -- Fix
+
     private fun collectColumnOptions(layout: LinearLayout, type: ColumnType): Map<String, Any> {
         val options = mutableMapOf<String, Any>()
 
         when (type) {
+            ColumnType.FORMULA -> {
+                // Find the formula EditText and format checkbox
+                for (i in 0 until layout.childCount) {
+                    val child = layout.getChildAt(i)
+                    if (child is LinearLayout) {
+                        for (j in 0 until child.childCount) {
+                            val grandChild = child.getChildAt(j)
+                            when (grandChild) {
+                                is EditText -> {
+                                    val formula = grandChild.text.toString().trim()
+                                    if (formula.isNotEmpty()) {
+                                        options["formula"] = formula
+                                        Log.d("TableBuilder", "Storing formula: '$formula'")
+                                    }
+                                }
+                                is CheckBox -> {
+                                    if (grandChild.text.contains("currency")) {
+                                        options["formatAsCurrency"] = grandChild.isChecked
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
             ColumnType.SELECT -> {
                 // Find the options EditText by searching through child views
                 for (i in 0 until layout.childCount) {

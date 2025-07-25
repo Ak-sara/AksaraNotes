@@ -36,7 +36,13 @@ class ColumnBuilderAdapter(
         fun bind(column: TableColumn) {
             columnIcon.text = column.type.icon
             columnName.text = column.name
-            columnType.text = column.type.displayName
+
+            // For formula columns, show the formula from defaultValue
+            columnType.text = if (column.type.name == "FORMULA" && column.defaultValue.isNotEmpty())  {
+                "${column.type.displayName}: ${column.defaultValue}"
+            } else {
+                column.type.displayName
+            }
 
             requiredIndicator.visibility = if (column.required) View.VISIBLE else View.GONE
 

@@ -12,6 +12,7 @@ import com.aksara.notes.data.database.entities.TableItem
 import com.aksara.notes.data.models.TableColumn
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch  // ADD THIS LINE
 
 class ItemEditorActivity : AppCompatActivity() {
@@ -39,7 +40,21 @@ class ItemEditorActivity : AppCompatActivity() {
         setSupportActionBar(binding.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
     }
+    private fun testFormulaSystem() {
+        // Add this temporarily to test if formulas are responsive
+        lifecycleScope.launch {
+            delay(2000) // Wait for form to load
 
+            // Check if formula fields exist
+            val formData = formBuilder.getFormData()
+            android.util.Log.d("FormulaTest", "Form data: $formData")
+
+            // Check if formula values are calculated
+            formData.forEach { (key, value) ->
+                android.util.Log.d("FormulaTest", "$key: $value")
+            }
+        }
+    }
     private fun loadTable() {
         val tableId = intent.getStringExtra("table_id") ?: return
         val itemId = intent.getStringExtra("item_id")
@@ -72,6 +87,7 @@ class ItemEditorActivity : AppCompatActivity() {
                         formBuilder.populateForm(item.data)
                     }
                 }
+                testFormulaSystem()
             }
         }
     }

@@ -18,9 +18,9 @@
     <color name="purple">#FF9C27B0</color>
 
     <!-- Primary colors for dark mode -->
-    <color name="primary_blue">#BB86FC</color>
-    <color name="primary_blue_dark">#6200EE</color>
-    <color name="primary_blue_light">#BBDEFB</color>
+    <color name="primary_blue">#7316E7</color>
+    <color name="primary_blue_dark">#46059E</color>
+    <color name="primary_blue_light">#A1CCFB</color>
 
     <!-- Accent Colors for dark mode -->
     <color name="accent_blue">#03DAC6</color>
