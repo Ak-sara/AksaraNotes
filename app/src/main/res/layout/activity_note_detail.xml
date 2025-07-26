@@ -11,37 +11,29 @@
 
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/toolbar"
+            style="@style/Widget.AksaraNotes.Toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:background="@color/primary_blue"
-            app:titleTextColor="@color/white"
-            app:navigationIconTint="@color/white" />
+            app:titleTextColor="?android:attr/textColorPrimary"
+            app:navigationIconTint="?attr/colorPrimary" />
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <androidx.core.widget.NestedScrollView
-        android:id="@+id/scroll_view"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="6dp"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="16dp"
-            android:paddingBottom="80dp">
-
             <!-- Note Title -->
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:baselineAligned="false">
 
                 <com.google.android.material.textfield.TextInputLayout
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="16dp"
                     android:layout_weight="2"
@@ -54,7 +46,8 @@
                         android:enabled="false"
                         android:inputType="textCapSentences"
                         android:maxLines="2"
-                        android:textColor="@color/text_primary"
+                        android:textColor="?attr/colorOnSurface"
+                        android:foreground="?android:attr/selectableItemBackground"
                         android:textSize="16sp" />
 
                 </com.google.android.material.textfield.TextInputLayout>
@@ -65,40 +58,34 @@
                     android:layout_height="wrap_content"
 
                     android:layout_marginTop="8dp"
-                    android:layout_marginLeft="10dp"
+                    android:layout_marginStart="10dp"
                     android:contentDescription="Edit Note"
                     android:src="@drawable/ic_edit"
                     app:fabSize="mini"
                     app:elevation="6dp"
-                    app:backgroundTint="@color/primary_blue"
-                    app:tint="@color/white" />
+                    app:backgroundTint="?attr/colorPrimary"
+                    app:tint="?attr/colorSurface" />
             </LinearLayout>
 
-            <!-- Note Content -->
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Write your note here..."
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+                android:layout_height="match_parent"
+                android:hint="Write your note here...">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/et_note_content"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:enabled="false"
                     android:gravity="top"
                     android:inputType="textCapSentences|textMultiLine"
-                    android:minLines="10"
+                    android:minLines="20"
                     android:scrollbars="vertical"
-                    android:textColor="@color/text_primary"
+                    android:textColor="?attr/colorOnSurface"
+                    android:background="?android:attr/selectableItemBackground"
                     android:textSize="16sp" />
 
             </com.google.android.material.textfield.TextInputLayout>
-
-        </LinearLayout>
-
-    </androidx.core.widget.NestedScrollView>
-
-    <!-- Edit/Save FAB - FIXED ANCHOR -->
+    </LinearLayout>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

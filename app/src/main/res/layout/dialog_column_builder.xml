@@ -32,7 +32,7 @@
             android:layout_height="wrap_content"
             android:text="Column Type"
             android:textSize="14sp"
-            android:textColor="@color/text_secondary"
+            android:textColor="?attr/colorOnSurfaceVariant"
             android:layout_marginBottom="8dp" />
 
         <Spinner

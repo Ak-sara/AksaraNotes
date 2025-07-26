@@ -2,12 +2,12 @@
 <com.google.android.material.card.MaterialCardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    style="@style/Widget.AksaraNotes.CardView"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="4dp"
     app:cardCornerRadius="8dp"
-    app:cardElevation="2dp"
-    app:strokeWidth="0dp">
+    android:background="?attr/selectableItemBackground">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -23,7 +23,7 @@
             android:text="Note Title"
             android:textSize="18sp"
             android:textStyle="bold"
-            android:textColor="@color/black"
+            android:textColor="?attr/colorOnSurface"
             android:maxLines="2"
             android:ellipsize="end" />
 
@@ -35,7 +35,7 @@
             android:layout_marginTop="8dp"
             android:text="Note content preview..."
             android:textSize="14sp"
-            android:textColor="@color/text_secondary"
+            android:textColor="?attr/colorOnSurfaceVariant"
             android:maxLines="3"
             android:ellipsize="end" />
 
@@ -54,7 +54,7 @@
                 android:layout_weight="1"
                 android:text="Jan 15, 2025"
                 android:textSize="12sp"
-                android:textColor="@color/text_secondary" />
+                android:textColor="?attr/colorPrimary" />
 
             <TextView
                 android:id="@+id/tv_note_indicators"

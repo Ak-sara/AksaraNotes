@@ -9,9 +9,9 @@
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="@color/primary_blue"
-        app:navigationIconTint="@color/white"
-        app:titleTextColor="@color/white" />
+        android:background="?attr/colorPrimary"
+        app:navigationIconTint="?attr/colorSurface"
+        app:titleTextColor="?attr/colorSurface" />
 
     <ScrollView
         android:layout_width="match_parent"
@@ -30,7 +30,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
                 android:text="📋 Table Information"
-                android:textColor="@color/black"
+                android:textColor="?attr/colorOnSurface"
                 android:textSize="18sp"
                 android:textStyle="bold" />
 
@@ -73,7 +73,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
                 android:text="Icon"
-                android:textColor="@color/text_secondary"
+                android:textColor="?attr/colorOnSurfaceVariant"
                 android:textSize="14sp" />
 
             <LinearLayout
@@ -99,10 +99,10 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
-                    android:backgroundTint="@color/white"
+                    android:backgroundTint="?attr/colorSurface"
                     android:text="Choose Icon"
-                    android:textColor="@color/primary_blue"
-                    app:strokeColor="@color/primary_blue"
+                    android:textColor="?attr/colorPrimary"
+                    app:strokeColor="?attr/colorPrimary"
                     app:strokeWidth="1dp" />
 
             </LinearLayout>
@@ -120,7 +120,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="🏗️ Table Columns"
-                    android:textColor="@color/black"
+                    android:textColor="?attr/colorOnSurface"
                     android:textSize="18sp"
                     android:textStyle="bold" />
 
@@ -129,9 +129,9 @@
                     style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
                     android:layout_width="wrap_content"
                     android:layout_height="36dp"
-                    android:backgroundTint="@color/primary_blue"
+                    android:backgroundTint="?attr/colorPrimary"
                     android:text="+ Add Column"
-                    android:textColor="@color/white"
+                    android:textColor="?attr/colorSurface"
                     android:textSize="12sp" />
 
             </LinearLayout>
@@ -152,7 +152,7 @@
                 android:gravity="center"
                 android:padding="32dp"
                 android:text="No columns added yet. Add your first column to get started."
-                android:textColor="@color/text_secondary"
+                android:textColor="?attr/colorOnSurfaceVariant"
                 android:textSize="14sp"
                 android:visibility="visible" />
 
@@ -164,7 +164,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/white"
+        android:background="?attr/colorSurface"
         android:elevation="8dp"
         android:orientation="horizontal"
         android:padding="16dp">
@@ -176,9 +176,9 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
             android:layout_weight="1"
-            android:backgroundTint="@color/background_light"
+            android:backgroundTint="?attr/colorPrimary"
             android:text="Cancel"
-            android:textColor="@color/text_secondary" />
+            android:textColor="?attr/colorOnSurfaceVariant" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_create_table"
@@ -186,9 +186,9 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_weight="1"
-            android:backgroundTint="@color/primary_blue"
+            android:backgroundTint="?attr/colorPrimary"
             android:text="Create Table"
-            android:textColor="@color/white" />
+            android:textColor="?attr/colorSurface" />
 
     </LinearLayout>
 

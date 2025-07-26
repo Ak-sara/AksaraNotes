@@ -67,7 +67,7 @@ class CalendarAdapter(
                 }
                 else -> {
                     itemView.setBackgroundResource(R.drawable.calendar_day_background)
-                    dayNumber.setTextColor(Color.BLACK)
+                    dayNumber.setTextColor(ContextCompat.getColor(itemView.context, R.color.on_surface_variant))
                 }
             }
 

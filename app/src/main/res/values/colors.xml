@@ -1,114 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="purple_200">#FFBB86FC</color>
-    <color name="purple_500">#FF6200EE</color>
-    <color name="purple_700">#FF3700B3</color>
-    <color name="teal_200">#FF03DAC5</color>
-    <color name="teal_700">#FF018786</color>
-    <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
+    <!-- Light Mode - Yellow Base Theme -->
+    <!-- Primary Colors (Yellow Base) -->
+    <color name="primary">#F9A825</color> <!-- Warm yellow -->
+    <color name="primary_variant">#F57F17</color> <!-- Darker yellow -->
+    <color name="primary_dark">#E65100</color> <!-- Orange accent -->
+    <color name="on_primary">#000000</color> <!-- Black text on yellow -->
 
-    <!-- Aksara Notes specific colors -->
-    <color name="text_light">#FFCCCCCC</color>
+    <!-- Secondary Colors (Complementary) -->
+    <color name="secondary">#5E35B1</color> <!-- Purple accent -->
+    <color name="secondary_variant">#4527A0</color> <!-- Darker purple -->
+    <color name="on_secondary">#FFFFFF</color> <!-- White text on purple -->
 
-    <!-- Calendar colors -->
-    <color name="red">#FFF44336</color>
-    <color name="green">#FF4CAF50</color>
-    <color name="yellow">#FFFFC107</color>
-    <color name="purple">#FF9C27B0</color>
+    <!-- Background and Surface Colors -->
+    <color name="background">#FFFEF7</color> <!-- Warm off-white -->
+    <color name="surface">#FFFFFF</color> <!-- Pure white for cards -->
+    <color name="surface_variant">#FFF9C4</color> <!-- Light yellow tint -->
+    <color name="on_background">#1C1B00</color> <!-- Dark brown text -->
+    <color name="on_surface">#1C1B00</color> <!-- Dark brown text -->
+    <color name="on_surface_variant">#4A4635</color> <!-- Medium brown text -->
 
-    <color name="primary_blue">#2196F3</color>
-    <color name="primary_blue_dark">#1976D2</color>
-    <color name="primary_blue_light">#BBDEFB</color>
-
-    <!-- Accent Colors -->
-    <color name="accent_blue">#03DAC5</color>
-    <color name="accent_blue_dark">#018786</color>
-
-    <!-- Background Colors -->
-    <color name="background_light">#FFFFFF</color>
-    <color name="background_dark">#121212</color>
-    <color name="surface_light">#FFFFFF</color>
-    <color name="surface_dark">#1E1E1E</color>
+    <!-- Utility Colors -->
+    <color name="error">#D32F2F</color>
+    <color name="on_error">#FFFFFF</color>
+    <color name="divider">#1F1C1B00</color> <!-- 12% brown -->
+    <color name="ripple">#1FF9A825</color> <!-- 12% primary yellow -->
 
     <!-- Text Colors -->
-    <color name="text_primary">#212121</color>
-    <color name="text_secondary">#757575</color>
-    <color name="text_hint">#BDBDBD</color>
-    <color name="text_on_primary">#FFFFFF</color>
-    <color name="text_on_secondary">#000000</color>
+    <color name="text_primary">#DE1C1B00</color> <!-- 87% dark brown -->
+    <color name="text_secondary">#8A1C1B00</color> <!-- 54% dark brown -->
+    <color name="text_hint">#614A4635</color> <!-- 38% medium brown -->
+    <color name="text_on_primary">@color/on_primary</color>
+    <color name="text_on_surface">@color/on_surface</color>
 
-    <!-- Common Colors -->
-    <color name="transparent">#00000000</color>
+    <!-- Missing Color References -->
+    <color name="black">#000000</color>
+    <color name="divider_color">@color/divider</color>
 
-    <!-- Status Colors -->
-    <color name="success_green">#4CAF50</color>
-    <color name="error_red">#F44336</color>
-    <color name="warning_orange">#FF9800</color>
-    <color name="info_blue">#2196F3</color>
-
-    <!-- Security Colors -->
-    <color name="security_green">#4CAF50</color>
-    <color name="security_yellow">#FFC107</color>
-    <color name="security_red">#F44336</color>
-
-    <!-- Calendar Colors -->
-    <color name="calendar_today">#E3F2FD</color>
-    <color name="calendar_selected">#2196F3</color>
-    <color name="calendar_event">#1976D2</color>
-    <color name="calendar_event_secondary">#FF9800</color>
-
-    <!-- Card and Surface Colors -->
-    <color name="card_background">#FFFFFF</color>
-    <color name="card_shadow">#1F000000</color>
-    <color name="divider_color">#E0E0E0</color>
-    <color name="ripple_color">#1F2196F3</color>
-
-    <!-- Note Colors -->
-    <color name="note_favorite">#FFC107</color>
-    <color name="note_pin_protected">#F44336</color>
-    <color name="note_background">#FAFAFA</color>
-
-    <!-- Database Colors -->
-    <color name="database_header">#E3F2FD</color>
-    <color name="database_row_even">#FFFFFF</color>
-    <color name="database_row_odd">#F5F5F5</color>
-
-    <!-- Rating Colors -->
-    <color name="rating_filled">#FFC107</color>
-    <color name="rating_empty">#E0E0E0</color>
-
-    <!-- Gradient Colors -->
-    <color name="gradient_start">#f093fb</color>
-    <color name="gradient_center">#667eea</color>
-    <color name="gradient_end">#764ba2</color>
-
-    <!-- Dark Theme Colors (for future use) -->
-    <color name="dark_background">#121212</color>
-    <color name="dark_surface">#1E1E1E</color>
-    <color name="dark_primary">#BB86FC</color>
-    <color name="dark_secondary">#03DAC6</color>
-    <color name="dark_text_primary">#FFFFFF</color>
-    <color name="dark_text_secondary">#B3FFFFFF</color>
-
-    <!-- Material Design System Colors -->
-    <color name="md_blue_50">#E3F2FD</color>
-    <color name="md_blue_100">#BBDEFB</color>
-    <color name="md_blue_200">#90CAF9</color>
-    <color name="md_blue_300">#64B5F6</color>
-    <color name="md_blue_400">#42A5F5</color>
-    <color name="md_blue_500">#2196F3</color>
-    <color name="md_blue_600">#1E88E5</color>
-    <color name="md_blue_700">#1976D2</color>
-    <color name="md_blue_800">#1565C0</color>
-    <color name="md_blue_900">#0D47A1</color>
-
-    <!-- Field Type Colors -->
-    <color name="field_text">#4CAF50</color>
-    <color name="field_number">#2196F3</color>
-    <color name="field_currency">#FF9800</color>
-    <color name="field_date">#9C27B0</color>
-    <color name="field_boolean">#607D8B</color>
-    <color name="field_select">#795548</color>
-    <color name="field_rating">#FFC107</color>
+    <!-- Legacy Colors for Backward Compatibility -->
+    <color name="accent">@color/secondary</color>
+    <color name="primary_blue">@color/primary</color>
+    <color name="background_light">@color/background</color>
+    <color name="white">@color/surface</color>
+    <color name="red">#F44336</color>
 </resources>

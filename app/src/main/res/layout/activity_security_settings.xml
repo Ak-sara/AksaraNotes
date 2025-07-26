@@ -7,11 +7,10 @@
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
+        style="@style/Widget.AksaraNotes.Toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="@color/primary_blue"
-        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+        app:popupTheme="@style/ThemeOverlay.MaterialComponents.Light" />
 
     <ScrollView
         android:layout_width="match_parent"
@@ -45,7 +44,7 @@
                     android:text="Security Settings"
                     android:textSize="24sp"
                     android:textStyle="bold"
-                    android:textColor="@color/primary_blue"
+                    android:textColor="?attr/colorPrimary"
                     android:layout_marginBottom="8dp" />
 
                 <TextView
@@ -53,7 +52,7 @@
                     android:layout_height="wrap_content"
                     android:text="Manage your app security and authentication preferences"
                     android:textSize="14sp"
-                    android:textColor="@color/text_secondary"
+                    android:textColor="?attr/colorOnSurfaceVariant"
                     android:gravity="center" />
 
             </LinearLayout>
@@ -65,7 +64,7 @@
                 android:text="🔑 Authentication"
                 android:textSize="18sp"
                 android:textStyle="bold"
-                android:textColor="@color/primary_blue"
+                android:textColor="?attr/colorPrimary"
                 android:layout_marginBottom="12dp" />
 
             <!-- Change Master Password -->
@@ -106,14 +105,14 @@
                             android:text="Change Master Password"
                             android:textSize="16sp"
                             android:textStyle="bold"
-                            android:textColor="@color/text_primary" />
+                            android:textColor="?attr/colorOnSurface" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Update your master password for enhanced security"
                             android:textSize="14sp"
-                            android:textColor="@color/text_secondary" />
+                            android:textColor="?attr/colorOnSurfaceVariant" />
 
                     </LinearLayout>
 
@@ -166,7 +165,7 @@
                                 android:text="Biometric Authentication"
                                 android:textSize="16sp"
                                 android:textStyle="bold"
-                                android:textColor="@color/text_primary" />
+                                android:textColor="?attr/colorOnSurface" />
 
                             <TextView
                                 android:id="@+id/tv_biometric_status"
@@ -174,7 +173,7 @@
                                 android:layout_height="wrap_content"
                                 android:text="Use fingerprint or face unlock"
                                 android:textSize="14sp"
-                                android:textColor="@color/text_secondary" />
+                                android:textColor="?attr/colorOnSurfaceVariant" />
 
                         </LinearLayout>
 
@@ -196,7 +195,7 @@
                 android:text="🔒 Auto-Lock"
                 android:textSize="18sp"
                 android:textStyle="bold"
-                android:textColor="@color/primary_blue"
+                android:textColor="?attr/colorPrimary"
                 android:layout_marginBottom="12dp" />
 
             <com.google.android.material.card.MaterialCardView
@@ -239,7 +238,7 @@
                                 android:text="Enable Auto-Lock"
                                 android:textSize="16sp"
                                 android:textStyle="bold"
-                                android:textColor="@color/text_primary" />
+                                android:textColor="?attr/colorOnSurface" />
 
                             <TextView
                                 android:id="@+id/tv_auto_lock_description"
@@ -247,7 +246,7 @@
                                 android:layout_height="wrap_content"
                                 android:text="Automatically lock app after inactivity"
                                 android:textSize="14sp"
-                                android:textColor="@color/text_secondary" />
+                                android:textColor="?attr/colorOnSurfaceVariant" />
 
                         </LinearLayout>
 
@@ -269,7 +268,7 @@
                         <View
                             android:layout_width="match_parent"
                             android:layout_height="1dp"
-                            android:background="@color/divider_color"
+                            android:background="?attr/colorOnSurfaceVariant"
                             android:layout_marginVertical="8dp" />
 
                         <TextView
@@ -278,7 +277,7 @@
                             android:text="Auto-Lock Timeout"
                             android:textSize="14sp"
                             android:textStyle="bold"
-                            android:textColor="@color/text_primary"
+                            android:textColor="?attr/colorOnSurface"
                             android:layout_marginBottom="8dp" />
 
                         <Spinner
@@ -300,7 +299,7 @@
                 android:text="ℹ️ Information"
                 android:textSize="18sp"
                 android:textStyle="bold"
-                android:textColor="@color/primary_blue"
+                android:textColor="?attr/colorPrimary"
                 android:layout_marginBottom="12dp" />
 
             <com.google.android.material.card.MaterialCardView
@@ -340,14 +339,14 @@
                             android:text="Security Information"
                             android:textSize="16sp"
                             android:textStyle="bold"
-                            android:textColor="@color/text_primary" />
+                            android:textColor="?attr/colorOnSurface" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Learn about encryption and security features"
                             android:textSize="14sp"
-                            android:textColor="@color/text_secondary" />
+                            android:textColor="?attr/colorOnSurfaceVariant" />
 
                     </LinearLayout>
 
@@ -400,7 +399,7 @@
                         android:layout_height="wrap_content"
                         android:text="This will reset your master password, disable biometric authentication, and ERASE ALL DATA. This action cannot be undone!"
                         android:textSize="14sp"
-                        android:textColor="@color/text_secondary"
+                        android:textColor="?attr/colorOnSurfaceVariant"
                         android:layout_marginBottom="16dp" />
 
                     <Button

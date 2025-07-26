@@ -1,7 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:showIn="navigation_view">
+
+    <item
+        app:actionLayout="@layout/nav_header"
+        tools:ignore="MenuTitle"/>
 
     <group android:checkableBehavior="single">
         <item
@@ -32,10 +37,6 @@
                 android:id="@+id/nav_about"
                 android:icon="@drawable/ic_info"
                 android:title="About" />
-            <item
-                android:id="@+id/nav_help"
-                android:icon="@drawable/ic_help"
-                android:title="Help &amp; Support" />
         </menu>
     </item>
 

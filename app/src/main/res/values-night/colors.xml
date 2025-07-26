@@ -1,105 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="purple_200">#FFBB86FC</color>
-    <color name="purple_500">#FF6200EE</color>
-    <color name="purple_700">#FF3700B3</color>
-    <color name="teal_200">#FF03DAC5</color>
-    <color name="teal_700">#FF018786</color>
-    <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
+    <!-- Dark Mode - Dark Purple Base Theme -->
+    <!-- Primary Colors (Purple Base) -->
+    <color name="primary">#9C27B0</color> <!-- Medium purple -->
+    <color name="primary_variant">#6A1B9A</color> <!-- Darker purple -->
+    <color name="primary_dark">#4A148C</color> <!-- Deep purple -->
+    <color name="on_primary">#FFFFFF</color> <!-- White text on purple -->
 
-    <!-- Aksara Notes specific colors - DARK MODE -->
-    <color name="text_light">#FFCCCCCC</color>
+    <!-- Secondary Colors (Complementary) -->
+    <color name="secondary">#FFB74D</color> <!-- Warm orange -->
+    <color name="secondary_variant">#FF9800</color> <!-- Deeper orange -->
+    <color name="on_secondary">#000000</color> <!-- Black text on orange -->
 
-    <!-- Calendar colors (same in both modes) -->
-    <color name="red">#FFF44336</color>
-    <color name="green">#FF4CAF50</color>
-    <color name="yellow">#FFFFC107</color>
-    <color name="purple">#FF9C27B0</color>
+    <!-- Background and Surface Colors -->
+    <color name="background">#1A0E1A</color> <!-- Very dark purple -->
+    <color name="surface">#2D1B2D</color> <!-- Dark purple for cards -->
+    <color name="surface_variant">#3E2723</color> <!-- Brown-purple tint -->
+    <color name="on_background">#E8D5E8</color> <!-- Light purple text -->
+    <color name="on_surface">#E8D5E8</color> <!-- Light purple text -->
+    <color name="on_surface_variant">#C4A4C4</color> <!-- Medium purple text -->
 
-    <!-- Primary colors for dark mode -->
-    <color name="primary_blue">#7316E7</color>
-    <color name="primary_blue_dark">#46059E</color>
-    <color name="primary_blue_light">#A1CCFB</color>
+    <!-- Utility Colors -->
+    <color name="error">#F48FB1</color>
+    <color name="on_error">#000000</color>
+    <color name="divider">#1FE8D5E8</color> <!-- 12% light purple -->
+    <color name="ripple">#339C27B0</color> <!-- 20% primary purple -->
 
-    <!-- Accent Colors for dark mode -->
-    <color name="accent_blue">#03DAC6</color>
-    <color name="accent_blue_dark">#018786</color>
+    <!-- Text Colors -->
+    <color name="text_primary">#DEE8D5E8</color> <!-- 87% light purple -->
+    <color name="text_secondary">#8AE8D5E8</color> <!-- 54% light purple -->
+    <color name="text_hint">#61C4A4C4</color> <!-- 38% medium purple -->
+    <color name="text_on_primary">@color/on_primary</color>
+    <color name="text_on_surface">@color/on_surface</color>
 
-    <!-- Background Colors - USE DARK VERSIONS -->
-    <color name="background_light">#121212</color>
-    <color name="surface_light">#1E1E1E</color>
+    <!-- Missing Color References -->
+    <color name="black">#FFFFFF</color>
+    <color name="divider_color">@color/divider</color>
 
-    <!-- Text Colors for dark mode -->
-    <color name="text_primary">#FFFFFF</color>
-    <color name="text_secondary">#B3FFFFFF</color>
-    <color name="text_hint">#80FFFFFF</color>
-    <color name="text_on_primary">#000000</color>
-    <color name="text_on_secondary">#FFFFFF</color>
-
-    <!-- Common Colors -->
-    <color name="transparent">#00000000</color>
-
-    <!-- Status Colors (same) -->
-    <color name="success_green">#4CAF50</color>
-    <color name="error_red">#F44336</color>
-    <color name="warning_orange">#FF9800</color>
-    <color name="info_blue">#2196F3</color>
-
-    <!-- Security Colors (same) -->
-    <color name="security_green">#4CAF50</color>
-    <color name="security_yellow">#FFC107</color>
-    <color name="security_red">#F44336</color>
-
-    <!-- Calendar Colors for dark mode -->
-    <color name="calendar_today">#263238</color>
-    <color name="calendar_selected">#BB86FC</color>
-    <color name="calendar_event">#6200EE</color>
-    <color name="calendar_event_secondary">#FF9800</color>
-
-    <!-- Card and Surface Colors for dark mode -->
-    <color name="card_background">#1E1E1E</color>
-    <color name="card_shadow">#1F000000</color>
-    <color name="divider_color">#2F2F2F</color>
-    <color name="ripple_color">#1FBB86FC</color>
-
-    <!-- Note Colors for dark mode -->
-    <color name="note_favorite">#FFC107</color>
-    <color name="note_pin_protected">#F44336</color>
-    <color name="note_background">#1E1E1E</color>
-
-    <!-- Database Colors for dark mode -->
-    <color name="database_header">#263238</color>
-    <color name="database_row_even">#1E1E1E</color>
-    <color name="database_row_odd">#252525</color>
-
-    <!-- Rating Colors (same) -->
-    <color name="rating_filled">#FFC107</color>
-    <color name="rating_empty">#424242</color>
-
-    <!-- Gradient Colors (darker versions) -->
-    <color name="gradient_start">#6A1B9A</color>
-    <color name="gradient_center">#3F51B5</color>
-    <color name="gradient_end">#512DA8</color>
-
-    <!-- Material Design System Colors (dark versions) -->
-    <color name="md_blue_50">#0D47A1</color>
-    <color name="md_blue_100">#1565C0</color>
-    <color name="md_blue_200">#1976D2</color>
-    <color name="md_blue_300">#1E88E5</color>
-    <color name="md_blue_400">#2196F3</color>
-    <color name="md_blue_500">#42A5F5</color>
-    <color name="md_blue_600">#64B5F6</color>
-    <color name="md_blue_700">#90CAF9</color>
-    <color name="md_blue_800">#BBDEFB</color>
-    <color name="md_blue_900">#E3F2FD</color>
-
-    <!-- Field Type Colors (same) -->
-    <color name="field_text">#4CAF50</color>
-    <color name="field_number">#2196F3</color>
-    <color name="field_currency">#FF9800</color>
-    <color name="field_date">#9C27B0</color>
-    <color name="field_boolean">#607D8B</color>
-    <color name="field_select">#795548</color>
-    <color name="field_rating">#FFC107</color>
+    <!-- Legacy Colors for Backward Compatibility -->
+    <color name="accent">@color/secondary</color>
+    <color name="primary_blue">@color/primary</color>
+    <color name="background_light">@color/background</color>
+    <color name="white">@color/surface</color>
+    <color name="red">#E57373</color>
 </resources>

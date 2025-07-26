@@ -15,7 +15,7 @@
         android:textSize="16sp"
         android:textStyle="bold"
         android:gravity="center_horizontal"
-        android:textColor="@color/black" />
+        android:textColor="?attr/colorOnSurface" />
 
     <!-- Events container (Mac-style) -->
     <LinearLayout

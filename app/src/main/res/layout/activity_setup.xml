@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true"
-    android:background="@color/white">
+    android:background="?attr/colorSurface">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -27,7 +27,7 @@
             android:text="Welcome to Aksara Notes"
             android:textSize="24sp"
             android:textStyle="bold"
-            android:textColor="@color/primary_blue"
+            android:textColor="?attr/colorPrimary"
             android:layout_marginBottom="8dp" />
 
         <!-- Subtitle -->
@@ -36,7 +36,7 @@
             android:layout_height="wrap_content"
             android:text="Secure your notes, database, and calendar with a master password"
             android:textSize="16sp"
-            android:textColor="@color/text_secondary"
+            android:textColor="?attr/colorOnSurfaceVariant"
             android:gravity="center"
             android:layout_marginBottom="32dp" />
 
@@ -62,7 +62,7 @@
                 android:layout_weight="1"
                 android:text="Your data will be encrypted and protected. This password cannot be recovered if forgotten."
                 android:textSize="14sp"
-                android:textColor="@color/text_secondary" />
+                android:textColor="?attr/colorOnSurfaceVariant" />
 
         </LinearLayout>
 
@@ -92,7 +92,7 @@
             android:layout_height="wrap_content"
             android:text="Enter a password"
             android:textSize="12sp"
-            android:textColor="@color/text_secondary"
+            android:textColor="?attr/colorOnSurfaceVariant"
             android:layout_marginBottom="16dp" />
 
         <!-- Confirm Password Input -->
@@ -149,7 +149,7 @@
                         android:text="Enable Biometric Authentication"
                         android:textSize="16sp"
                         android:textStyle="bold"
-                        android:textColor="@color/primary_blue" />
+                        android:textColor="?attr/colorPrimary" />
 
                     <TextView
                         android:id="@+id/tv_biometric_status"
@@ -157,7 +157,7 @@
                         android:layout_height="wrap_content"
                         android:text="Checking biometric availability..."
                         android:textSize="14sp"
-                        android:textColor="@color/text_secondary"
+                        android:textColor="?attr/colorOnSurfaceVariant"
                         android:layout_marginTop="4dp" />
 
                 </LinearLayout>
@@ -185,7 +185,7 @@
                 android:text="Password Requirements:"
                 android:textSize="14sp"
                 android:textStyle="bold"
-                android:textColor="@color/text_secondary"
+                android:textColor="?attr/colorOnSurfaceVariant"
                 android:layout_marginBottom="8dp" />
 
             <TextView
@@ -193,7 +193,7 @@
                 android:layout_height="wrap_content"
                 android:text="• At least 8 characters long\n• Mix of uppercase and lowercase letters\n• Include numbers and special characters\n• Avoid common passwords"
                 android:textSize="12sp"
-                android:textColor="@color/text_secondary"
+                android:textColor="?attr/colorOnSurfaceVariant"
                 android:lineSpacingExtra="2dp" />
 
         </LinearLayout>
@@ -207,7 +207,7 @@
             android:textSize="16sp"
             android:textStyle="bold"
             android:enabled="false"
-            app:backgroundTint="@color/primary_blue"
+            app:backgroundTint="?attr/colorPrimary"
             app:cornerRadius="8dp" />
 
         <!-- Security Notice -->
@@ -216,7 +216,7 @@
             android:layout_height="wrap_content"
             android:text="⚠️ Important: This password cannot be recovered. Please store it securely."
             android:textSize="12sp"
-            android:textColor="@color/text_secondary"
+            android:textColor="?attr/colorOnSurfaceVariant"
             android:gravity="center"
             android:layout_marginTop="16dp" />
 

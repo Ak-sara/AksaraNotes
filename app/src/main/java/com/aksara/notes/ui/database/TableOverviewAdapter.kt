@@ -37,7 +37,7 @@ class TableOverviewAdapter(
         private val tableDescription: TextView = itemView.findViewById(R.id.tv_table_description)
         private val itemCount: TextView = itemView.findViewById(R.id.tv_item_count)
         private val tableType: TextView = itemView.findViewById(R.id.tv_table_type)
-        private val addButton: MaterialButton = itemView.findViewById(R.id.btn_add_item)
+//        private val addButton: MaterialButton = itemView.findViewById(R.id.btn_add_item)
 
         fun bind(item: TableOverviewItem) {
             val table = item.table
@@ -49,7 +49,7 @@ class TableOverviewAdapter(
             tableType.text = table.tableType.replaceFirstChar { it.uppercase() }
 
             itemView.setOnClickListener { onTableClick(table) }
-            addButton.setOnClickListener { onCreateItemClick(table) }
+//            addButton.setOnClickListener { onCreateItemClick(table) }
 
             // Long press to edit table structure
             itemView.setOnLongClickListener {

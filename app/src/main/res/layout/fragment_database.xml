@@ -4,7 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background_light">
+    android:background="?attr/colorSurface">
 
     <!-- Header -->
     <LinearLayout
@@ -13,6 +13,7 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:padding="16dp"
+        android:background="?attr/colorSurface"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
@@ -31,7 +32,7 @@
                 android:layout_weight="1"
                 android:text="0 tables created"
                 android:textSize="14sp"
-                android:textColor="@color/primary_blue"
+                android:textColor="?attr/colorPrimary"
                 android:textStyle="bold" />
 
             <TextView
@@ -40,7 +41,7 @@
                 android:layout_height="wrap_content"
                 android:text="0 total items"
                 android:textSize="14sp"
-                android:textColor="@color/text_secondary" />
+                android:textColor="?attr/colorOnSurfaceVariant" />
 
         </LinearLayout>
 
@@ -65,9 +66,9 @@
             android:layout_weight="1"
             android:layout_marginEnd="8dp"
             android:text="📋 Templates"
-            android:textColor="@color/primary_blue"
-            android:backgroundTint="@color/white"
-            app:strokeColor="@color/primary_blue"
+            android:textColor="?attr/colorPrimary"
+            android:backgroundTint="?attr/colorSurface"
+            app:strokeColor="?attr/colorPrimary"
             app:strokeWidth="2dp"
             style="@style/Widget.MaterialComponents.Button.OutlinedButton" />
 
@@ -78,9 +79,9 @@
             android:layout_weight="1"
             android:layout_marginStart="8dp"
             android:text="📋 All Items"
-            android:textColor="@color/primary_blue"
-            android:backgroundTint="@color/white"
-            app:strokeColor="@color/primary_blue"
+            android:textColor="?attr/colorPrimary"
+            android:backgroundTint="?attr/colorSurface"
+            app:strokeColor="?attr/colorPrimary"
             app:strokeWidth="2dp"
             style="@style/Widget.MaterialComponents.Button.OutlinedButton" />
 
@@ -124,7 +125,7 @@
             android:text="No tables yet"
             android:textSize="20sp"
             android:textStyle="bold"
-            android:textColor="@color/text_secondary"
+            android:textColor="?attr/colorOnSurfaceVariant"
             android:layout_marginBottom="8dp" />
 
         <TextView
@@ -132,7 +133,7 @@
             android:layout_height="wrap_content"
             android:text="Create your first custom table to get started"
             android:textSize="16sp"
-            android:textColor="@color/text_secondary"
+            android:textColor="?attr/colorOnSurfaceVariant"
             android:gravity="center"
             android:layout_marginBottom="24dp" />
 
@@ -141,8 +142,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="📋 Use Template"
-            android:textColor="@color/white"
-            android:backgroundTint="@color/primary_blue" />
+            android:textColor="?attr/colorSurface"
+            android:backgroundTint="?attr/colorPrimary" />
 
     </LinearLayout>
 
@@ -154,8 +155,8 @@
         android:layout_margin="16dp"
         android:src="@drawable/ic_add"
         android:contentDescription="Create Table"
-        app:tint="@color/white"
-        app:backgroundTint="@color/primary_blue"
+        app:tint="?attr/colorSurface"
+        app:backgroundTint="?attr/colorPrimary"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 

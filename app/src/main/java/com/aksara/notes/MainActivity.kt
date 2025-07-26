@@ -18,7 +18,6 @@ import com.aksara.notes.ui.notes.NotesFragment
 import com.aksara.notes.ui.database.DatabaseFragment
 import com.aksara.notes.ui.settings.SecuritySettingsActivity
 import com.aksara.notes.ui.settings.AboutActivity
-import com.aksara.notes.ui.settings.HelpActivity
 import com.aksara.notes.utils.BiometricHelper
 import com.aksara.notes.utils.SessionManager
 import com.google.android.material.navigation.NavigationView
@@ -139,9 +138,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             R.id.nav_about -> {
                 startActivity(Intent(this, AboutActivity::class.java))
             }
-            R.id.nav_help -> {
-                startActivity(Intent(this, HelpActivity::class.java))
-            }
         }
 
         binding.drawerLayout.closeDrawer(GravityCompat.START)
@@ -209,7 +205,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         isAuthenticating = true
         authenticationAttempts = 0
-
         showAuthenticationUI()
 
         // Add a timeout to prevent getting stuck indefinitely
@@ -221,7 +216,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 showPasswordAuthenticationDirect()
             }
         }
-
         attemptAuthentication()
     }
 
@@ -235,8 +229,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }
 
         try {
-            Log.d(TAG, "Calling biometricHelper.authenticateUser()")
-
             biometricHelper.authenticateUser(
                 onSuccess = {
                     Log.d(TAG, "✅ Authentication SUCCESS callback triggered!")
@@ -337,14 +329,12 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     private fun handleAuthenticationCancel() {
-        Log.d(TAG, "handleAuthenticationCancel called")
         showToast("Authentication cancelled")
 
         if (authenticationAttempts < maxAuthenticationAttempts) {
             // Give user another chance after a delay
             lifecycleScope.launch {
                 delay(2000)
-                Log.d(TAG, "Giving user another chance...")
                 attemptAuthentication()
             }
         } else {
@@ -353,7 +343,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     private fun handleMaxAttemptsReached() {
-        Log.w(TAG, "handleMaxAttemptsReached called")
         showToast("Too many failed attempts. Please restart the app.")
 
         // Close the app after too many failed attempts
@@ -364,7 +353,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     private fun showAuthenticationUI() {
-        Log.d(TAG, "showAuthenticationUI called")
         binding.layoutAuthenticating.visibility = View.VISIBLE
         binding.bottomNavigation.visibility = View.GONE
         binding.fragmentContainer.visibility = View.GONE
@@ -372,7 +360,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     private fun showUI() {
-        Log.d(TAG, "showUI called")
         binding.layoutAuthenticating.visibility = View.GONE
         binding.bottomNavigation.visibility = View.VISIBLE
         binding.fragmentContainer.visibility = View.VISIBLE

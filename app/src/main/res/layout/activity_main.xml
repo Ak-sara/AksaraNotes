@@ -16,11 +16,13 @@
         <!-- Toolbar -->
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
+            style="@style/Widget.AksaraNotes.Toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:background="@color/primary_blue"
-            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-            app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+            android:background="?attr/colorPrimary"
+            app:titleTextColor="?attr/colorSurface"
+            app:navigationIconTint="?attr/colorSurface"
+            app:popupTheme="@style/ThemeOverlay.MaterialComponents.Light" />
 
         <!-- Fragment Container -->
         <FrameLayout
@@ -36,17 +38,15 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
-            android:background="@color/white"
             app:menu="@menu/bottom_navigation"
-            app:itemIconTint="@color/primary_blue"
-            app:itemTextColor="@color/primary_blue" />
+            style="@style/Widget.AksaraNotes.BottomNavigation"/>
 
         <!-- Authentication Overlay -->
         <LinearLayout
             android:id="@+id/layout_authenticating"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/white"
+            android:background="?attr/colorSurface"
             android:orientation="vertical"
             android:gravity="center"
             android:padding="32dp"
@@ -66,18 +66,8 @@
                 android:text="Aksara Notes"
                 android:textSize="28sp"
                 android:textStyle="bold"
-                android:textColor="@color/primary_blue"
+                android:textColor="?attr/colorPrimary"
                 android:layout_marginBottom="8dp" />
-
-            <!-- Subtitle -->
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Secure Notes • Dynamic Database • Smart Calendar"
-                android:textSize="14sp"
-                android:textColor="@color/text_secondary"
-                android:gravity="center"
-                android:layout_marginBottom="48dp" />
 
             <!-- Authentication Message -->
             <TextView
@@ -85,7 +75,7 @@
                 android:layout_height="wrap_content"
                 android:text="🔐 Authenticating..."
                 android:textSize="18sp"
-                android:textColor="@color/primary_blue"
+                android:textColor="?attr/colorPrimary"
                 android:layout_marginBottom="16dp" />
 
             <TextView
@@ -93,7 +83,7 @@
                 android:layout_height="wrap_content"
                 android:text="Please authenticate to access your secure data"
                 android:textSize="14sp"
-                android:textColor="@color/text_secondary"
+                android:textColor="?attr/colorOnSurfaceVariant"
                 android:gravity="center"
                 android:layout_marginBottom="32dp" />
 
@@ -101,7 +91,7 @@
             <ProgressBar
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:indeterminateTint="@color/primary_blue" />
+                android:indeterminateTint="?attr/colorPrimary" />
 
             <!-- Security Info -->
             <TextView
@@ -109,7 +99,7 @@
                 android:layout_height="wrap_content"
                 android:text="Your data is encrypted and protected"
                 android:textSize="12sp"
-                android:textColor="@color/text_secondary"
+                android:textColor="?attr/colorOnSurfaceVariant"
                 android:layout_marginTop="32dp"
                 android:gravity="center" />
 

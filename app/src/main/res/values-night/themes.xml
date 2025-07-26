@@ -1,7 +1,52 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
     <style name="Base.Theme.AksaraNotes" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your dark theme here. -->
-        <!-- <item name="colorPrimary">@color/my_dark_primary</item> -->
+        <!-- Primary brand colors -->
+        <item name="colorPrimary">@color/primary</item>
+        <item name="colorPrimaryVariant">@color/primary_variant</item>
+        <item name="colorPrimaryDark">@color/primary_dark</item>
+        <item name="colorOnPrimary">@color/on_primary</item>
+        
+        <!-- Secondary brand colors -->
+        <item name="colorSecondary">@color/secondary</item>
+        <item name="colorSecondaryVariant">@color/secondary_variant</item>
+        <item name="colorOnSecondary">@color/on_secondary</item>
+        
+        <!-- Status bar and navigation -->
+        <item name="android:statusBarColor">@color/background</item>
+        <item name="android:navigationBarColor">@color/background</item>
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="android:windowLightNavigationBar" tools:targetApi="27">false</item>
+
+        <!-- Surface colors -->
+        <item name="android:colorBackground">@color/background</item>
+        <item name="colorSurface">@color/surface</item>
+        <item name="colorSurfaceVariant">@color/surface_variant</item>
+        <item name="colorOnBackground">@color/on_background</item>
+        <item name="colorOnSurface">@color/on_surface</item>
+        <item name="colorOnSurfaceVariant">@color/on_surface_variant</item>
+        
+        <!-- Text colors -->
+        <item name="android:textColorPrimary">@color/text_primary</item>
+        <item name="android:textColorSecondary">@color/text_secondary</item>
+        <item name="android:textColorHint">@color/text_hint</item>
+        
+        <!-- Component colors -->
+        <item name="colorError">@color/error</item>
+        <item name="colorOnError">@color/on_error</item>
+        <item name="colorControlHighlight">@color/ripple</item>
+        
+        <!-- Material elevations and shapes -->
+        <item name="elevationOverlayEnabled">true</item>
+        
+        <!-- Custom styles -->
+        <item name="materialCardViewStyle">@style/Widget.AksaraNotes.CardView</item>
+        <item name="materialButtonStyle">@style/Widget.AksaraNotes.Button</item>
+        <item name="textInputStyle">@style/Widget.AksaraNotes.TextInputLayout</item>
+        <item name="bottomNavigationStyle">@style/Widget.AksaraNotes.BottomNavigation</item>
+        <item name="toolbarStyle">@style/Widget.AksaraNotes.Toolbar</item>
+        
+        <!-- Legacy support -->
+        <item name="colorAccent">@color/secondary</item>
     </style>
 </resources>

@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Text Appearances -->
+    <style name="TextAppearance.AksaraNotes.Headline1" parent="TextAppearance.Material3.HeadlineLarge">
+        <item name="android:textColor">?attr/colorOnBackground</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+    </style>
+
+    <style name="TextAppearance.AksaraNotes.Headline2" parent="TextAppearance.Material3.HeadlineMedium">
+        <item name="android:textColor">?attr/colorOnBackground</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+    </style>
+
+    <style name="TextAppearance.AksaraNotes.Body1" parent="TextAppearance.Material3.BodyLarge">
+        <item name="android:textColor">?attr/colorOnSurface</item>
+    </style>
+
+    <style name="TextAppearance.AksaraNotes.Body2" parent="TextAppearance.Material3.BodyMedium">
+        <item name="android:textColor">?attr/colorOnSurfaceVariant</item>
+    </style>
+
+    <!-- Button Styles -->
+    <style name="Widget.AksaraNotes.Button" parent="Widget.Material3.Button">
+        <item name="android:textColor">?attr/colorOnPrimary</item>
+        <item name="backgroundTint">?attr/colorPrimary</item>
+        <item name="cornerRadius">12dp</item>
+        <item name="android:minHeight">48dp</item>
+    </style>
+
+    <style name="Widget.AksaraNotes.Button.OutlinedButton" parent="Widget.Material3.Button.OutlinedButton">
+        <item name="android:textColor">?attr/colorPrimary</item>
+        <item name="strokeColor">?attr/colorPrimary</item>
+        <item name="cornerRadius">12dp</item>
+        <item name="android:minHeight">48dp</item>
+    </style>
+
+    <style name="Widget.AksaraNotes.Button.TextButton" parent="Widget.Material3.Button.TextButton">
+        <item name="android:textColor">?attr/colorPrimary</item>
+        <item name="cornerRadius">12dp</item>
+        <item name="android:minHeight">48dp</item>
+    </style>
+
+    <!-- Card Styles -->
+    <style name="Widget.AksaraNotes.CardView" parent="Widget.Material3.CardView.Elevated">
+        <item name="cardBackgroundColor">?attr/colorSurface</item>
+        <item name="cardElevation">2dp</item>
+        <item name="cardCornerRadius">16dp</item>
+        <item name="strokeWidth">0dp</item>
+        <item name="android:layout_margin">8dp</item>
+    </style>
+
+    <style name="Widget.AksaraNotes.CardView.Outlined" parent="Widget.Material3.CardView.Outlined">
+        <item name="cardBackgroundColor">?attr/colorSurface</item>
+        <item name="strokeColor">?attr/colorOnSurfaceVariant</item>
+        <item name="strokeWidth">1dp</item>
+        <item name="cardCornerRadius">16dp</item>
+        <item name="android:layout_margin">8dp</item>
+    </style>
+
+    <!-- Chip Styles -->
+    <style name="Widget.AksaraNotes.Chip" parent="Widget.Material3.Chip.Assist">
+        <item name="chipBackgroundColor">?attr/colorSurfaceVariant</item>
+        <item name="chipStrokeColor">?attr/colorPrimary</item>
+        <item name="chipStrokeWidth">1dp</item>
+        <item name="android:textColor">?attr/colorOnSurfaceVariant</item>
+        <item name="chipCornerRadius">8dp</item>
+    </style>
+
+    <!-- EditText Styles -->
+    <style name="Widget.AksaraNotes.TextInputLayout" parent="Widget.Material3.TextInputLayout.OutlinedBox">
+        <item name="boxStrokeColor">?attr/colorPrimary</item>
+        <item name="hintTextColor">?attr/colorPrimary</item>
+        <item name="boxCornerRadiusTopStart">12dp</item>
+        <item name="boxCornerRadiusTopEnd">12dp</item>
+        <item name="boxCornerRadiusBottomStart">12dp</item>
+        <item name="boxCornerRadiusBottomEnd">12dp</item>
+    </style>
+
+    <!-- Bottom Navigation Styles -->
+    <style name="Widget.AksaraNotes.BottomNavigation" parent="Widget.Material3.BottomNavigationView">
+        <item name="android:background">?attr/colorSurface</item>
+        <item name="itemIconTint">?attr/colorPrimary</item>
+        <item name="itemTextColor">?attr/colorPrimary</item>
+        <item name="itemRippleColor">?attr/colorPrimary</item>
+        <item name="android:paddingTop">0dp</item>
+        <item name="android:paddingBottom">0dp</item>
+    </style>
+
+    <!-- Toolbar Styles -->
+    <style name="Widget.AksaraNotes.Toolbar" parent="Widget.Material3.Toolbar">
+        <item name="android:background">?attr/colorSurface</item>
+        <item name="titleTextColor">?attr/colorOnSurface</item>
+        <item name="subtitleTextColor">?attr/colorOnSurfaceVariant</item>
+        <item name="android:elevation">4dp</item>
+    </style>
+
+    <!-- FloatingActionButton Styles -->
+    <style name="Widget.AksaraNotes.FloatingActionButton" parent="Widget.Material3.FloatingActionButton.Primary">
+        <item name="backgroundTint">?attr/colorPrimary</item>
+        <item name="tint">?attr/colorOnPrimary</item>
+        <item name="fabSize">normal</item>
+    </style>
+
+    <!-- Dialog Styles -->
+    <style name="Widget.AksaraNotes.Dialog" parent="ThemeOverlay.Material3.Dialog">
+        <item name="android:windowBackground">@drawable/dialog_background</item>
+        <item name="colorSurface">?attr/colorSurface</item>
+    </style>
+
+    <!-- Switch Styles -->
+    <style name="Widget.AksaraNotes.Switch" parent="Widget.Material3.CompoundButton.Switch">
+        <item name="thumbTint">?attr/colorPrimary</item>
+        <item name="trackTint">?attr/colorSurfaceVariant</item>
+    </style>
+</resources>

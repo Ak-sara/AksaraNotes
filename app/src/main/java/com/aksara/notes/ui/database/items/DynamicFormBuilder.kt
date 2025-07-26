@@ -7,6 +7,7 @@ import android.text.InputType
 import android.text.TextWatcher
 import android.view.View
 import android.widget.*
+import com.aksara.notes.R
 import com.aksara.notes.data.models.TableColumn
 import com.aksara.notes.data.models.ColumnType
 import com.google.android.material.textfield.TextInputEditText
@@ -80,7 +81,7 @@ class DynamicFormBuilder(
         val label = TextView(context).apply {
             text = column.name + if (column.required) " *" else ""
             textSize = 16f
-            setTextColor(context.getColor(android.R.color.black))
+            setTextColor(context.getColor(R.color.on_surface))
             setPadding(0, 0, 0, 8)
         }
 
@@ -117,7 +118,7 @@ class DynamicFormBuilder(
         val label = TextView(context).apply {
             text = column.name + if (column.required) " *" else ""
             textSize = 16f
-            setTextColor(context.getColor(android.R.color.black))
+            setTextColor(context.getColor(R.color.on_surface))
             setPadding(0, 0, 0, 8)
         }
 
@@ -164,7 +165,7 @@ class DynamicFormBuilder(
         val currencyLabel = TextView(context).apply {
             text = "${column.name}: ${formatCurrency(0.0, currencyCode)}"
             textSize = 16f
-            setTextColor(context.getColor(android.R.color.black))
+            setTextColor(context.getColor(R.color.on_surface))
             setPadding(0, 0, 0, 8)
         }
 
@@ -210,7 +211,7 @@ class DynamicFormBuilder(
         val label = TextView(context).apply {
             text = column.name + if (column.required) " *" else ""
             textSize = 16f
-            setTextColor(context.getColor(android.R.color.black))
+            setTextColor(context.getColor(R.color.on_surface))
             setPadding(0, 0, 0, 8)
         }
 
@@ -246,7 +247,7 @@ class DynamicFormBuilder(
         val label = TextView(context).apply {
             text = column.name + if (column.required) " *" else ""
             textSize = 16f
-            setTextColor(context.getColor(android.R.color.black))
+            setTextColor(context.getColor(R.color.on_surface))
             setPadding(0, 0, 0, 8)
         }
 
@@ -280,7 +281,7 @@ class DynamicFormBuilder(
         val label = TextView(context).apply {
             text = column.name + if (column.required) " *" else ""
             textSize = 16f
-            setTextColor(context.getColor(android.R.color.black))
+            setTextColor(context.getColor(R.color.on_surface))
             setPadding(0, 0, 0, 8)
         }
 
@@ -314,7 +315,7 @@ class DynamicFormBuilder(
         val label = TextView(context).apply {
             text = column.name + if (column.required) " *" else ""
             textSize = 16f
-            setTextColor(context.getColor(android.R.color.black))
+            setTextColor(context.getColor(R.color.on_surface))
             setPadding(0, 0, 0, 8)
         }
 
@@ -356,7 +357,7 @@ class DynamicFormBuilder(
         val label = TextView(context).apply {
             text = column.name + if (column.required) " *" else ""
             textSize = 16f
-            setTextColor(context.getColor(android.R.color.black))
+            setTextColor(context.getColor(R.color.on_surface))
             setPadding(0, 0, 0, 8)
         }
 
@@ -391,7 +392,7 @@ class DynamicFormBuilder(
         val label = TextView(context).apply {
             text = column.name + if (column.required) " *" else ""
             textSize = 16f
-            setTextColor(context.getColor(android.R.color.black))
+            setTextColor(context.getColor(R.color.on_surface))
             setPadding(0, 0, 0, 8)
         }
 
@@ -436,7 +437,7 @@ class DynamicFormBuilder(
         val label = TextView(context).apply {
             text = column.name + if (column.required) " *" else ""
             textSize = 16f
-            setTextColor(context.getColor(android.R.color.black))
+            setTextColor(context.getColor(R.color.on_surface))
             setPadding(0, 0, 0, 8)
         }
 
@@ -485,7 +486,7 @@ class DynamicFormBuilder(
             val formula = column.defaultValue
             text = if (formula.isNotEmpty()) "Formula: $formula" else "No formula defined"
             textSize = 16f
-            setTextColor(context.getColor(android.R.color.black))
+            setTextColor(context.getColor(R.color.on_surface))
             setPadding(0, 0, 0, 8)
         }
 
@@ -493,7 +494,7 @@ class DynamicFormBuilder(
         val resultView = TextView(context).apply {
             text = "0.00"
             textSize = 16f
-            setTextColor(context.getColor(android.R.color.black))
+            setTextColor(context.getColor(R.color.on_surface))
             setPadding(0, 8, 0, 16)
             setBackgroundColor(context.getColor(android.R.color.transparent))
         }

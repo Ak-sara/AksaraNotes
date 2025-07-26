@@ -13,9 +13,9 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:background="@color/primary_blue"
-            app:titleTextColor="@color/white"
-            app:navigationIconTint="@color/white" />
+            android:background="?attr/colorPrimary"
+            app:titleTextColor="?attr/colorSurface"
+            app:navigationIconTint="?attr/colorSurface" />
 
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -31,7 +31,7 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:padding="16dp"
-            android:background="@color/background_light">
+            android:background="@color/primary_dark">
 
             <TextView
                 android:id="@+id/tv_items_count"
@@ -40,7 +40,7 @@
                 android:layout_weight="1"
                 android:text="0 items"
                 android:textSize="16sp"
-                android:textColor="@color/primary_blue"
+                android:textColor="?attr/colorPrimary"
                 android:textStyle="bold" />
 
             <TextView
@@ -48,7 +48,7 @@
                 android:layout_height="wrap_content"
                 android:text="📋 Table Data"
                 android:textSize="14sp"
-                android:textColor="@color/text_secondary" />
+                android:textColor="?attr/colorOnSurfaceVariant" />
 
         </LinearLayout>
 
@@ -85,7 +85,7 @@
                 android:text="No items yet"
                 android:textSize="20sp"
                 android:textStyle="bold"
-                android:textColor="@color/text_secondary"
+                android:textColor="?attr/colorOnSurfaceVariant"
                 android:layout_marginBottom="8dp" />
 
             <TextView
@@ -93,7 +93,7 @@
                 android:layout_height="wrap_content"
                 android:text="Add your first item to get started"
                 android:textSize="16sp"
-                android:textColor="@color/text_secondary"
+                android:textColor="?attr/colorOnSurfaceVariant"
                 android:gravity="center" />
 
         </LinearLayout>
@@ -108,8 +108,8 @@
         android:layout_margin="16dp"
         android:src="@drawable/ic_add"
         android:contentDescription="Add Item"
-        app:tint="@color/white"
-        app:backgroundTint="@color/primary_blue"
+        app:tint="?attr/colorSurface"
+        app:backgroundTint="?attr/colorPrimary"
         android:layout_gravity="bottom|end" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

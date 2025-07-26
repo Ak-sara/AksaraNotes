@@ -25,7 +25,7 @@
             android:text="Item Title"
             android:textSize="16sp"
             android:textStyle="bold"
-            android:textColor="@color/black"
+            android:textColor="?attr/colorOnSurface"
             android:maxLines="2"
             android:ellipsize="end" />
 
@@ -37,7 +37,7 @@
             android:layout_marginTop="4dp"
             android:text="Item details"
             android:textSize="14sp"
-            android:textColor="@color/text_secondary"
+            android:textColor="?attr/colorOnSurfaceVariant"
             android:maxLines="2"
             android:ellipsize="end" />
 
@@ -49,7 +49,7 @@
             android:layout_marginTop="8dp"
             android:text="Jan 15, 2025"
             android:textSize="12sp"
-            android:textColor="@color/text_secondary" />
+            android:textColor="?attr/colorOnSurfaceVariant" />
 
     </LinearLayout>
 

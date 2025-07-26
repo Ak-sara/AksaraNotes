@@ -10,9 +10,9 @@
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="@color/primary_blue"
-        app:navigationIconTint="@color/white"
-        app:titleTextColor="@color/white" />
+        android:background="?attr/colorPrimary"
+        app:navigationIconTint="?attr/colorSurface"
+        app:titleTextColor="?attr/colorSurface" />
 
     <ScrollView
         android:layout_width="match_parent"
@@ -33,9 +33,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
-        android:backgroundTint="@color/primary_blue"
+        android:backgroundTint="?attr/colorPrimary"
         android:text="Save Item"
-        android:textColor="@color/white" />
+        android:textColor="?attr/colorSurface" />
 
     <!-- Save Button -->
 

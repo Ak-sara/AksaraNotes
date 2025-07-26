@@ -88,12 +88,6 @@
             android:theme="@style/Theme.AksaraNotes"
             android:parentActivityName=".MainActivity" />
 
-        <activity
-            android:name=".ui.settings.HelpActivity"
-            android:exported="false"
-            android:theme="@style/Theme.AksaraNotes"
-            android:parentActivityName=".MainActivity" />
-
         <!-- File Provider for sharing and backup operations -->
         <provider
             android:name="androidx.core.content.FileProvider"
