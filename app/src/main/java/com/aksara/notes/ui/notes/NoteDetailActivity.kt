@@ -160,14 +160,22 @@ class NoteDetailActivity : AppCompatActivity() {
             return
         }
 
-        val note = currentNote?.copy(
-            title = title.ifEmpty { "Untitled" },
-            content = content,
-            updatedAt = System.currentTimeMillis()
-        ) ?: Note(
-            title = title.ifEmpty { "Untitled" },
-            content = content
-        )
+        val note = currentNote?.let { existing ->
+            Note().apply {
+                id = existing.id
+                this.title = title.ifEmpty { "Untitled" }
+                this.content = content
+                createdAt = existing.createdAt
+                updatedAt = System.currentTimeMillis()
+                requiresPin = existing.requiresPin
+                isEncrypted = existing.isEncrypted
+                isFavorite = existing.isFavorite
+                tags = existing.tags
+            }
+        } ?: Note().apply {
+            this.title = title.ifEmpty { "Untitled" }
+            this.content = content
+        }
 
         if (currentNote == null) {
             notesViewModel.insertNote(note)
@@ -213,10 +221,17 @@ class NoteDetailActivity : AppCompatActivity() {
 
     private fun toggleFavorite() {
         currentNote?.let { note ->
-            val updatedNote = note.copy(
-                isFavorite = !note.isFavorite,
+            val updatedNote = Note().apply {
+                id = note.id
+                title = note.title
+                content = note.content
+                createdAt = note.createdAt
                 updatedAt = System.currentTimeMillis()
-            )
+                requiresPin = note.requiresPin
+                isEncrypted = note.isEncrypted
+                isFavorite = !note.isFavorite
+                tags = note.tags
+            }
             notesViewModel.updateNote(updatedNote)
             currentNote = updatedNote
 
@@ -265,10 +280,17 @@ class NoteDetailActivity : AppCompatActivity() {
     }
 
     private fun updateNotePinProtection(note: Note, requiresPin: Boolean) {
-        val updatedNote = note.copy(
-            requiresPin = requiresPin,
+        val updatedNote = Note().apply {
+            id = note.id
+            title = note.title
+            content = note.content
+            createdAt = note.createdAt
             updatedAt = System.currentTimeMillis()
-        )
+            this.requiresPin = requiresPin
+            isEncrypted = note.isEncrypted
+            isFavorite = note.isFavorite
+            tags = note.tags
+        }
         notesViewModel.updateNote(updatedNote)
         currentNote = updatedNote
 

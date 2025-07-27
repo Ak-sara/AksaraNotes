@@ -4,7 +4,8 @@ import kotlinx.coroutines.flow.Flow
 import com.aksara.notes.data.database.dao.NoteDao
 import com.aksara.notes.data.database.entities.Note
 
-class NotesRepository(private val noteDao: NoteDao) {
+class NotesRepository {
+    private val noteDao = NoteDao()
 
     fun getAllNotes(): Flow<List<Note>> = noteDao.getAllNotes()
 

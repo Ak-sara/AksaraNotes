@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.color.MaterialColors
 import com.aksara.notes.R
 
 class DayEventsAdapter(
@@ -66,19 +67,19 @@ class DayEventsAdapter(
         private fun getEventColor(eventType: EventType): Int {
             return when (eventType) {
                 // Legacy event colors
-                EventType.SUBSCRIPTION_OVERDUE -> ContextCompat.getColor(itemView.context, android.R.color.holo_red_dark)
-                EventType.SUBSCRIPTION_DUE_TODAY -> ContextCompat.getColor(itemView.context, android.R.color.holo_orange_dark)
-                EventType.SUBSCRIPTION_UPCOMING -> ContextCompat.getColor(itemView.context, android.R.color.holo_green_dark)
-                EventType.CUSTOM_EVENT -> ContextCompat.getColor(itemView.context, R.color.primary_blue)
-                EventType.NOTE_REMINDER -> ContextCompat.getColor(itemView.context, android.R.color.holo_purple)
+                EventType.SUBSCRIPTION_OVERDUE -> MaterialColors.getColor(itemView.context, R.attr.calendarOverdueColor, ContextCompat.getColor(itemView.context, R.color.calendar_overdue))
+                EventType.SUBSCRIPTION_DUE_TODAY -> MaterialColors.getColor(itemView.context, R.attr.calendarDueTodayColor, ContextCompat.getColor(itemView.context, R.color.calendar_due_today))
+                EventType.SUBSCRIPTION_UPCOMING -> MaterialColors.getColor(itemView.context, R.attr.calendarUpcomingColor, ContextCompat.getColor(itemView.context, R.color.calendar_upcoming))
+                EventType.CUSTOM_EVENT -> MaterialColors.getColor(itemView.context, com.google.android.material.R.attr.colorPrimary, ContextCompat.getColor(itemView.context, R.color.primary))
+                EventType.NOTE_REMINDER -> MaterialColors.getColor(itemView.context, R.attr.calendarReminderColor, ContextCompat.getColor(itemView.context, R.color.calendar_reminder))
 
                 // New table-based event colors
-                EventType.TABLE_SUBSCRIPTION -> ContextCompat.getColor(itemView.context, android.R.color.holo_orange_dark)
-                EventType.TABLE_INVESTMENT -> ContextCompat.getColor(itemView.context, android.R.color.holo_green_dark)
-                EventType.TABLE_MEETING -> ContextCompat.getColor(itemView.context, R.color.primary_blue)
-                EventType.TABLE_TASK -> ContextCompat.getColor(itemView.context, android.R.color.holo_purple)
-                EventType.TABLE_DATE -> ContextCompat.getColor(itemView.context, android.R.color.darker_gray)
-                EventType.TABLE_RECURRING -> ContextCompat.getColor(itemView.context, android.R.color.darker_gray)
+                EventType.TABLE_SUBSCRIPTION -> MaterialColors.getColor(itemView.context, R.attr.calendarSubscriptionColor, ContextCompat.getColor(itemView.context, R.color.calendar_subscription))
+                EventType.TABLE_INVESTMENT -> MaterialColors.getColor(itemView.context, R.attr.calendarInvestmentColor, ContextCompat.getColor(itemView.context, R.color.calendar_investment))
+                EventType.TABLE_MEETING -> MaterialColors.getColor(itemView.context, com.google.android.material.R.attr.colorPrimary, ContextCompat.getColor(itemView.context, R.color.primary))
+                EventType.TABLE_TASK -> MaterialColors.getColor(itemView.context, R.attr.calendarTaskColor, ContextCompat.getColor(itemView.context, R.color.calendar_task))
+                EventType.TABLE_DATE -> MaterialColors.getColor(itemView.context, R.attr.calendarDefaultColor, ContextCompat.getColor(itemView.context, R.color.calendar_default))
+                EventType.TABLE_RECURRING -> MaterialColors.getColor(itemView.context, R.attr.calendarDefaultColor, ContextCompat.getColor(itemView.context, R.color.calendar_default))
             }
         }
 

@@ -6,64 +6,71 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
-import com.aksara.notes.data.database.AppDatabase
-import com.aksara.notes.data.database.entities.CustomTable
-import com.aksara.notes.data.database.entities.TableItem
+import com.aksara.notes.data.database.entities.Dataset
+import com.aksara.notes.data.database.entities.TableColumn
+import com.aksara.notes.data.database.entities.Form
+import com.aksara.notes.data.repository.DatabaseRepository
 
 class DatabaseViewModel(application: Application) : AndroidViewModel(application) {
 
-    private val database = AppDatabase.getDatabase(application)
-    private val customTableDao = database.customTableDao()
-    private val tableItemDao = database.tableItemDao()
+    private val repository = DatabaseRepository()
 
-    // Custom Tables
-    val allTables: LiveData<List<CustomTable>> = customTableDao.getAllTables().asLiveData()
+    // Datasets
+    val allDatasets: LiveData<List<Dataset>> = repository.getAllDatasets().asLiveData()
 
-    // All Items from all tables
-    val allItems: LiveData<List<TableItem>> = tableItemDao.getAllItems().asLiveData()
+    // All Forms from all datasets
+    val allForms: LiveData<List<Form>> = repository.getAllForms().asLiveData()
 
-    // Table operations
-    fun insertTable(table: CustomTable) = viewModelScope.launch {
-        customTableDao.insertTable(table)
+    // Dataset operations
+    fun insertDataset(dataset: Dataset) = viewModelScope.launch {
+        repository.insertDataset(dataset)
+    }
+    
+    fun insertDataset(name: String, description: String, icon: String, datasetType: String, columns: List<TableColumn>) = viewModelScope.launch {
+        repository.insertDataset(name, description, icon, datasetType, columns)
     }
 
-    fun updateTable(table: CustomTable) = viewModelScope.launch {
-        customTableDao.updateTable(table)
+    fun updateDataset(dataset: Dataset) = viewModelScope.launch {
+        repository.updateDataset(dataset)
+    }
+    
+    fun updateDataset(datasetId: String, name: String, description: String, icon: String, datasetType: String, columns: List<TableColumn>, createdAt: Long) = viewModelScope.launch {
+        repository.updateDataset(datasetId, name, description, icon, datasetType, columns, createdAt)
     }
 
-    fun deleteTable(table: CustomTable) = viewModelScope.launch {
-        // First delete all items in this table
-        tableItemDao.deleteItemsByTable(table.id)
-        // Then delete the table itself
-        customTableDao.deleteTable(table)
+    fun deleteDataset(dataset: Dataset) = viewModelScope.launch {
+        // First delete all forms in this dataset
+        repository.deleteFormsByDataset(dataset.id)
+        // Then delete the dataset itself
+        repository.deleteDataset(dataset)
     }
 
-    suspend fun getTableById(id: String): CustomTable? {
-        return customTableDao.getTableById(id)
+    suspend fun getDatasetById(id: String): Dataset? {
+        return repository.getDatasetById(id)
     }
 
-    // Item operations
-    fun insertItem(item: TableItem) = viewModelScope.launch {
-        tableItemDao.insertItem(item)
+    // Form operations
+    fun insertForm(form: Form) = viewModelScope.launch {
+        repository.insertForm(form)
     }
 
-    fun updateItem(item: TableItem) = viewModelScope.launch {
-        tableItemDao.updateItem(item)
+    fun updateForm(form: Form) = viewModelScope.launch {
+        repository.updateForm(form)
     }
 
-    fun deleteItem(item: TableItem) = viewModelScope.launch {
-        tableItemDao.deleteItem(item)
+    fun deleteForm(form: Form) = viewModelScope.launch {
+        repository.deleteForm(form)
     }
 
-    suspend fun getItemById(id: String): TableItem? {
-        return tableItemDao.getItemById(id)
+    suspend fun getFormById(id: String): Form? {
+        return repository.getFormById(id)
     }
 
-    suspend fun getItemCountForTable(tableId: String): Int {
-        return tableItemDao.getItemCountForTable(tableId)
+    suspend fun getFormCountForDataset(datasetId: String): Int {
+        return repository.getFormCountForDataset(datasetId)
     }
 
-    fun getItemsByTable(tableId: String): LiveData<List<TableItem>> {
-        return tableItemDao.getItemsByTable(tableId).asLiveData()
+    fun getFormsByDataset(datasetId: String): LiveData<List<Form>> {
+        return repository.getFormsByDataset(datasetId).asLiveData()
     }
 }

@@ -36,6 +36,24 @@
         <item name="colorOnError">@color/on_error</item>
         <item name="colorControlHighlight">@color/ripple</item>
         
+        <!-- Custom semantic colors -->
+        <item name="passwordWeakColor">@color/password_weak</item>
+        <item name="passwordFairColor">@color/password_fair</item>
+        <item name="passwordGoodColor">@color/password_good</item>
+        <item name="passwordStrongColor">@color/password_strong</item>
+        
+        <item name="calendarOverdueColor">@color/calendar_overdue</item>
+        <item name="calendarDueTodayColor">@color/calendar_due_today</item>
+        <item name="calendarUpcomingColor">@color/calendar_upcoming</item>
+        <item name="calendarReminderColor">@color/calendar_reminder</item>
+        <item name="calendarSubscriptionColor">@color/calendar_subscription</item>
+        <item name="calendarInvestmentColor">@color/calendar_investment</item>
+        <item name="calendarTaskColor">@color/calendar_task</item>
+        <item name="calendarDefaultColor">@color/calendar_default</item>
+        
+        <item name="textOnColoredBackground">@color/text_on_colored_background</item>
+        <item name="textMuted">@color/text_muted</item>
+        
         <!-- Material elevations and shapes -->
         <item name="elevationOverlayEnabled">false</item>
         

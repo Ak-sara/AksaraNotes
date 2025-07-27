@@ -58,22 +58,22 @@
 
         <!-- Database Activities -->
         <activity
-            android:name=".ui.database.builder.TableBuilderActivity"
+            android:name=".ui.database.builder.DatasetBuilderActivity"
             android:exported="false"
             android:theme="@style/Theme.AksaraNotes"
             android:parentActivityName=".MainActivity" />
 
         <activity
-            android:name=".ui.database.view.TableViewActivity"
+            android:name=".ui.database.view.DatasetViewActivity"
             android:exported="false"
             android:theme="@style/Theme.AksaraNotes"
             android:parentActivityName=".MainActivity" />
 
         <activity
-            android:name=".ui.database.items.ItemEditorActivity"
+            android:name=".ui.database.forms.FormEditorActivity"
             android:exported="false"
             android:theme="@style/Theme.AksaraNotes"
-            android:parentActivityName=".ui.database.view.TableViewActivity" />
+            android:parentActivityName=".ui.database.view.DatasetViewActivity" />
 
         <!-- Settings Activities -->
         <activity

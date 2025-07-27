@@ -11,11 +11,11 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.aksara.notes.databinding.FragmentCalendarBinding
 import com.aksara.notes.ui.database.DatabaseViewModel
-import com.aksara.notes.ui.database.items.ItemEditorActivity
-import com.aksara.notes.ui.database.view.TableViewActivity
-import com.aksara.notes.data.database.entities.CustomTable
-import com.aksara.notes.data.database.entities.TableItem
-import com.aksara.notes.data.models.TableColumn
+import com.aksara.notes.ui.database.forms.FormEditorActivity
+import com.aksara.notes.ui.database.view.DatasetViewActivity
+import com.aksara.notes.data.database.entities.Dataset
+import com.aksara.notes.data.database.entities.Form
+import com.aksara.notes.data.database.entities.TableColumn
 import com.aksara.notes.data.models.ColumnType
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
@@ -91,12 +91,12 @@ class CalendarFragment : Fragment() {
     }
 
     private fun observeData() {
-        // Observe tables and items to update calendar when data changes
-        databaseViewModel.allTables.observe(viewLifecycleOwner) { tables ->
+        // Observe datasets and forms to update calendar when data changes
+        databaseViewModel.allDatasets.observe(viewLifecycleOwner) { datasets ->
             updateCalendarDisplay()
         }
 
-        databaseViewModel.allItems.observe(viewLifecycleOwner) { items ->
+        databaseViewModel.allForms.observe(viewLifecycleOwner) { forms ->
             updateCalendarDisplay()
         }
     }
@@ -149,22 +149,22 @@ class CalendarFragment : Fragment() {
         val events = mutableListOf<CalendarEvent>()
         val targetDateString = dateFormat.format(date.time)
 
-        // Get all tables and their items from the database
-        val tables = databaseViewModel.allTables.value ?: emptyList()
-        val allItems = databaseViewModel.allItems.value ?: emptyList()
+        // Get all datasets and their forms from the database
+        val datasets = databaseViewModel.allDatasets.value ?: emptyList()
+        val allForms = databaseViewModel.allForms.value ?: emptyList()
 
-        tables.forEach { table ->
-            // Parse table columns to find date fields
-            val dateColumns = getDateColumnsFromTable(table)
+        datasets.forEach { dataset ->
+            // Parse dataset columns to find date fields
+            val dateColumns = getDateColumnsFromDataset(dataset)
 
             if (dateColumns.isNotEmpty()) {
-                // Get items for this table
-                val tableItems = allItems.filter { it.tableId == table.id }
+                // Get forms for this dataset
+                val datasetForms = allForms.filter { it.datasetId == dataset.id }
 
-                tableItems.forEach { item ->
-                    // Parse item data to check for matching dates
-                    val itemEvents = extractEventsFromItem(item, table, dateColumns, targetDateString)
-                    events.addAll(itemEvents)
+                datasetForms.forEach { form ->
+                    // Parse form data to check for matching dates
+                    val formEvents = extractEventsFromForm(form, dataset, dateColumns, targetDateString)
+                    events.addAll(formEvents)
                 }
             }
         }
@@ -172,46 +172,41 @@ class CalendarFragment : Fragment() {
         return events
     }
 
-    private fun getDateColumnsFromTable(table: CustomTable): List<TableColumn> {
-        val gson = Gson()
-        val type = object : TypeToken<List<TableColumn>>() {}.type
-        val columns: List<TableColumn> = try {
-            gson.fromJson(table.columns, type) ?: emptyList()
-        } catch (e: Exception) {
-            emptyList()
-        }
+    private fun getDateColumnsFromDataset(dataset: Dataset): List<TableColumn> {
+        // Access columns directly (no JSON parsing needed!)
+        val columns = dataset.columns
 
         // Filter columns that are date-related
         return columns.filter {
-            it.type == ColumnType.DATE ||
-                    it.type == ColumnType.DATETIME ||
-                    it.type == ColumnType.TIME
+            it.type == "DATE" ||
+                    it.type == "DATETIME" ||
+                    it.type == "TIME"
         }
     }
 
-    private fun extractEventsFromItem(
-        item: TableItem,
-        table: CustomTable,
+    private fun extractEventsFromForm(
+        form: Form,
+        dataset: Dataset,
         dateColumns: List<TableColumn>,
         targetDateString: String
     ): List<CalendarEvent> {
         val events = mutableListOf<CalendarEvent>()
 
-        // Parse item data
+        // Parse form data
         val gson = Gson()
         val type = object : TypeToken<Map<String, Any>>() {}.type
-        val itemData: Map<String, Any> = try {
-            gson.fromJson(item.data, type) ?: emptyMap()
+        val formData: Map<String, Any> = try {
+            gson.fromJson(form.data, type) ?: emptyMap()
         } catch (e: Exception) {
             emptyMap()
         }
 
         dateColumns.forEach { dateColumn ->
-            val dateValue = itemData[dateColumn.name]?.toString()
+            val dateValue = formData[dateColumn.name]?.toString()
             if (dateValue != null) {
                 // Check calendar options for this date field - fix type casting
                 val calendarOptionsKey = "${dateColumn.name}_calendarOptions"
-                val calendarOptionsValue = itemData[calendarOptionsKey]
+                val calendarOptionsValue = formData[calendarOptionsKey]
 
                 val calendarOptions = when (calendarOptionsValue) {
                     is Map<*, *> -> calendarOptionsValue
@@ -228,18 +223,31 @@ class CalendarFragment : Fragment() {
                     else -> emptyMap<String, Any>()
                 }
 
+                // Parse column options from JSON string
+                val columnOptions = try {
+                    if (dateColumn.options.isNotEmpty()) {
+                        val gson = Gson()
+                        val mapType = object : TypeToken<Map<String, Any>>() {}.type
+                        gson.fromJson<Map<String, Any>>(dateColumn.options, mapType)
+                    } else {
+                        emptyMap<String, Any>()
+                    }
+                } catch (e: Exception) {
+                    emptyMap<String, Any>()
+                }
+
                 val showInCalendar = calendarOptions["showInCalendar"]?.toString()?.toBoolean()
-                    ?: dateColumn.options["showInCalendar"]?.toString()?.toBoolean()
+                    ?: columnOptions["showInCalendar"]?.toString()?.toBoolean()
                     ?: true
 
                 if (!showInCalendar) return@forEach // Skip if user disabled calendar for this field
 
                 val isRecurring = calendarOptions["isRecurring"]?.toString()?.toBoolean()
-                    ?: dateColumn.options["isRecurring"]?.toString()?.toBoolean()
+                    ?: columnOptions["isRecurring"]?.toString()?.toBoolean()
                     ?: false
 
                 val recurrenceFrequency = calendarOptions["recurrenceFrequency"]?.toString()
-                    ?: dateColumn.options["recurrenceFrequency"]?.toString()
+                    ?: columnOptions["recurrenceFrequency"]?.toString()
                     ?: "Monthly"
 
                 // Parse the stored date
@@ -255,11 +263,11 @@ class CalendarFragment : Fragment() {
 
                     // Check if target date matches stored date (exact match)
                     if (dateValue.startsWith(targetDateString)) {
-                        events.add(createCalendarEvent(item, table, dateColumn, itemData, EventType.TABLE_DATE))
+                        events.add(createCalendarEvent(form, dataset, dateColumn, formData, EventType.TABLE_DATE))
                     }
                     // Check for recurring events (predicted)
                     else if (isRecurring && isRecurringMatch(storedCalendar, targetCalendar, recurrenceFrequency)) {
-                        events.add(createCalendarEvent(item, table, dateColumn, itemData, EventType.TABLE_RECURRING))
+                        events.add(createCalendarEvent(form, dataset, dateColumn, formData, EventType.TABLE_RECURRING))
                     }
                 }
             }
@@ -301,65 +309,65 @@ class CalendarFragment : Fragment() {
     }
 
     private fun createCalendarEvent(
-        item: TableItem,
-        table: CustomTable,
+        form: Form,
+        dataset: Dataset,
         dateColumn: TableColumn,
-        itemData: Map<String, Any>,
+        formData: Map<String, Any>,
         eventType: EventType
     ): CalendarEvent {
-        val eventTitle = generateEventTitle(itemData, table)
+        val eventTitle = generateEventTitle(formData, dataset)
         val finalEventType = if (eventType == EventType.TABLE_RECURRING) {
             EventType.TABLE_RECURRING
         } else {
-            getEventTypeForTable(table, dateColumn)
+            getEventTypeForDataset(dataset, dateColumn)
         }
 
         return CalendarEvent(
-            id = "${item.id}_${dateColumn.name}",
+            id = "${form.id}_${dateColumn.name}",
             title = eventTitle,
             type = finalEventType,
             description = dateColumn.name,
-            relatedId = item.id,
-            tableId = table.id,
-            tableName = table.name,
-            tableIcon = table.icon
+            relatedId = form.id,
+            tableId = dataset.id,
+            tableName = dataset.name,
+            tableIcon = dataset.icon
         )
     }
 
-    private fun generateEventTitle(itemData: Map<String, Any>, table: CustomTable): String {
-        // Try to find a good title field from the item data
+    private fun generateEventTitle(formData: Map<String, Any>, dataset: Dataset): String {
+        // Try to find a good title field from the form data
         val titleFields = listOf("name", "title", "description", "subject", "item", "account")
 
         for (field in titleFields) {
-            val value = itemData[field]?.toString()
+            val value = formData[field]?.toString()
             if (!value.isNullOrBlank()) {
                 return value
             }
         }
 
-        // Fallback to table name + first field value
-        val firstValue = itemData.values.firstOrNull()?.toString()
+        // Fallback to dataset name + first field value
+        val firstValue = formData.values.firstOrNull()?.toString()
         return if (!firstValue.isNullOrBlank()) {
-            "${table.icon} $firstValue"
+            "${dataset.icon} $firstValue"
         } else {
-            "${table.icon} ${table.name}"
+            "${dataset.icon} ${dataset.name}"
         }
     }
 
-    private fun getEventTypeForTable(table: CustomTable, dateColumn: TableColumn): EventType {
-        val tableName = table.name.lowercase()
+    private fun getEventTypeForDataset(dataset: Dataset, dateColumn: TableColumn): EventType {
+        val datasetName = dataset.name.lowercase()
         val columnName = dateColumn.name.lowercase()
 
         return when {
-            tableName.contains("subscription") -> {
+            datasetName.contains("subscription") -> {
                 when {
                     columnName.contains("due") || columnName.contains("next") -> EventType.TABLE_SUBSCRIPTION
                     else -> EventType.TABLE_DATE
                 }
             }
-            tableName.contains("bond") || tableName.contains("investment") -> EventType.TABLE_INVESTMENT
-            tableName.contains("meeting") || tableName.contains("appointment") -> EventType.TABLE_MEETING
-            tableName.contains("task") || tableName.contains("todo") -> EventType.TABLE_TASK
+            datasetName.contains("bond") || datasetName.contains("investment") -> EventType.TABLE_INVESTMENT
+            datasetName.contains("meeting") || datasetName.contains("appointment") -> EventType.TABLE_MEETING
+            datasetName.contains("task") || datasetName.contains("todo") -> EventType.TABLE_TASK
             else -> EventType.TABLE_DATE
         }
     }
@@ -390,17 +398,17 @@ class CalendarFragment : Fragment() {
         // Navigate based on event type and related data
         when {
             event.relatedId != null && event.tableId != null -> {
-                // Navigate to edit the specific table item
-                val intent = Intent(requireContext(), ItemEditorActivity::class.java).apply {
-                    putExtra("table_id", event.tableId)
-                    putExtra("item_id", event.relatedId)
+                // Navigate to edit the specific form
+                val intent = Intent(requireContext(), FormEditorActivity::class.java).apply {
+                    putExtra("dataset_id", event.tableId)
+                    putExtra("form_id", event.relatedId)
                 }
                 startActivity(intent)
             }
             event.tableId != null -> {
-                // Navigate to the table view
-                val intent = Intent(requireContext(), TableViewActivity::class.java).apply {
-                    putExtra("table_id", event.tableId)
+                // Navigate to the dataset view
+                val intent = Intent(requireContext(), DatasetViewActivity::class.java).apply {
+                    putExtra("dataset_id", event.tableId)
                 }
                 startActivity(intent)
             }

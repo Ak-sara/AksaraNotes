@@ -2,13 +2,14 @@ package com.aksara.notes.ui.database.items
 
 import android.app.DatePickerDialog
 import android.content.Context
+import android.graphics.Color
 import android.text.Editable
 import android.text.InputType
 import android.text.TextWatcher
 import android.view.View
 import android.widget.*
 import com.aksara.notes.R
-import com.aksara.notes.data.models.TableColumn
+import com.aksara.notes.data.database.entities.TableColumn
 import com.aksara.notes.data.models.ColumnType
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
@@ -28,6 +29,7 @@ class DynamicFormBuilder(
     private val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
 
     fun buildForm(columns: List<TableColumn>) {
+        android.util.Log.d("DynamicFormBuilder", "buildForm called with ${columns.size} columns")
         parentLayout.removeAllViews()
         formFields.clear()
         formulaFields.clear()
@@ -36,9 +38,13 @@ class DynamicFormBuilder(
         columnsList.addAll(columns)
 
         columns.forEach { column ->
+            android.util.Log.d("DynamicFormBuilder", "Creating field for column: ${column.name} (${column.type})")
             val fieldView = createFieldView(column)
             fieldView?.let {
+                android.util.Log.d("DynamicFormBuilder", "Adding field view to parent layout")
                 parentLayout.addView(it)
+            } ?: run {
+                android.util.Log.w("DynamicFormBuilder", "Field view is null for column: ${column.name}")
             }
         }
 
@@ -49,7 +55,15 @@ class DynamicFormBuilder(
     }
 
     private fun createFieldView(column: TableColumn): View? {
-        return when (column.type) {
+        android.util.Log.d("DynamicFormBuilder", "createFieldView called for ${column.name} with type ${column.type}")
+        val columnType = try {
+            ColumnType.valueOf(column.type)
+        } catch (e: Exception) {
+            android.util.Log.w("DynamicFormBuilder", "Failed to parse column type ${column.type}, using TEXT fallback", e)
+            ColumnType.TEXT // fallback
+        }
+        android.util.Log.d("DynamicFormBuilder", "Resolved column type: $columnType")
+        return when (columnType) {
             ColumnType.TEXT -> createTextInput(column)
             ColumnType.NUMBER -> createNumberInput(column)
             ColumnType.CURRENCY -> createCurrencyInput(column)
@@ -90,7 +104,7 @@ class DynamicFormBuilder(
             hint = "Enter text"
             textSize = 16f
             setPadding(0, 8, 0, 16)
-            setBackgroundColor(context.getColor(android.R.color.transparent))
+            setBackgroundColor(Color.TRANSPARENT)
             maxLines = if (column.name.contains("note", ignoreCase = true) ||
                 column.name.contains("description", ignoreCase = true)) 5 else 1
 
@@ -128,7 +142,7 @@ class DynamicFormBuilder(
             hint = "Enter number"
             textSize = 16f
             setPadding(0, 8, 0, 16)
-            setBackgroundColor(context.getColor(android.R.color.transparent))
+            setBackgroundColor(Color.TRANSPARENT)
 
             addTextChangedListener(createFormulaUpdateWatcher())
         }
@@ -151,7 +165,20 @@ class DynamicFormBuilder(
             }
         }
 
-        val currencySymbol = column.options["currencySymbol"] as? String ?: "$"
+        // Parse options from JSON string
+        val options = try {
+            if (column.options.isNotEmpty()) {
+                val gson = Gson()
+                val mapType = object : TypeToken<Map<String, Any>>() {}.type
+                gson.fromJson<Map<String, Any>>(column.options, mapType)
+            } else {
+                emptyMap<String, Any>()
+            }
+        } catch (e: Exception) {
+            emptyMap<String, Any>()
+        }
+        
+        val currencySymbol = options["currencySymbol"] as? String ?: "$"
         val currencyCode = when (currencySymbol) {
             "$" -> "USD"
             "€" -> "EUR"
@@ -176,7 +203,7 @@ class DynamicFormBuilder(
             hint = "Enter amount"
             textSize = 16f
             setPadding(0, 8, 0, 16)
-            setBackgroundColor(context.getColor(android.R.color.transparent))
+            setBackgroundColor(Color.TRANSPARENT)
 
             addTextChangedListener(object : TextWatcher {
                 override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
@@ -221,7 +248,7 @@ class DynamicFormBuilder(
             hint = "Enter email"
             textSize = 16f
             setPadding(0, 8, 0, 16)
-            setBackgroundColor(context.getColor(android.R.color.transparent))
+            setBackgroundColor(Color.TRANSPARENT)
 
             addTextChangedListener(createFormulaUpdateWatcher())
         }
@@ -257,7 +284,7 @@ class DynamicFormBuilder(
             hint = "Enter phone"
             textSize = 16f
             setPadding(0, 8, 0, 16)
-            setBackgroundColor(context.getColor(android.R.color.transparent))
+            setBackgroundColor(Color.TRANSPARENT)
         }
 
         container.addView(label)
@@ -291,7 +318,7 @@ class DynamicFormBuilder(
             hint = "Enter URL"
             textSize = 16f
             setPadding(0, 8, 0, 16)
-            setBackgroundColor(context.getColor(android.R.color.transparent))
+            setBackgroundColor(Color.TRANSPARENT)
         }
 
         container.addView(label)
@@ -326,7 +353,7 @@ class DynamicFormBuilder(
             hint = "Select date"
             textSize = 16f
             setPadding(0, 8, 0, 16)
-            setBackgroundColor(context.getColor(android.R.color.transparent))
+            setBackgroundColor(Color.TRANSPARENT)
 
             setOnClickListener {
                 showDatePicker { date ->
@@ -396,8 +423,21 @@ class DynamicFormBuilder(
             setPadding(0, 0, 0, 8)
         }
 
+        // Parse options from JSON string
+        val columnOptions = try {
+            if (column.options.isNotEmpty()) {
+                val gson = Gson()
+                val mapType = object : TypeToken<Map<String, Any>>() {}.type
+                gson.fromJson<Map<String, Any>>(column.options, mapType)
+            } else {
+                emptyMap<String, Any>()
+            }
+        } catch (e: Exception) {
+            emptyMap<String, Any>()
+        }
+        
         val options = try {
-            val optionsList = column.options["options"] as? List<*>
+            val optionsList = columnOptions["options"] as? List<*>
             optionsList?.map { it.toString() } ?: emptyList()
         } catch (e: Exception) {
             emptyList()
@@ -496,7 +536,7 @@ class DynamicFormBuilder(
             textSize = 16f
             setTextColor(context.getColor(R.color.on_surface))
             setPadding(0, 8, 0, 16)
-            setBackgroundColor(context.getColor(android.R.color.transparent))
+            setBackgroundColor(Color.TRANSPARENT)
         }
 
         container.addView(formulaLabel)
@@ -522,10 +562,22 @@ class DynamicFormBuilder(
                 val column = columnsList.find { it.name == columnName }
                 if (column != null) {
                     // For FORMULA columns, read from defaultValue
-                    val formula = if (column.type.name == "FORMULA") {
+                    val formula = if (column.type == "FORMULA") {
                         column.defaultValue
                     } else {
-                        column.options["formula"] as? String ?: ""
+                        // Parse options from JSON string
+                        val columnOptions = try {
+                            if (column.options.isNotEmpty()) {
+                                val gson = Gson()
+                                val mapType = object : TypeToken<Map<String, Any>>() {}.type
+                                gson.fromJson<Map<String, Any>>(column.options, mapType)
+                            } else {
+                                emptyMap<String, Any>()
+                            }
+                        } catch (e: Exception) {
+                            emptyMap<String, Any>()
+                        }
+                        columnOptions["formula"] as? String ?: ""
                     }
 
                     if (formula.isEmpty()) {
@@ -719,21 +771,44 @@ class DynamicFormBuilder(
         }
 
         // Check if column has currency format option
-        val hasCurrencyOption = column.options["formatAsCurrency"] as? Boolean ?: false
+        val columnOptions = try {
+            if (column.options.isNotEmpty()) {
+                val gson = Gson()
+                val mapType = object : TypeToken<Map<String, Any>>() {}.type
+                gson.fromJson<Map<String, Any>>(column.options, mapType)
+            } else {
+                emptyMap<String, Any>()
+            }
+        } catch (e: Exception) {
+            emptyMap<String, Any>()
+        }
+        val hasCurrencyOption = columnOptions["formatAsCurrency"] as? Boolean ?: false
 
         return referencesCurrency || hasCurrencyOption
     }
 
     private fun isCurrencyField(fieldName: String): Boolean {
         val column = columnsList.find { it.name == fieldName }
-        return column?.type?.name == "CURRENCY"
+        return column?.type == "CURRENCY"
     }
 
     private fun getCurrencyCodeFromFormula(formula: String): String {
         formFields.forEach { (fieldName, view) ->
             if (formula.contains("{$fieldName}", ignoreCase = true) && isCurrencyField(fieldName)) {
                 val column = columnsList.find { it.name == fieldName }
-                val currencySymbol = column?.options?.get("currencySymbol") as? String ?: "$"
+                // Parse options from JSON string
+                val columnOptions = try {
+                    if (column?.options?.isNotEmpty() == true) {
+                        val gson = Gson()
+                        val mapType = object : TypeToken<Map<String, Any>>() {}.type
+                        gson.fromJson<Map<String, Any>>(column.options, mapType)
+                    } else {
+                        emptyMap<String, Any>()
+                    }
+                } catch (e: Exception) {
+                    emptyMap<String, Any>()
+                }
+                val currencySymbol = columnOptions["currencySymbol"] as? String ?: "$"
                 return when (currencySymbol) {
                     "$" -> "USD"
                     "€" -> "EUR"

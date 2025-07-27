@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Custom theme attributes for semantic colors -->
+    <attr name="passwordWeakColor" format="color" />
+    <attr name="passwordFairColor" format="color" />
+    <attr name="passwordGoodColor" format="color" />
+    <attr name="passwordStrongColor" format="color" />
+    
+    <attr name="calendarOverdueColor" format="color" />
+    <attr name="calendarDueTodayColor" format="color" />
+    <attr name="calendarUpcomingColor" format="color" />
+    <attr name="calendarReminderColor" format="color" />
+    <attr name="calendarSubscriptionColor" format="color" />
+    <attr name="calendarInvestmentColor" format="color" />
+    <attr name="calendarTaskColor" format="color" />
+    <attr name="calendarDefaultColor" format="color" />
+    
+    <attr name="textOnColoredBackground" format="color" />
+    <attr name="textMuted" format="color" />
+</resources>

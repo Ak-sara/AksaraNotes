@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.aksara.notes.R
-import com.aksara.notes.data.models.TableColumn
+import com.aksara.notes.data.database.entities.TableColumn
 
 class ColumnBuilderAdapter(
     private val onColumnEdit: (TableColumn) -> Unit,
@@ -34,14 +34,25 @@ class ColumnBuilderAdapter(
         private val deleteButton: ImageButton = itemView.findViewById(R.id.btn_delete_column)
 
         fun bind(column: TableColumn) {
-            columnIcon.text = column.type.icon
+            columnIcon.text = column.icon
             columnName.text = column.name
 
             // For formula columns, show the formula from defaultValue
-            columnType.text = if (column.type.name == "FORMULA" && column.defaultValue.isNotEmpty())  {
-                "${column.type.displayName}: ${column.defaultValue}"
+            val displayName = if (column.displayName.isNotEmpty()) {
+                column.displayName
             } else {
-                column.type.displayName
+                // Fallback to type name if displayName is empty
+                try {
+                    com.aksara.notes.data.models.ColumnType.valueOf(column.type).displayName
+                } catch (e: Exception) {
+                    column.type
+                }
+            }
+            
+            columnType.text = if (column.type == "FORMULA" && column.defaultValue.isNotEmpty())  {
+                "$displayName: ${column.defaultValue}"
+            } else {
+                displayName
             }
 
             requiredIndicator.visibility = if (column.required) View.VISIBLE else View.GONE

@@ -1,17 +1,6 @@
 package com.aksara.notes.data.models
 
-import java.util.UUID
-
-// Column definition for table schema
-data class TableColumn(
-    val id: String = UUID.randomUUID().toString(),
-    val name: String,
-    val type: ColumnType,
-    val required: Boolean = false,
-    val defaultValue: String = "",
-    val options: Map<String, Any> = emptyMap()
-)
-
+// Column types enum - still needed for UI and type conversion
 enum class ColumnType(val displayName: String, val icon: String) {
     TEXT("Text", "📝"),
     NUMBER("Number", "🔢"),
@@ -29,10 +18,5 @@ enum class ColumnType(val displayName: String, val icon: String) {
     FORMULA("Formula", "🧮")
 }
 
-// Table settings
-data class TableSettings(
-    val primaryColor: String = "#2196F3",
-    val showInCalendar: Boolean = false,
-    val calendarDateField: String = "",
-    val reminderDays: Int = 3
-)
+// Note: TableColumn and TableSettings are now Realm entities in data.database.entities
+// This file only contains the enum needed for type definitions

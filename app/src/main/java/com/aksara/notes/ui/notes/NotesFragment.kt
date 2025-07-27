@@ -146,10 +146,17 @@ class NotesFragment : Fragment() {
     }
 
     private fun toggleFavorite(note: Note) {
-        val updatedNote = note.copy(
-            isFavorite = !note.isFavorite,
+        val updatedNote = Note().apply {
+            id = note.id
+            title = note.title
+            content = note.content
+            createdAt = note.createdAt
             updatedAt = System.currentTimeMillis()
-        )
+            requiresPin = note.requiresPin
+            isEncrypted = note.isEncrypted
+            isFavorite = !note.isFavorite
+            tags = note.tags
+        }
         notesViewModel.updateNote(updatedNote)
 
         val message = if (updatedNote.isFavorite) "⭐ Added to favorites" else "☆ Removed from favorites"
@@ -184,10 +191,17 @@ class NotesFragment : Fragment() {
     }
 
     private fun updateNotePinProtection(note: Note, requiresPin: Boolean) {
-        val updatedNote = note.copy(
-            requiresPin = requiresPin,
+        val updatedNote = Note().apply {
+            id = note.id
+            title = note.title
+            content = note.content
+            createdAt = note.createdAt
             updatedAt = System.currentTimeMillis()
-        )
+            this.requiresPin = requiresPin
+            isEncrypted = note.isEncrypted
+            isFavorite = note.isFavorite
+            tags = note.tags
+        }
         notesViewModel.updateNote(updatedNote)
 
         val message = if (requiresPin) "🔒 PIN protection enabled" else "🔓 PIN protection disabled"

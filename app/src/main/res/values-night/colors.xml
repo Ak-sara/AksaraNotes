@@ -37,6 +37,27 @@
     <color name="black">#FFFFFF</color>
     <color name="divider_color">@color/divider</color>
 
+    <!-- Semantic Colors for App Features (Dark Mode) -->
+    <!-- Password Strength Colors -->
+    <color name="password_weak">#F48FB1</color> <!-- Light Red -->
+    <color name="password_fair">#FFB74D</color> <!-- Light Orange -->
+    <color name="password_good">#81C784</color> <!-- Light Green -->
+    <color name="password_strong">#66BB6A</color> <!-- Lighter Green -->
+    
+    <!-- Calendar Event Colors -->
+    <color name="calendar_overdue">#F48FB1</color> <!-- Light Red -->
+    <color name="calendar_due_today">#FFB74D</color> <!-- Light Orange -->
+    <color name="calendar_upcoming">#81C784</color> <!-- Light Green -->
+    <color name="calendar_reminder">#CE93D8</color> <!-- Light Purple -->
+    <color name="calendar_subscription">#FFB74D</color> <!-- Light Orange -->
+    <color name="calendar_investment">#81C784</color> <!-- Light Green -->
+    <color name="calendar_task">#CE93D8</color> <!-- Light Purple -->
+    <color name="calendar_default">#BDBDBD</color> <!-- Light Gray -->
+    
+    <!-- Text Colors for Dynamic Content -->
+    <color name="text_on_colored_background">#000000</color>
+    <color name="text_muted">@color/text_secondary</color>
+    
     <!-- Legacy Colors for Backward Compatibility -->
     <color name="accent">@color/secondary</color>
     <color name="primary_blue">@color/primary</color>

@@ -12,20 +12,21 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.aksara.notes.R
-import com.aksara.notes.databinding.ActivityTableBuilderBinding
-import com.aksara.notes.data.models.TableColumn
+import com.aksara.notes.databinding.ActivityDatasetBuilderBinding
 import com.aksara.notes.data.models.ColumnType
-import com.aksara.notes.data.database.entities.CustomTable
-import com.aksara.notes.data.templates.TableTemplates
+import com.google.android.material.color.MaterialColors
+import com.aksara.notes.data.database.entities.Dataset
+import com.aksara.notes.data.database.entities.TableColumn
+import com.aksara.notes.data.templates.DatasetTemplates
 import com.aksara.notes.ui.database.DatabaseViewModel
 import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.launch
 import java.util.UUID
-// manage Table Structure
-class TableBuilderActivity : AppCompatActivity() {
 
-    private lateinit var binding: ActivityTableBuilderBinding
+// manage Dataset Structure
+class DatasetBuilderActivity : AppCompatActivity() {
+
+    private lateinit var binding: ActivityDatasetBuilderBinding
     private lateinit var viewModel: DatabaseViewModel
     private lateinit var columnAdapter: ColumnBuilderAdapter
 
@@ -33,35 +34,35 @@ class TableBuilderActivity : AppCompatActivity() {
     private var selectedIcon = "📄"
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        Log.d("TableBuilder", "========== onCreate() called ==========")
+        Log.d("DatasetBuilder", "========== onCreate() called ==========")
 
         try {
             super.onCreate(savedInstanceState)
-            Log.d("TableBuilder", "super.onCreate() completed")
+            Log.d("DatasetBuilder", "super.onCreate() completed")
 
-            binding = ActivityTableBuilderBinding.inflate(layoutInflater)
-            Log.d("TableBuilder", "Binding inflated")
+            binding = ActivityDatasetBuilderBinding.inflate(layoutInflater)
+            Log.d("DatasetBuilder", "Binding inflated")
 
             setContentView(binding.root)
-            Log.d("TableBuilder", "setContentView completed")
+            Log.d("DatasetBuilder", "setContentView completed")
 
             viewModel = ViewModelProvider(this)[DatabaseViewModel::class.java]
-            Log.d("TableBuilder", "ViewModel created")
+            Log.d("DatasetBuilder", "ViewModel created")
 
             setupToolbar()
-            Log.d("TableBuilder", "Toolbar setup completed")
+            Log.d("DatasetBuilder", "Toolbar setup completed")
 
             setupRecyclerView()
-            Log.d("TableBuilder", "RecyclerView setup completed")
+            Log.d("DatasetBuilder", "RecyclerView setup completed")
 
             setupUI()
-            Log.d("TableBuilder", "UI setup completed")
+            Log.d("DatasetBuilder", "UI setup completed")
 
-            loadTable()
-            Log.d("TableBuilder", "loadTable() called")
+            loadDataset()
+            Log.d("DatasetBuilder", "loadDataset() called")
 
         } catch (e: Exception) {
-            Log.e("TableBuilder", "Error in onCreate()", e)
+            Log.e("DatasetBuilder", "Error in onCreate()", e)
             throw e
         }
     }
@@ -69,7 +70,7 @@ class TableBuilderActivity : AppCompatActivity() {
     private fun setupToolbar() {
         setSupportActionBar(binding.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        supportActionBar?.title = "Table Builder"
+        supportActionBar?.title = "Dataset Builder"
     }
 
     private fun setupRecyclerView() {
@@ -80,13 +81,13 @@ class TableBuilderActivity : AppCompatActivity() {
 
         binding.rvColumns.apply {
             adapter = columnAdapter
-            layoutManager = LinearLayoutManager(this@TableBuilderActivity)
+            layoutManager = LinearLayoutManager(this@DatasetBuilderActivity)
         }
     }
 
     private fun setupUI() {
         binding.btnCancel.setOnClickListener { finish() }
-        binding.btnCreateTable.setOnClickListener { createTable() }
+        binding.btnCreateTable.setOnClickListener { createDataset() }
         binding.btnAddColumn.setOnClickListener { showAddColumnDialog() }
         binding.btnChooseIcon.setOnClickListener { showIconPicker() }
         binding.tvSelectedIcon.setOnClickListener { showIconPicker() }
@@ -94,92 +95,85 @@ class TableBuilderActivity : AppCompatActivity() {
         updateColumnsDisplay()
     }
 
-    private fun loadTable() {
+    private fun loadDataset() {
         val template = intent.getStringExtra("template")
-        val editTableId = intent.getStringExtra("edit_table_id")
+        val editDatasetId = intent.getStringExtra("edit_dataset_id")
 
-        Log.d("TableBuilder", "loadTable called - template: $template, editTableId: $editTableId")
+        Log.d("DatasetBuilder", "loadDataset called - template: $template, editDatasetId: $editDatasetId")
 
         when {
-            editTableId != null -> {
-                Log.d("TableBuilder", "Loading existing table with ID: $editTableId")
-                supportActionBar?.title = getString(R.string.edit_table_title)
-                binding.btnCreateTable.text = getString(R.string.update_table_button)
+            editDatasetId != null -> {
+                Log.d("DatasetBuilder", "Loading existing dataset with ID: $editDatasetId")
+                supportActionBar?.title = getString(R.string.edit_dataset_title)
+                binding.btnCreateTable.text = getString(R.string.update_dataset_button)
 
                 lifecycleScope.launch {
                     try {
-                        val existingTable = viewModel.getTableById(editTableId)
-                        Log.d("TableBuilder", "Found table: ${existingTable?.name}")
+                        val existingDataset = viewModel.getDatasetById(editDatasetId)
+                        Log.d("DatasetBuilder", "Found dataset: ${existingDataset?.name}")
 
-                        existingTable?.let { table ->
-                            Log.d("TableBuilder", "Table data - name: ${table.name}, columns: ${table.columns}")
+                        existingDataset?.let { dataset ->
+                            Log.d("DatasetBuilder", "Dataset data - name: ${dataset.name}, columns: ${dataset.columns}")
 
                             // Update UI on main thread
                             runOnUiThread {
-                                binding.etTableName.setText(table.name)
-                                binding.etTableDescription.setText(table.description)
-                                selectedIcon = table.icon
+                                binding.etTableName.setText(dataset.name)
+                                binding.etTableDescription.setText(dataset.description)
+                                selectedIcon = dataset.icon
                                 binding.tvSelectedIcon.text = selectedIcon
-                                Log.d("TableBuilder", "UI updated with table data")
+                                Log.d("DatasetBuilder", "UI updated with dataset data")
                             }
 
-                            // Parse existing columns
-                            val gson = Gson()
-                            val type = object : TypeToken<List<TableColumn>>() {}.type
-                            val existingColumns: List<TableColumn> = try {
-                                gson.fromJson(table.columns, type) ?: emptyList()
-                            } catch (e: Exception) {
-                                Log.e("TableBuilder", "Error parsing columns: ${e.message}")
-                                emptyList()
-                            }
+                            // Access existing columns directly (no JSON parsing needed!)
+                            val existingColumns = dataset.columns
 
-                            Log.d("TableBuilder", "Parsed ${existingColumns.size} columns")
+                            Log.d("DatasetBuilder", "Found ${existingColumns.size} columns")
 
                             // Update columns on main thread
                             runOnUiThread {
                                 columns.clear()
-                                columns.addAll(existingColumns)
+                                columns.addAll(existingColumns.toList()) // Convert RealmList to List
                                 updateColumnsDisplay()
-                                Log.d("TableBuilder", "Columns updated in UI")
+                                Log.d("DatasetBuilder", "Columns updated in UI")
                             }
                         } ?: run {
-                            Log.w("TableBuilder", "Table not found with ID: $editTableId")
+                            Log.w("DatasetBuilder", "Dataset not found with ID: $editDatasetId")
                             runOnUiThread {
-                                Toast.makeText(this@TableBuilderActivity, "Table not found", Toast.LENGTH_SHORT).show()
+                                Toast.makeText(this@DatasetBuilderActivity, getString(R.string.dataset_not_found_toast), Toast.LENGTH_SHORT).show()
                                 finish()
                             }
                         }
                     } catch (e: Exception) {
-                        Log.e("TableBuilder", "Error loading table", e)
+                        Log.e("DatasetBuilder", "Error loading dataset", e)
                         runOnUiThread {
-                            Toast.makeText(this@TableBuilderActivity, "Error loading table: ${e.message}", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(this@DatasetBuilderActivity, getString(R.string.error_loading_dataset_toast, e.message), Toast.LENGTH_SHORT).show()
                             finish()
                         }
                     }
                 }
             }
             template != null -> {
-                Log.d("TableBuilder", "Loading template: $template")
-                val (tableTemplate, templateColumns) = TableTemplates.getTemplate(template)
+                Log.d("DatasetBuilder", "Loading template: $template")
+                val datasetTemplate = DatasetTemplates.getTemplate(template)
 
-                binding.etTableName.setText(tableTemplate.name)
-                binding.etTableDescription.setText(tableTemplate.description)
-                selectedIcon = tableTemplate.icon
+                binding.etTableName.setText(datasetTemplate.name)
+                binding.etTableDescription.setText(datasetTemplate.description)
+                selectedIcon = datasetTemplate.icon
                 binding.tvSelectedIcon.text = selectedIcon
 
                 columns.clear()
-                columns.addAll(templateColumns)
+                columns.addAll(datasetTemplate.columns.toList()) // Convert RealmList to List
                 updateColumnsDisplay()
-                Log.d("TableBuilder", "Template loaded successfully")
+                Log.d("DatasetBuilder", "Template loaded successfully")
             }
             else -> {
-                Log.d("TableBuilder", "Setting up blank table")
-                setupBlankTable()
+                Log.d("DatasetBuilder", "Setting up blank dataset")
+                setupBlankDataset()
             }
         }
     }
 
-    private fun setupBlankTable() {
+    private fun setupBlankDataset() {
         binding.etTableName.setText("")
         binding.etTableDescription.setText("")
         selectedIcon = "📄"
@@ -198,8 +192,8 @@ class TableBuilderActivity : AppCompatActivity() {
 
     private fun deleteColumn(column: TableColumn) {
         AlertDialog.Builder(this)
-            .setTitle("Delete Column")
-            .setMessage("Are you sure you want to delete '${column.name}'?")
+            .setTitle(getString(R.string.delete_column_title))
+            .setMessage(getString(R.string.delete_column_message, column.name))
             .setPositiveButton("Delete") { _, _ ->
                 columns.remove(column)
                 updateColumnsDisplay()
@@ -207,7 +201,6 @@ class TableBuilderActivity : AppCompatActivity() {
             .setNegativeButton("Cancel", null)
             .show()
     }
-
 
     private fun setupColumnTypeOptions(layout: LinearLayout, type: ColumnType, existingOptions: Map<String, Any>) {
         layout.removeAllViews()
@@ -223,7 +216,7 @@ class TableBuilderActivity : AppCompatActivity() {
                 val headerText = TextView(this).apply {
                     text = "Formula Expression"
                     textSize = 16f
-                    setTextColor(getColor(android.R.color.black))
+                    setTextColor(MaterialColors.getColor(this@DatasetBuilderActivity, com.google.android.material.R.attr.colorOnSurface, getColor(R.color.on_surface)))
                     setPadding(0, 16, 0, 8)
                 }
                 formulaContainer.addView(headerText)
@@ -252,7 +245,7 @@ class TableBuilderActivity : AppCompatActivity() {
                     • {Income} * 15%
                 """.trimIndent()
                     textSize = 12f
-                    setTextColor(getColor(android.R.color.darker_gray))
+                    setTextColor(MaterialColors.getColor(this@DatasetBuilderActivity, com.google.android.material.R.attr.colorOnSurfaceVariant, getColor(R.color.on_surface_variant)))
                     setPadding(0, 8, 0, 0)
                 }
                 formulaContainer.addView(helpText)
@@ -302,7 +295,7 @@ class TableBuilderActivity : AppCompatActivity() {
 
                 val currencySpinner = Spinner(this).apply {
                     adapter = ArrayAdapter(
-                        this@TableBuilderActivity,
+                        this@DatasetBuilderActivity,
                         android.R.layout.simple_spinner_item,
                         arrayOf("$ USD", "€ EUR", "£ GBP", "¥ JPY", "Rp IDR")
                     ).also {
@@ -317,7 +310,7 @@ class TableBuilderActivity : AppCompatActivity() {
                 val calendarLabel = TextView(this).apply {
                     text = "Calendar Integration:"
                     setPadding(0, 16, 0, 8)
-                    setTextColor(getColor(android.R.color.black))
+                    setTextColor(MaterialColors.getColor(this@DatasetBuilderActivity, com.google.android.material.R.attr.colorOnSurface, getColor(R.color.on_surface)))
                 }
                 layout.addView(calendarLabel)
 
@@ -350,7 +343,7 @@ class TableBuilderActivity : AppCompatActivity() {
                 val frequencySpinner = Spinner(this).apply {
                     tag = "frequency_spinner"
                     adapter = ArrayAdapter(
-                        this@TableBuilderActivity,
+                        this@DatasetBuilderActivity,
                         android.R.layout.simple_spinner_item,
                         arrayOf("Monthly", "Weekly", "Yearly", "Every 2 weeks", "Every 3 months", "Every 6 months")
                     ).also {
@@ -373,8 +366,7 @@ class TableBuilderActivity : AppCompatActivity() {
             }
         }
     }
-    // -- Fix
-    // Update these methods in TableBuilderActivity.kt - remove debug logs
+
     private fun updateDefaultValueInput(editText: EditText, type: ColumnType) {
         when (type) {
             ColumnType.FORMULA -> {
@@ -440,7 +432,13 @@ class TableBuilderActivity : AppCompatActivity() {
         // Populate existing data
         existingColumn?.let { column ->
             etColumnName.setText(column.name)
-            spinnerColumnType.setSelection(columnTypes.indexOf(column.type))
+            // Convert string type back to enum for spinner selection
+            val columnType = try {
+                ColumnType.valueOf(column.type)
+            } catch (e: Exception) {
+                ColumnType.TEXT
+            }
+            spinnerColumnType.setSelection(columnTypes.indexOf(columnType))
             cbRequired.isChecked = column.required
             etDefaultValue.setText(column.defaultValue)
         }
@@ -452,21 +450,55 @@ class TableBuilderActivity : AppCompatActivity() {
                 updateDefaultValueInput(etDefaultValue, selectedType)
 
                 layoutOptions?.let { container ->
-                    setupColumnTypeOptions(container, selectedType, existingColumn?.options ?: emptyMap())
+                    val existingOptions = existingColumn?.let { column ->
+                        try {
+                            if (column.options.isNotEmpty()) {
+                                val gson = Gson()
+                                val mapType = object : com.google.gson.reflect.TypeToken<Map<String, Any>>() {}.type
+                                gson.fromJson<Map<String, Any>>(column.options, mapType)
+                            } else {
+                                emptyMap<String, Any>()
+                            }
+                        } catch (e: Exception) {
+                            emptyMap<String, Any>()
+                        }
+                    } ?: emptyMap()
+                    setupColumnTypeOptions(container, selectedType, existingOptions)
                 }
             }
             override fun onNothingSelected(parent: AdapterView<*>?) {}
         }
 
         // Trigger initial setup
-        val initialType = if (existingColumn != null) existingColumn.type else ColumnType.TEXT
+        val initialType = if (existingColumn != null) {
+            try {
+                ColumnType.valueOf(existingColumn.type)
+            } catch (e: Exception) {
+                ColumnType.TEXT
+            }
+        } else {
+            ColumnType.TEXT
+        }
         updateDefaultValueInput(etDefaultValue, initialType)
         layoutOptions?.let { container ->
-            setupColumnTypeOptions(container, initialType, existingColumn?.options ?: emptyMap())
+            val existingOptions = existingColumn?.let { column ->
+                try {
+                    if (column.options.isNotEmpty()) {
+                        val gson = Gson()
+                        val mapType = object : com.google.gson.reflect.TypeToken<Map<String, Any>>() {}.type
+                        gson.fromJson<Map<String, Any>>(column.options, mapType)
+                    } else {
+                        emptyMap<String, Any>()
+                    }
+                } catch (e: Exception) {
+                    emptyMap<String, Any>()
+                }
+            } ?: emptyMap()
+            setupColumnTypeOptions(container, initialType, existingOptions)
         }
 
         val dialog = AlertDialog.Builder(this)
-            .setTitle(if (existingColumn != null) "Edit Column" else "Add Column")
+            .setTitle(if (existingColumn != null) getString(R.string.edit_column_title) else getString(R.string.add_column_title))
             .setView(dialogView)
             .setPositiveButton("Save") { _, _ ->
                 val name = etColumnName.text.toString().trim()
@@ -475,7 +507,7 @@ class TableBuilderActivity : AppCompatActivity() {
                 val defaultValue = etDefaultValue.text.toString().trim()
 
                 if (name.isEmpty()) {
-                    Toast.makeText(this, "Column name is required", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, getString(R.string.column_name_required_toast), Toast.LENGTH_SHORT).show()
                     return@setPositiveButton
                 }
 
@@ -486,14 +518,16 @@ class TableBuilderActivity : AppCompatActivity() {
                     emptyMap() // For formula columns, formula goes in defaultValue
                 }
 
-                val newColumn = TableColumn(
-                    id = existingColumn?.id ?: UUID.randomUUID().toString(),
-                    name = name,
-                    type = type,
-                    required = required,
-                    defaultValue = defaultValue, // Formula stored here for FORMULA columns
-                    options = options
-                )
+                val newColumn = TableColumn().apply {
+                    id = existingColumn?.id ?: UUID.randomUUID().toString()
+                    this.name = name
+                    this.type = type.name
+                    this.required = required
+                    this.defaultValue = defaultValue // Formula stored here for FORMULA columns
+                    this.options = Gson().toJson(options) // Store as JSON string
+                    this.displayName = type.displayName
+                    this.icon = type.icon
+                }
 
                 if (existingColumn != null) {
                     val index = columns.indexOf(existingColumn)
@@ -509,7 +543,6 @@ class TableBuilderActivity : AppCompatActivity() {
 
         dialog.show()
     }
-    // -- Fix
 
     private fun collectColumnOptions(layout: LinearLayout, type: ColumnType): Map<String, Any> {
         val options = mutableMapOf<String, Any>()
@@ -527,7 +560,7 @@ class TableBuilderActivity : AppCompatActivity() {
                                     val formula = grandChild.text.toString().trim()
                                     if (formula.isNotEmpty()) {
                                         options["formula"] = formula
-                                        Log.d("TableBuilder", "Storing formula: '$formula'")
+                                        Log.d("DatasetBuilder", "Storing formula: '$formula'")
                                     }
                                 }
                                 is CheckBox -> {
@@ -623,52 +656,47 @@ class TableBuilderActivity : AppCompatActivity() {
         }
     }
 
-    private fun createTable() {
-        Log.d("TableBuilder", "createTable called")
+    private fun createDataset() {
+        Log.d("DatasetBuilder", "createDataset called")
         val name = binding.etTableName.text.toString().trim()
         val description = binding.etTableDescription.text.toString().trim()
-        val editTableId = intent.getStringExtra("edit_table_id")
+        val editDatasetId = intent.getStringExtra("edit_dataset_id")
 
         if (name.isEmpty()) {
-            binding.etTableName.error = "Table name is required"
+            binding.etTableName.error = getString(R.string.dataset_name_required_error)
             return
         }
 
         if (columns.isEmpty()) {
-            Toast.makeText(this, "Please add at least one column", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, getString(R.string.add_at_least_one_column), Toast.LENGTH_SHORT).show()
             return
         }
 
-        if (editTableId != null) {
-            // Update existing table
+        if (editDatasetId != null) {
+            // Update existing dataset
             lifecycleScope.launch {
-                val existingTable = viewModel.getTableById(editTableId)
-                existingTable?.let { table ->
-                    val updatedTable = table.copy(
-                        name = name,
-                        description = description,
-                        icon = selectedIcon,
-                        columns = Gson().toJson(columns),
-                        updatedAt = System.currentTimeMillis()
-                    )
-
-                    viewModel.updateTable(updatedTable)
-                    Toast.makeText(this@TableBuilderActivity, "Table '$name' updated!", Toast.LENGTH_SHORT).show()
+                val existingDataset = viewModel.getDatasetById(editDatasetId)
+                Log.d("BUILDER-UPDATE", "Updating dataset with ${columns.size} columns")
+                columns.forEach { column ->
+                    Log.d("BUILDER-UPDATE", "Column to update: ${column.name} (${column.type}) - ${column.id}")
+                }
+                existingDataset?.let { dataset ->
+                    // Pass the data to DAO and let it handle the Realm object creation
+                    Log.d("BUILDER-UPDATE", "Calling updateDataset with ${columns.size} columns")
+                    viewModel.updateDataset(dataset.id, name, description, selectedIcon, dataset.datasetType, columns, dataset.createdAt)
+                    Toast.makeText(this@DatasetBuilderActivity, getString(R.string.dataset_updated_toast, name), Toast.LENGTH_SHORT).show()
                     finish()
                 }
             }
         } else {
-            // Create new table
-            val table = CustomTable(
-                name = name,
-                description = description,
-                icon = selectedIcon,
-                tableType = "data",
-                columns = Gson().toJson(columns)
-            )
+            // Create new dataset
+            Log.d("DatasetBuilder", "Creating dataset with ${columns.size} columns")
+            columns.forEach { column ->
+                Log.d("DatasetBuilder", "Column: ${column.name} (${column.type}) - required: ${column.required}")
+            }
 
-            viewModel.insertTable(table)
-            Toast.makeText(this, "Table '$name' created successfully!", Toast.LENGTH_SHORT).show()
+            viewModel.insertDataset(name, description, selectedIcon, "data", columns)
+            Toast.makeText(this, getString(R.string.dataset_created_toast, name), Toast.LENGTH_SHORT).show()
             finish()
         }
     }
@@ -680,7 +708,7 @@ class TableBuilderActivity : AppCompatActivity() {
         )
 
         AlertDialog.Builder(this)
-            .setTitle("Choose Icon")
+            .setTitle(getString(R.string.choose_icon_title))
             .setItems(icons) { _, which ->
                 selectedIcon = icons[which]
                 binding.tvSelectedIcon.text = selectedIcon

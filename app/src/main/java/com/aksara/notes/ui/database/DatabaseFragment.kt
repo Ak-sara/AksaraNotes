@@ -10,10 +10,10 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope  // ADD THIS LINE
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.aksara.notes.databinding.FragmentDatabaseBinding
-import com.aksara.notes.ui.database.builder.TableBuilderActivity
-import com.aksara.notes.ui.database.view.TableViewActivity
-import com.aksara.notes.ui.database.items.ItemEditorActivity
-import com.aksara.notes.data.database.entities.CustomTable
+import com.aksara.notes.ui.database.builder.DatasetBuilderActivity
+import com.aksara.notes.ui.database.view.DatasetViewActivity
+import com.aksara.notes.ui.database.forms.FormEditorActivity
+import com.aksara.notes.data.database.entities.Dataset
 import kotlinx.coroutines.launch  // ADD THIS LINE
 
 class DatabaseFragment : Fragment() {
@@ -22,7 +22,7 @@ class DatabaseFragment : Fragment() {
     private val binding get() = _binding!!
 
     private lateinit var databaseViewModel: DatabaseViewModel
-    private lateinit var tableAdapter: TableOverviewAdapter
+    private lateinit var datasetAdapter: DatasetOverviewAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -46,37 +46,37 @@ class DatabaseFragment : Fragment() {
     // In setupRecyclerView() method, update the adapter creation:
 
     private fun setupRecyclerView() {
-        tableAdapter = TableOverviewAdapter(
-            onTableClick = { table ->
-                // Open table view showing all items in this table
-                val intent = Intent(requireContext(), TableViewActivity::class.java)
-                intent.putExtra("table_id", table.id)
+        datasetAdapter = DatasetOverviewAdapter(
+            onDatasetClick = { dataset ->
+                // Open table view showing all forms in this dataset
+                val intent = Intent(requireContext(), DatasetViewActivity::class.java)
+                intent.putExtra("dataset_id", dataset.id)
                 startActivity(intent)
             },
-            onCreateItemClick = { table ->
-                // Open item editor for this specific table
-                val intent = Intent(requireContext(), ItemEditorActivity::class.java)
-                intent.putExtra("table_id", table.id)
+            onCreateFormClick = { dataset ->
+                // Open form editor for this specific dataset
+                val intent = Intent(requireContext(), FormEditorActivity::class.java)
+                intent.putExtra("dataset_id", dataset.id)
                 startActivity(intent)
             },
-            onDeleteTable = { table ->  // ADD THIS CALLBACK
-                databaseViewModel.deleteTable(table)
+            onDeleteDataset = { dataset ->  // ADD THIS CALLBACK
+                databaseViewModel.deleteDataset(dataset)
             }
         )
 
         binding.rvTables.apply {
-            adapter = tableAdapter
+            adapter = datasetAdapter
             layoutManager = LinearLayoutManager(requireContext())
         }
     }
 
     private fun setupClickListeners() {
         binding.fabCreateTable.setOnClickListener {
-            startActivity(Intent(requireContext(), TableBuilderActivity::class.java))
+            startActivity(Intent(requireContext(), DatasetBuilderActivity::class.java))
         }
 
         binding.btnCreateQuickTable.setOnClickListener {
-            showQuickTableDialog()
+            showQuickDatasetDialog()
         }
 
         binding.btnViewAllItems.setOnClickListener {
@@ -85,72 +85,70 @@ class DatabaseFragment : Fragment() {
         }
 
         binding.btnCreateFirstTable.setOnClickListener {
-            showQuickTableDialog()
+            showQuickDatasetDialog()
         }
     }
 
     private fun observeData() {
-        databaseViewModel.allTables.observe(viewLifecycleOwner) { tables ->
-            updateUI(tables)
+        databaseViewModel.allDatasets.observe(viewLifecycleOwner) { datasets ->
+            updateUI(datasets)
         }
 
-        databaseViewModel.allItems.observe(viewLifecycleOwner) { items ->
-            binding.tvTotalItems.text = "${items.size} total items"
+        databaseViewModel.allForms.observe(viewLifecycleOwner) { forms ->
+            binding.tvTotalItems.text = "${forms.size} total forms"
         }
     }
 
-    private fun updateUI(tables: List<CustomTable>) {
-        if (tables.isEmpty()) {
+    private fun updateUI(datasets: List<Dataset>) {
+        if (datasets.isEmpty()) {
             binding.layoutEmptyState.visibility = View.VISIBLE
             binding.rvTables.visibility = View.GONE
         } else {
             binding.layoutEmptyState.visibility = View.GONE
             binding.rvTables.visibility = View.VISIBLE
 
-            // Convert tables to TableOverviewItems with item counts
+            // Convert datasets to DatasetOverviewItems with form counts
             lifecycleScope.launch {
-                val tableItems = tables.map { table ->
-                    val itemCount = databaseViewModel.getItemCountForTable(table.id)
-                    TableOverviewItem(table, itemCount)
+                val datasetItems = datasets.map { dataset ->
+                    val formCount = databaseViewModel.getFormCountForDataset(dataset.id)
+                    DatasetOverviewItem(dataset, formCount)
                 }
-                tableAdapter.submitList(tableItems)
+                datasetAdapter.submitList(datasetItems)
             }
         }
 
-        binding.tvTablesCount.text = "${tables.size} tables created"
+        binding.tvTablesCount.text = "${datasets.size} datasets created"
     }
 
-    private fun showQuickTableDialog() {
+    private fun showQuickDatasetDialog() {
         val quickTemplates = arrayOf(
             "🔐 Accounts & Passwords",
             "💰 Subscriptions",
-            "🧮 Bond Calculator",
             "📞 Contacts",
             "📚 Books to Read",
             "🎬 Movies & Shows",
             "🏋️ Workout Log",
-            "💡 Custom Table..."
+            "💡 Custom Dataset..."
         )
 
         androidx.appcompat.app.AlertDialog.Builder(requireContext())
-            .setTitle("Create Table from Template")
+            .setTitle("Create Dataset from Template")
             .setItems(quickTemplates) { _, which ->
                 when (which) {
                     0 -> createFromTemplate("accounts")
                     1 -> createFromTemplate("subscriptions")
-                    2 -> createFromTemplate("bond_calculator")
-                    3 -> createFromTemplate("contacts")
-                    4 -> createFromTemplate("books")
-                    5 -> createFromTemplate("movies")
-                    6 -> createFromTemplate("workout")
-                    7 -> startActivity(Intent(requireContext(), TableBuilderActivity::class.java))
+                    2 -> createFromTemplate("contacts")
+                    3 -> createFromTemplate("books")
+                    4 -> createFromTemplate("movies")
+                    5 -> createFromTemplate("workout")
+                    6 -> startActivity(Intent(requireContext(), DatasetBuilderActivity::class.java))
                 }
             }
             .show()
     }
 
     private fun createFromTemplate(template: String) {
-        val intent = Intent(requireContext(), TableBuilderActivity::class.java)
+        val intent = Intent(requireContext(), DatasetBuilderActivity::class.java)
         intent.putExtra("template", template)
         startActivity(intent)
     }

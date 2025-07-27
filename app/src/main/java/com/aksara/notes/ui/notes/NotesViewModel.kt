@@ -8,19 +8,13 @@ import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.switchMap
 import kotlinx.coroutines.launch
-import com.aksara.notes.data.database.AppDatabase
 import com.aksara.notes.data.database.entities.Note
 import com.aksara.notes.data.repository.NotesRepository
 
 class NotesViewModel(application: Application) : AndroidViewModel(application) {
 
-    private val repository: NotesRepository
+    private val repository: NotesRepository = NotesRepository()
     private val _searchQuery = MutableLiveData("")
-
-    init {
-        val noteDao = AppDatabase.getDatabase(application).noteDao()
-        repository = NotesRepository(noteDao)
-    }
 
     val allNotes: LiveData<List<Note>> = repository.getAllNotes().asLiveData()
 

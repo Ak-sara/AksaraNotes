@@ -10,6 +10,9 @@ import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.biometric.BiometricManager
+import androidx.core.content.ContextCompat
+import com.google.android.material.color.MaterialColors
+import com.aksara.notes.R
 import com.aksara.notes.databinding.ActivitySecuritySettingsBinding
 import com.aksara.notes.utils.BiometricHelper
 import com.google.android.material.textfield.TextInputEditText
@@ -221,7 +224,7 @@ class SecuritySettingsActivity : AppCompatActivity() {
                 val password = s.toString()
                 val strength = checkPasswordStrength(password)
                 strengthIndicator.text = strength.first
-                strengthIndicator.setTextColor(getColor(strength.second))
+                strengthIndicator.setTextColor(getPasswordStrengthColor(strength.second))
             }
         })
 
@@ -273,9 +276,9 @@ class SecuritySettingsActivity : AppCompatActivity() {
         }
     }
 
-    private fun checkPasswordStrength(password: String): Triple<String, Int, Boolean> {
+    private fun checkPasswordStrength(password: String): Triple<String, PasswordStrength, Boolean> {
         when {
-            password.length < 8 -> return Triple("Password too short (minimum 8 characters)", android.R.color.holo_red_dark, false)
+            password.length < 8 -> return Triple("Password too short (minimum 8 characters)", PasswordStrength.WEAK, false)
             password.length < 12 -> {
                 val hasUpper = password.any { it.isUpperCase() }
                 val hasLower = password.any { it.isLowerCase() }
@@ -284,9 +287,9 @@ class SecuritySettingsActivity : AppCompatActivity() {
 
                 val score = listOf(hasUpper, hasLower, hasDigit, hasSpecial).count { it }
                 return when {
-                    score < 2 -> Triple("Weak password", android.R.color.holo_red_dark, false)
-                    score < 3 -> Triple("Fair password", android.R.color.holo_orange_dark, true)
-                    else -> Triple("Good password", android.R.color.holo_green_dark, true)
+                    score < 2 -> Triple("Weak password", PasswordStrength.WEAK, false)
+                    score < 3 -> Triple("Fair password", PasswordStrength.FAIR, true)
+                    else -> Triple("Good password", PasswordStrength.GOOD, true)
                 }
             }
             else -> {
@@ -297,8 +300,8 @@ class SecuritySettingsActivity : AppCompatActivity() {
 
                 val score = listOf(hasUpper, hasLower, hasDigit, hasSpecial).count { it }
                 return when {
-                    score < 3 -> Triple("Good password", android.R.color.holo_green_dark, true)
-                    else -> Triple("Strong password", android.R.color.holo_green_dark, true)
+                    score < 3 -> Triple("Good password", PasswordStrength.GOOD, true)
+                    else -> Triple("Strong password", PasswordStrength.STRONG, true)
                 }
             }
         }
@@ -408,6 +411,19 @@ class SecuritySettingsActivity : AppCompatActivity() {
 
     private fun showToast(message: String) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+    }
+    
+    private enum class PasswordStrength {
+        WEAK, FAIR, GOOD, STRONG
+    }
+    
+    private fun getPasswordStrengthColor(strength: PasswordStrength): Int {
+        return when (strength) {
+            PasswordStrength.WEAK -> MaterialColors.getColor(this, R.attr.passwordWeakColor, ContextCompat.getColor(this, R.color.password_weak))
+            PasswordStrength.FAIR -> MaterialColors.getColor(this, R.attr.passwordFairColor, ContextCompat.getColor(this, R.color.password_fair))
+            PasswordStrength.GOOD -> MaterialColors.getColor(this, R.attr.passwordGoodColor, ContextCompat.getColor(this, R.color.password_good))
+            PasswordStrength.STRONG -> MaterialColors.getColor(this, R.attr.passwordStrongColor, ContextCompat.getColor(this, R.color.password_strong))
+        }
     }
 
     override fun onSupportNavigateUp(): Boolean {
