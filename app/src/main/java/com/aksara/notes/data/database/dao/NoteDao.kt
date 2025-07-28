@@ -70,4 +70,24 @@ class NoteDao {
             .asFlow()
             .map { it.list }
     }
+    
+    // Backup-specific methods
+    suspend fun getAllNotesForBackup(): List<Note> {
+        return realm.query<Note>()
+            .sort("updatedAt", Sort.DESCENDING)
+            .find()
+    }
+    
+    suspend fun clearAllNotes() {
+        realm.write {
+            val allNotes = query<Note>().find()
+            delete(allNotes)
+        }
+    }
+    
+    suspend fun insertNoteFromBackup(note: Note) {
+        realm.write {
+            copyToRealm(note)
+        }
+    }
 }

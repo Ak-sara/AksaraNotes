@@ -13,6 +13,8 @@ import com.aksara.notes.MainActivity
 import com.aksara.notes.R
 import com.aksara.notes.databinding.ActivitySetupBinding
 import com.aksara.notes.utils.BiometricHelper
+import com.aksara.notes.data.database.RealmDatabase
+import android.util.Log
 
 class SetupActivity : AppCompatActivity() {
 
@@ -186,6 +188,17 @@ class SetupActivity : AppCompatActivity() {
         // Mark app as set up
         val prefs = getSharedPreferences("app_setup", MODE_PRIVATE)
         prefs.edit().putBoolean("is_setup", true).apply()
+
+        // Initialize Realm database with the new password
+        try {
+            Log.d("SetupActivity", "Initializing Realm database with new master password")
+            RealmDatabase.initialize(this, password)
+            Log.d("SetupActivity", "Realm database initialized successfully")
+        } catch (e: Exception) {
+            Log.e("SetupActivity", "Failed to initialize Realm with new password", e)
+            Toast.makeText(this, "Warning: Database initialization failed", Toast.LENGTH_LONG).show()
+            // Continue anyway - the app can try to initialize later
+        }
 
         Toast.makeText(this, "Master password created successfully!", Toast.LENGTH_SHORT).show()
 

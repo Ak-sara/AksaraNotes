@@ -45,15 +45,5 @@
 
     </androidx.core.widget.NestedScrollView>
 
-    <!-- Save Button -->
-    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
-        android:id="@+id/btn_save"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        android:text="Save"
-        app:icon="@drawable/ic_save"
-        app:layout_anchor="@id/layout_form_fields"
-        app:layout_anchorGravity="bottom|end" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

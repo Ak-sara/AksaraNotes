@@ -59,9 +59,10 @@ object DatasetTemplates {
             columns.apply {
                 add(createColumn("service_name", ColumnType.TEXT, required = true))
                 add(createColumn("amount", ColumnType.CURRENCY, required = true))
-                add(createColumn("billing_cycle", ColumnType.SELECT, required = true, 
-                    options = """{"options": ["Monthly", "Yearly", "Weekly", "Daily"]}"""))
-                add(createColumn("next_due_date", ColumnType.DATE, required = true))
+                add(createColumn("billing_cycle", ColumnType.FREQUENCY, required = true, 
+                    options = """{"frequency": "Monthly"}"""))
+                add(createColumn("next_due_date", ColumnType.DATE, required = true,
+                    options = """{"showInCalendar": true, "isRecurring": true, "frequencyField": "billing_cycle"}"""))
                 add(createColumn("last_paid_date", ColumnType.DATE))
                 add(createColumn("category", ColumnType.SELECT,
                     options = """{"options": ["Entertainment", "Software", "Utilities", "Health", "Education", "Other"]}"""))

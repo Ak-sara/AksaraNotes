@@ -1,10 +1,13 @@
 package com.aksara.notes.ui.database.forms
 
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import com.aksara.notes.R
 import com.aksara.notes.databinding.ActivityFormEditorBinding
 import com.aksara.notes.ui.database.DatabaseViewModel
 import com.aksara.notes.data.database.entities.Dataset
@@ -33,7 +36,25 @@ class FormEditorActivity : AppCompatActivity() {
 
         setupToolbar()
         loadDataset()
-        setupSaveButton()
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        menuInflater.inflate(R.menu.activity_form_editor_menu, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.action_save_form -> {
+                saveForm()
+                true
+            }
+            android.R.id.home -> {
+                onBackPressed()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
     }
 
     private fun setupToolbar() {
@@ -93,11 +114,6 @@ class FormEditorActivity : AppCompatActivity() {
         }
     }
 
-    private fun setupSaveButton() {
-        binding.btnSave.setOnClickListener {
-            saveForm()
-        }
-    }
 
     private fun saveForm() {
         val datasetId = currentDataset?.id ?: return

@@ -31,4 +31,14 @@ class DatabaseRepository {
     fun searchForms(query: String): Flow<List<Form>> = formDao.searchForms(query)
     suspend fun deleteFormsByDataset(datasetId: String) = formDao.deleteFormsByDataset(datasetId)
     suspend fun getFormCountForDataset(datasetId: String): Int = formDao.getFormCountForDataset(datasetId)
+    
+    // Backup-specific methods
+    suspend fun getAllDatasetsForBackup(): List<Dataset> = datasetDao.getAllDatasetsForBackup()
+    suspend fun getAllFormsForBackup(): List<Form> = formDao.getAllFormsForBackup()
+    suspend fun clearAllData() {
+        formDao.clearAllForms()
+        datasetDao.clearAllDatasets()
+    }
+    suspend fun insertDatasetFromBackup(dataset: Dataset) = datasetDao.insertDatasetFromBackup(dataset)
+    suspend fun insertFormFromBackup(form: Form) = formDao.insertFormFromBackup(form)
 }

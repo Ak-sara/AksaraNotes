@@ -22,4 +22,9 @@ class NotesRepository {
     fun getFavoriteNotes(): Flow<List<Note>> = noteDao.getFavoriteNotes()
 
     fun getProtectedNotes(): Flow<List<Note>> = noteDao.getProtectedNotes()
+    
+    // Backup-specific methods
+    suspend fun getAllNotesForBackup(): List<Note> = noteDao.getAllNotesForBackup()
+    suspend fun clearAllNotes() = noteDao.clearAllNotes()
+    suspend fun insertNoteFromBackup(note: Note) = noteDao.insertNoteFromBackup(note)
 }

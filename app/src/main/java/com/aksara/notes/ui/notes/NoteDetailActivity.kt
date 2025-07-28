@@ -33,7 +33,7 @@ class NoteDetailActivity : AppCompatActivity() {
 
         setupToolbar()
         loadNote()
-        setupFab()
+        setupButtons()
     }
 
     private fun setupToolbar() {
@@ -113,26 +113,29 @@ class NoteDetailActivity : AppCompatActivity() {
         // Show all UI elements
         binding.etNoteTitle.visibility = android.view.View.VISIBLE
         binding.etNoteContent.visibility = android.view.View.VISIBLE
-        binding.fabEdit.visibility = android.view.View.VISIBLE
+        binding.layoutActionButtons.visibility = android.view.View.VISIBLE
     }
 
     private fun showAccessDeniedState() {
         // Hide note content and show access denied message
         binding.etNoteTitle.visibility = android.view.View.GONE
         binding.etNoteContent.visibility = android.view.View.GONE
-        binding.fabEdit.visibility = android.view.View.GONE
+        binding.layoutActionButtons.visibility = android.view.View.GONE
 
         supportActionBar?.title = "🔒 Protected Note"
     }
 
-    private fun setupFab() {
-        binding.fabEdit.setOnClickListener {
-            // If we can see the FAB, we already have access to the note
-            if (isEditMode) {
-                saveNote()
-            } else {
-                enterEditMode()
-            }
+    private fun setupButtons() {
+        binding.btnFavorite.setOnClickListener {
+            toggleFavorite()
+        }
+        
+        binding.btnPinProtect.setOnClickListener {
+            togglePinProtection()
+        }
+        
+        binding.btnShare.setOnClickListener {
+            shareNote()
         }
     }
 
@@ -141,14 +144,14 @@ class NoteDetailActivity : AppCompatActivity() {
         binding.etNoteTitle.isEnabled = true
         binding.etNoteContent.isEnabled = true
         binding.etNoteTitle.requestFocus()
-        binding.fabEdit.setImageResource(R.drawable.ic_save)
+        invalidateOptionsMenu() // Update menu icon
     }
 
     private fun exitEditMode() {
         isEditMode = false
         binding.etNoteTitle.isEnabled = false
         binding.etNoteContent.isEnabled = false
-        binding.fabEdit.setImageResource(R.drawable.ic_edit)
+        invalidateOptionsMenu() // Update menu icon
     }
 
     private fun saveNote() {
@@ -192,6 +195,10 @@ class NoteDetailActivity : AppCompatActivity() {
         // Only show menu if user has access to note
         if (hasAccessToNote) {
             menuInflater.inflate(R.menu.note_detail_menu, menu)
+            // Update edit icon based on current mode
+            val editItem = menu.findItem(R.id.action_edit)
+            editItem?.setIcon(if (isEditMode) R.drawable.ic_save else R.drawable.ic_edit)
+            editItem?.setTitle(if (isEditMode) "Save" else "Edit")
         }
         return true
     }
@@ -203,16 +210,12 @@ class NoteDetailActivity : AppCompatActivity() {
                 finish()
                 true
             }
-            R.id.action_favorite -> {
-                toggleFavorite()
-                true
-            }
-            R.id.action_pin_protect -> {
-                togglePinProtection()
-                true
-            }
-            R.id.action_share -> {
-                shareNote()
+            R.id.action_edit -> {
+                if (isEditMode) {
+                    saveNote()
+                } else {
+                    enterEditMode()
+                }
                 true
             }
             else -> super.onOptionsItemSelected(item)

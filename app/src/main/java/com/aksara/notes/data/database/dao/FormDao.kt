@@ -70,4 +70,22 @@ class FormDao {
     suspend fun getFormCountForDataset(datasetId: String): Int {
         return realm.query<Form>("datasetId == $0", datasetId).count().find().toInt()
     }
+    
+    // Backup-specific methods
+    suspend fun getAllFormsForBackup(): List<Form> {
+        return realm.query<Form>()
+            .sort("updatedAt", Sort.DESCENDING)
+            .find()
+    }
+    
+    suspend fun clearAllForms() {
+        realm.write {
+            val allForms = query<Form>().find()
+            delete(allForms)
+        }
+    }
+    
+    suspend fun insertFormFromBackup(form: Form) {
+        insertForm(form)
+    }
 }

@@ -2,8 +2,6 @@
 local.properties
 .idea/
 .gradle/
-.claude/
-CLAUDE.md
 *.iml
 
 /gradle/wrapper/gradle-wrapper.jar

@@ -18,8 +18,10 @@ import com.aksara.notes.ui.notes.NotesFragment
 import com.aksara.notes.ui.database.DatabaseFragment
 import com.aksara.notes.ui.settings.SecuritySettingsActivity
 import com.aksara.notes.ui.settings.AboutActivity
+import com.aksara.notes.ui.backup.BackupRestoreActivity
 import com.aksara.notes.utils.BiometricHelper
 import com.aksara.notes.utils.SessionManager
+import com.aksara.notes.data.database.RealmDatabase
 import com.google.android.material.navigation.NavigationView
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -76,7 +78,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             if (authRequired) {
                 startAuthenticationFlow()
             } else {
-                Log.d(TAG, "Authentication not required, showing UI directly")
+                Log.d(TAG, "Authentication not required, initializing database and showing UI")
+                initializeEncryptedDatabase()
                 showUI()
             }
 
@@ -132,8 +135,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 startActivity(Intent(this, SecuritySettingsActivity::class.java))
             }
             R.id.nav_backup_restore -> {
-                showToast("🚧 Backup & Restore coming soon!")
-                // TODO: Implement backup/restore activity
+                startActivity(Intent(this, BackupRestoreActivity::class.java))
             }
             R.id.nav_about -> {
                 startActivity(Intent(this, AboutActivity::class.java))
@@ -303,12 +305,33 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             // Mark authentication successful in session manager
             sessionManager.markAuthenticated()
             Log.d(TAG, "Session marked as authenticated")
+            
+            // Initialize Realm database with encryption after successful authentication
+            initializeEncryptedDatabase()
+            
         } catch (e: Exception) {
             Log.e(TAG, "Error marking authentication", e)
         }
 
         showToast("Welcome back!")
         showUI()
+    }
+    
+    private fun initializeEncryptedDatabase() {
+        try {
+            Log.d(TAG, "Ensuring Realm database is initialized")
+            // Just check if Realm is initialized without closing it
+            if (RealmDatabase.isInitialized()) {
+                Log.d(TAG, "Realm database is already initialized")
+            } else {
+                Log.d(TAG, "Realm not initialized, attempting initialization")
+                RealmDatabase.initialize(this)
+                Log.d(TAG, "Realm database initialized successfully")
+            }
+        } catch (e: Exception) {
+            Log.e(TAG, "Failed to initialize Realm database", e)
+            showToast("Database initialization failed: ${e.message}")
+        }
     }
 
     private fun handleAuthenticationError(error: String) {

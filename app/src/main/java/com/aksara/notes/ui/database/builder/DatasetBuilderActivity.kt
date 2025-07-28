@@ -207,57 +207,33 @@ class DatasetBuilderActivity : AppCompatActivity() {
 
         when (type) {
             ColumnType.FORMULA -> {
-                // Formula input section
-                val formulaContainer = LinearLayout(this).apply {
-                    orientation = LinearLayout.VERTICAL
-                }
-
-                // Header
-                val headerText = TextView(this).apply {
-                    text = "Formula Expression"
-                    textSize = 16f
-                    setTextColor(MaterialColors.getColor(this@DatasetBuilderActivity, com.google.android.material.R.attr.colorOnSurface, getColor(R.color.on_surface)))
-                    setPadding(0, 16, 0, 8)
-                }
-                formulaContainer.addView(headerText)
-
-                // Formula input
-                val formulaEditText = EditText(this).apply {
-                    hint = "e.g., {Price} * {Quantity} or {Total} * 0.1"
-                    inputType = InputType.TYPE_CLASS_TEXT
-                    minLines = 2
-                    maxLines = 4
-
-                    // Load existing formula
-                    val existingFormula = existingOptions["formula"] as? String ?: ""
-                    setText(existingFormula)
-                }
-                formulaContainer.addView(formulaEditText)
-
-                // Help text
+                // Formula columns use the default value field for the formula
+                // No additional UI needed - formula is entered in the default value field above
                 val helpText = TextView(this).apply {
                     text = """
+                    💡 Enter your formula expression in the 'Default Value' field above.
+                    
                     Use {ColumnName} to reference other fields.
                     Supported operations: +, -, *, /, (), %
+                    
                     Examples:
                     • {Price} * {Quantity}
                     • ({Subtotal} + {Tax}) * 0.9
                     • {Income} * 15%
+                    
+                    Currency formatting will be applied automatically based on the operation.
                 """.trimIndent()
                     textSize = 12f
                     setTextColor(MaterialColors.getColor(this@DatasetBuilderActivity, com.google.android.material.R.attr.colorOnSurfaceVariant, getColor(R.color.on_surface_variant)))
-                    setPadding(0, 8, 0, 0)
+                    setPadding(16, 16, 16, 16)
+                    
+                    // Make text wrap properly
+                    layoutParams = LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.MATCH_PARENT,
+                        LinearLayout.LayoutParams.WRAP_CONTENT
+                    )
                 }
-                formulaContainer.addView(helpText)
-
-                // Format as currency checkbox
-                val formatAsCurrencyCheckbox = CheckBox(this).apply {
-                    text = "💰 Format result as currency"
-                    isChecked = existingOptions["formatAsCurrency"] as? Boolean ?: false
-                }
-                formulaContainer.addView(formatAsCurrencyCheckbox)
-
-                layout.addView(formulaContainer)
+                layout.addView(helpText)
             }
             ColumnType.SELECT -> {
                 val optionsContainer = LinearLayout(this).apply {
@@ -334,30 +310,88 @@ class DatasetBuilderActivity : AppCompatActivity() {
                     visibility = if (showInCalendarCheckbox.isChecked) View.VISIBLE else View.GONE
 
                     setOnCheckedChangeListener { _, isChecked ->
-                        val frequencySpinner = layout.findViewWithTag<Spinner>("frequency_spinner")
-                        frequencySpinner?.visibility = if (isChecked) View.VISIBLE else View.GONE
+                        val frequencyFieldSpinner = layout.findViewWithTag<Spinner>("frequency_field_spinner")
+                        val frequencyLabel = layout.findViewWithTag<TextView>("frequency_label")
+                        frequencyFieldSpinner?.visibility = if (isChecked) View.VISIBLE else View.GONE
+                        frequencyLabel?.visibility = if (isChecked) View.VISIBLE else View.GONE
                     }
                 }
                 layout.addView(recurringCheckbox)
 
-                val frequencySpinner = Spinner(this).apply {
-                    tag = "frequency_spinner"
+                val frequencyLabel = TextView(this).apply {
+                    tag = "frequency_label"
+                    text = "Frequency Field:"
+                    setPadding(0, 8, 0, 4)
+                    setTextColor(MaterialColors.getColor(this@DatasetBuilderActivity, com.google.android.material.R.attr.colorOnSurfaceVariant, getColor(R.color.on_surface_variant)))
+                    visibility = if (showInCalendarCheckbox.isChecked && recurringCheckbox.isChecked) View.VISIBLE else View.GONE
+                }
+                layout.addView(frequencyLabel)
+
+                val frequencyFieldSpinner = Spinner(this).apply {
+                    tag = "frequency_field_spinner"
+                    
+                    // Get FREQUENCY type columns from current dataset columns
+                    val frequencyFields = columns.filter { it.type == "FREQUENCY" }.map { it.name }
+                    val options = if (frequencyFields.isNotEmpty()) {
+                        frequencyFields.toTypedArray()
+                    } else {
+                        arrayOf("(No frequency fields available)")
+                    }
+                    
                     adapter = ArrayAdapter(
                         this@DatasetBuilderActivity,
                         android.R.layout.simple_spinner_item,
-                        arrayOf("Monthly", "Weekly", "Yearly", "Every 2 weeks", "Every 3 months", "Every 6 months")
+                        options
                     ).also {
                         it.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
                     }
 
                     // Set existing value
-                    val currentFrequency = existingOptions["recurrenceFrequency"] as? String ?: "Monthly"
-                    val frequencyOptions = arrayOf("Monthly", "Weekly", "Yearly", "Every 2 weeks", "Every 3 months", "Every 6 months")
-                    setSelection(frequencyOptions.indexOf(currentFrequency).coerceAtLeast(0))
+                    val currentFrequencyField = existingOptions["frequencyField"] as? String
+                    if (currentFrequencyField != null && frequencyFields.contains(currentFrequencyField)) {
+                        setSelection(frequencyFields.indexOf(currentFrequencyField))
+                    }
 
                     visibility = if (showInCalendarCheckbox.isChecked && recurringCheckbox.isChecked) View.VISIBLE else View.GONE
                 }
-                layout.addView(frequencySpinner)
+                layout.addView(frequencyFieldSpinner)
+            }
+
+            ColumnType.FREQUENCY -> {
+                // Frequency selector for billing cycles, recurring events, etc.
+                val frequencyContainer = LinearLayout(this).apply {
+                    orientation = LinearLayout.VERTICAL
+                }
+
+                val headerText = TextView(this).apply {
+                    text = "Frequency Options"
+                    textSize = 16f
+                    setTextColor(MaterialColors.getColor(this@DatasetBuilderActivity, com.google.android.material.R.attr.colorOnSurface, getColor(R.color.on_surface)))
+                    setPadding(0, 16, 0, 8)
+                }
+                frequencyContainer.addView(headerText)
+
+                val frequencySpinner = Spinner(this).apply {
+                    val frequencies = arrayOf(
+                        "Daily", "Weekly", "Bi-weekly", "Monthly", 
+                        "Quarterly", "Semi-annually", "Annually",
+                        "Every 2 weeks", "Every 3 months", "Every 6 months"
+                    )
+                    adapter = ArrayAdapter(
+                        this@DatasetBuilderActivity,
+                        android.R.layout.simple_spinner_item,
+                        frequencies
+                    ).also {
+                        it.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+                    }
+
+                    // Set existing value
+                    val currentFrequency = existingOptions["frequency"] as? String ?: "Monthly"
+                    setSelection(frequencies.indexOf(currentFrequency).coerceAtLeast(0))
+                }
+                frequencyContainer.addView(frequencySpinner)
+
+                layout.addView(frequencyContainer)
             }
 
             else -> {
@@ -549,29 +583,9 @@ class DatasetBuilderActivity : AppCompatActivity() {
 
         when (type) {
             ColumnType.FORMULA -> {
-                // Find the formula EditText and format checkbox
-                for (i in 0 until layout.childCount) {
-                    val child = layout.getChildAt(i)
-                    if (child is LinearLayout) {
-                        for (j in 0 until child.childCount) {
-                            val grandChild = child.getChildAt(j)
-                            when (grandChild) {
-                                is EditText -> {
-                                    val formula = grandChild.text.toString().trim()
-                                    if (formula.isNotEmpty()) {
-                                        options["formula"] = formula
-                                        Log.d("DatasetBuilder", "Storing formula: '$formula'")
-                                    }
-                                }
-                                is CheckBox -> {
-                                    if (grandChild.text.contains("currency")) {
-                                        options["formatAsCurrency"] = grandChild.isChecked
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
+                // Formula columns get their formula from the default value field
+                // No additional options to collect from the layout
+                // Currency formatting is handled automatically based on operations
             }
             ColumnType.SELECT -> {
                 // Find the options EditText by searching through child views
@@ -613,7 +627,7 @@ class DatasetBuilderActivity : AppCompatActivity() {
                 // Collect calendar options
                 var showInCalendar = true
                 var isRecurring = false
-                var recurrenceFrequency = "Monthly"
+                var frequencyField = ""
 
                 for (i in 0 until layout.childCount) {
                     val child = layout.getChildAt(i)
@@ -625,8 +639,11 @@ class DatasetBuilderActivity : AppCompatActivity() {
                             }
                         }
                         is Spinner -> {
-                            if (child.tag == "frequency_spinner") {
-                                recurrenceFrequency = child.selectedItem?.toString() ?: "Monthly"
+                            if (child.tag == "frequency_field_spinner") {
+                                val selectedFrequencyField = child.selectedItem?.toString()
+                                if (selectedFrequencyField != "(No frequency fields available)") {
+                                    frequencyField = selectedFrequencyField ?: ""
+                                }
                             }
                         }
                     }
@@ -634,7 +651,24 @@ class DatasetBuilderActivity : AppCompatActivity() {
 
                 options["showInCalendar"] = showInCalendar
                 options["isRecurring"] = isRecurring
-                options["recurrenceFrequency"] = recurrenceFrequency
+                options["frequencyField"] = frequencyField
+            }
+
+            ColumnType.FREQUENCY -> {
+                // Collect frequency options
+                for (i in 0 until layout.childCount) {
+                    val child = layout.getChildAt(i)
+                    if (child is LinearLayout) {
+                        for (j in 0 until child.childCount) {
+                            val grandChild = child.getChildAt(j)
+                            if (grandChild is Spinner) {
+                                val selectedFrequency = grandChild.selectedItem?.toString() ?: "Monthly"
+                                options["frequency"] = selectedFrequency
+                                break
+                            }
+                        }
+                    }
+                }
             }
 
             else -> {

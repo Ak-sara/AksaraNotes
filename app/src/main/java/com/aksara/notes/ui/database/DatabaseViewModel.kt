@@ -9,11 +9,14 @@ import kotlinx.coroutines.launch
 import com.aksara.notes.data.database.entities.Dataset
 import com.aksara.notes.data.database.entities.TableColumn
 import com.aksara.notes.data.database.entities.Form
+import com.aksara.notes.data.database.entities.Note
 import com.aksara.notes.data.repository.DatabaseRepository
+import com.aksara.notes.data.repository.NotesRepository
 
 class DatabaseViewModel(application: Application) : AndroidViewModel(application) {
 
     private val repository = DatabaseRepository()
+    private val notesRepository = NotesRepository()
 
     // Datasets
     val allDatasets: LiveData<List<Dataset>> = repository.getAllDatasets().asLiveData()
@@ -72,5 +75,35 @@ class DatabaseViewModel(application: Application) : AndroidViewModel(application
 
     fun getFormsByDataset(datasetId: String): LiveData<List<Form>> {
         return repository.getFormsByDataset(datasetId).asLiveData()
+    }
+    
+    // Backup-specific methods
+    suspend fun getAllNotesForBackup(): List<Note> {
+        return notesRepository.getAllNotesForBackup()
+    }
+    
+    suspend fun getAllDatasetsForBackup(): List<Dataset> {
+        return repository.getAllDatasetsForBackup()
+    }
+    
+    suspend fun getAllFormsForBackup(): List<Form> {
+        return repository.getAllFormsForBackup()
+    }
+    
+    suspend fun clearAllData() {
+        repository.clearAllData()
+        notesRepository.clearAllNotes()
+    }
+    
+    suspend fun insertDatasetFromBackup(dataset: Dataset) {
+        repository.insertDatasetFromBackup(dataset)
+    }
+    
+    suspend fun insertNoteFromBackup(note: Note) {
+        notesRepository.insertNoteFromBackup(note)
+    }
+    
+    suspend fun insertFormFromBackup(form: Form) {
+        repository.insertFormFromBackup(form)
     }
 }

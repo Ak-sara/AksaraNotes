@@ -217,4 +217,22 @@ class DatasetDao {
             }
         }
     }
+    
+    // Backup-specific methods
+    suspend fun getAllDatasetsForBackup(): List<Dataset> {
+        return realm.query<Dataset>()
+            .sort("updatedAt", Sort.DESCENDING)
+            .find()
+    }
+    
+    suspend fun clearAllDatasets() {
+        realm.write {
+            val allDatasets = query<Dataset>().find()
+            delete(allDatasets)
+        }
+    }
+    
+    suspend fun insertDatasetFromBackup(dataset: Dataset) {
+        insertDataset(dataset)
+    }
 }

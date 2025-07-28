@@ -15,7 +15,8 @@ enum class ColumnType(val displayName: String, val icon: String) {
     URL("URL", "🔗"),
     RATING("Rating", "⭐"),
     COLOR("Color", "🎨"),
-    FORMULA("Formula", "🧮")
+    FORMULA("Formula", "🧮"),
+    FREQUENCY("Frequency", "🔄")
 }
 
 // Note: TableColumn and TableSettings are now Realm entities in data.database.entities

@@ -36,24 +36,6 @@
                 android:maxLines="1" />
         </com.google.android.material.textfield.TextInputLayout>
 
-        <TextView
-            android:id="@+id/tv_notes_count"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="0 notes"
-            android:layout_gravity="center"
-            android:textSize="14sp"
-            android:textColor="?attr/colorOnSurfaceVariant"  />
-
-        <TextView
-            android:id="@+id/btn_view_toggle"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:text="⊞"
-            android:textSize="20sp"
-            android:gravity="center"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:layout_marginStart="8dp" />
     </LinearLayout>
 
     <!-- Notes List -->
@@ -107,17 +89,5 @@
 
     </LinearLayout>
 
-    <!-- Floating Action Button -->
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fab_add_note"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        android:src="@drawable/ic_add"
-        android:contentDescription="Add Note"
-        app:tint="?attr/colorSurface"
-        app:backgroundTint="?attr/colorPrimary"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

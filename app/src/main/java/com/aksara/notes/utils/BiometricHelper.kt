@@ -9,6 +9,7 @@ import androidx.biometric.BiometricManager
 import androidx.biometric.BiometricPrompt
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentActivity
+import com.aksara.notes.R
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 
@@ -175,10 +176,20 @@ class BiometricHelper(private val context: Context) {
                 val passwordLayout = TextInputLayout(context).apply {
                     hint = "Master Password"
                     boxBackgroundMode = TextInputLayout.BOX_BACKGROUND_OUTLINE
+                    
+                    // Fix hint text color for better contrast in dark mode
+                    val textColor = androidx.core.content.ContextCompat.getColor(context, R.color.text_primary)
+                    val hintColor = androidx.core.content.ContextCompat.getColor(context, R.color.text_hint)
+                    setHintTextColor(android.content.res.ColorStateList.valueOf(hintColor))
+                    boxStrokeColor = textColor
                 }
 
                 val passwordEdit = TextInputEditText(context).apply {
                     inputType = android.text.InputType.TYPE_CLASS_TEXT or android.text.InputType.TYPE_TEXT_VARIATION_PASSWORD
+                    
+                    // Set text color for better contrast in dark mode
+                    val textColor = androidx.core.content.ContextCompat.getColor(context, R.color.text_primary)
+                    setTextColor(textColor)
                 }
 
                 passwordLayout.addView(passwordEdit)

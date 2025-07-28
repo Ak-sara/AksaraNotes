@@ -246,9 +246,19 @@ class CalendarFragment : Fragment() {
                     ?: columnOptions["isRecurring"]?.toString()?.toBoolean()
                     ?: false
 
-                val recurrenceFrequency = calendarOptions["recurrenceFrequency"]?.toString()
-                    ?: columnOptions["recurrenceFrequency"]?.toString()
-                    ?: "Monthly"
+                // Get frequency from referenced field for dynamic recurrence
+                val frequencyField = calendarOptions["frequencyField"]?.toString()
+                    ?: columnOptions["frequencyField"]?.toString()
+                
+                val recurrenceFrequency = if (frequencyField != null && frequencyField.isNotEmpty()) {
+                    // Get frequency value from the referenced field
+                    formData[frequencyField]?.toString() ?: "Monthly"
+                } else {
+                    // Fallback to old hardcoded frequency (for backward compatibility)
+                    calendarOptions["recurrenceFrequency"]?.toString()
+                        ?: columnOptions["recurrenceFrequency"]?.toString()
+                        ?: "Monthly"
+                }
 
                 // Parse the stored date
                 val storedDate = try {
@@ -281,28 +291,32 @@ class CalendarFragment : Fragment() {
         if (targetDate.before(storedDate)) return false
 
         return when (frequency) {
-            "Monthly" -> {
-                storedDate.get(Calendar.DAY_OF_MONTH) == targetDate.get(Calendar.DAY_OF_MONTH)
+            "Daily" -> {
+                val daysDiff = ((targetDate.timeInMillis - storedDate.timeInMillis) / (1000 * 60 * 60 * 24)).toInt()
+                daysDiff > 0
             }
             "Weekly" -> {
                 val daysDiff = ((targetDate.timeInMillis - storedDate.timeInMillis) / (1000 * 60 * 60 * 24)).toInt()
                 daysDiff % 7 == 0
             }
-            "Yearly" -> {
-                storedDate.get(Calendar.DAY_OF_MONTH) == targetDate.get(Calendar.DAY_OF_MONTH) &&
-                        storedDate.get(Calendar.MONTH) == targetDate.get(Calendar.MONTH)
-            }
-            "Every 2 weeks" -> {
+            "Bi-weekly", "Every 2 weeks" -> {
                 val daysDiff = ((targetDate.timeInMillis - storedDate.timeInMillis) / (1000 * 60 * 60 * 24)).toInt()
                 daysDiff % 14 == 0
             }
-            "Every 3 months" -> {
+            "Monthly" -> {
+                storedDate.get(Calendar.DAY_OF_MONTH) == targetDate.get(Calendar.DAY_OF_MONTH)
+            }
+            "Quarterly", "Every 3 months" -> {
                 storedDate.get(Calendar.DAY_OF_MONTH) == targetDate.get(Calendar.DAY_OF_MONTH) &&
                         (targetDate.get(Calendar.MONTH) - storedDate.get(Calendar.MONTH)) % 3 == 0
             }
-            "Every 6 months" -> {
+            "Semi-annually", "Every 6 months" -> {
                 storedDate.get(Calendar.DAY_OF_MONTH) == targetDate.get(Calendar.DAY_OF_MONTH) &&
                         (targetDate.get(Calendar.MONTH) - storedDate.get(Calendar.MONTH)) % 6 == 0
+            }
+            "Annually", "Yearly" -> {
+                storedDate.get(Calendar.DAY_OF_MONTH) == targetDate.get(Calendar.DAY_OF_MONTH) &&
+                        storedDate.get(Calendar.MONTH) == targetDate.get(Calendar.MONTH)
             }
             else -> false
         }

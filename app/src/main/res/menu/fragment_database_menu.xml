@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/action_templates"
+        android:title="Templates"
+        android:icon="@drawable/ic_template_bordered"
+        app:showAsAction="always" />
+
+    <item
+        android:id="@+id/action_all_forms"
+        android:title="All Forms"
+        android:icon="@drawable/ic_view_all_bordered"
+        app:showAsAction="always" />
+
+    <item
+        android:id="@+id/action_create_dataset"
+        android:title="Create Dataset"
+        android:icon="@drawable/ic_add"
+        app:showAsAction="always" />
+
+</menu>

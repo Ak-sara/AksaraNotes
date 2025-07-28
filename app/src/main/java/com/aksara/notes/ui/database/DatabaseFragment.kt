@@ -3,12 +3,16 @@ package com.aksara.notes.ui.database
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope  // ADD THIS LINE
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.aksara.notes.R
 import com.aksara.notes.databinding.FragmentDatabaseBinding
 import com.aksara.notes.ui.database.builder.DatasetBuilderActivity
 import com.aksara.notes.ui.database.view.DatasetViewActivity
@@ -35,6 +39,9 @@ class DatabaseFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        
+        // Enable options menu
+        setHasOptionsMenu(true)
 
         databaseViewModel = ViewModelProvider(this)[DatabaseViewModel::class.java]
 
@@ -70,20 +77,31 @@ class DatabaseFragment : Fragment() {
         }
     }
 
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.fragment_database_menu, menu)
+        super.onCreateOptionsMenu(menu, inflater)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.action_templates -> {
+                showQuickDatasetDialog()
+                true
+            }
+            R.id.action_all_forms -> {
+                android.widget.Toast.makeText(requireContext(), "All Items view coming soon!", android.widget.Toast.LENGTH_SHORT).show()
+                true
+            }
+            R.id.action_create_dataset -> {
+                startActivity(Intent(requireContext(), DatasetBuilderActivity::class.java))
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
+
     private fun setupClickListeners() {
-        binding.fabCreateTable.setOnClickListener {
-            startActivity(Intent(requireContext(), DatasetBuilderActivity::class.java))
-        }
-
-        binding.btnCreateQuickTable.setOnClickListener {
-            showQuickDatasetDialog()
-        }
-
-        binding.btnViewAllItems.setOnClickListener {
-            // TODO: Open unified items view across all tables
-            android.widget.Toast.makeText(requireContext(), "All Items view coming soon!", android.widget.Toast.LENGTH_SHORT).show()
-        }
-
+        // Only keep the empty state button
         binding.btnCreateFirstTable.setOnClickListener {
             showQuickDatasetDialog()
         }
@@ -94,9 +112,6 @@ class DatabaseFragment : Fragment() {
             updateUI(datasets)
         }
 
-        databaseViewModel.allForms.observe(viewLifecycleOwner) { forms ->
-            binding.tvTotalItems.text = "${forms.size} total forms"
-        }
     }
 
     private fun updateUI(datasets: List<Dataset>) {
@@ -117,7 +132,6 @@ class DatabaseFragment : Fragment() {
             }
         }
 
-        binding.tvTablesCount.text = "${datasets.size} datasets created"
     }
 
     private fun showQuickDatasetDialog() {

@@ -88,6 +88,14 @@
             android:theme="@style/Theme.AksaraNotes"
             android:parentActivityName=".MainActivity" />
 
+        <!-- Backup/Restore Activity -->
+        <activity
+            android:name=".ui.backup.BackupRestoreActivity"
+            android:exported="false"
+            android:theme="@style/Theme.AksaraNotes"
+            android:parentActivityName=".MainActivity"
+            android:screenOrientation="portrait" />
+
         <!-- File Provider for sharing and backup operations -->
         <provider
             android:name="androidx.core.content.FileProvider"

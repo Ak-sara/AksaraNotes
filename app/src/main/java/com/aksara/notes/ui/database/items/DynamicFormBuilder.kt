@@ -78,6 +78,7 @@ class DynamicFormBuilder(
             ColumnType.RATING -> createRatingInput(column)
             ColumnType.COLOR -> createColorInput(column)
             ColumnType.FORMULA -> createFormulaInput(column)
+            ColumnType.FREQUENCY -> createFrequencyInput(column)
         }
     }
 
@@ -543,6 +544,70 @@ class DynamicFormBuilder(
         container.addView(resultView)
 
         formulaFields[column.name] = resultView
+        return container
+    }
+
+    private fun createFrequencyInput(column: TableColumn): View {
+        val container = LinearLayout(context).apply {
+            orientation = LinearLayout.VERTICAL
+            layoutParams = LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+            ).apply {
+                setMargins(0, 0, 0, 32)
+            }
+        }
+
+        val label = TextView(context).apply {
+            text = column.name + if (column.required) " *" else ""
+            textSize = 16f
+            setTextColor(context.getColor(R.color.on_surface))
+            setPadding(0, 0, 0, 8)
+        }
+
+        // Parse frequency options from column.options
+        val columnOptions = try {
+            if (column.options.isNotEmpty()) {
+                val gson = Gson()
+                val mapType = object : TypeToken<Map<String, Any>>() {}.type
+                gson.fromJson<Map<String, Any>>(column.options, mapType)
+            } else {
+                emptyMap<String, Any>()
+            }
+        } catch (e: Exception) {
+            emptyMap<String, Any>()
+        }
+
+        // Get available frequency options
+        val frequencies = arrayOf(
+            "Daily", "Weekly", "Bi-weekly", "Monthly", 
+            "Quarterly", "Semi-annually", "Annually",
+            "Every 2 weeks", "Every 3 months", "Every 6 months"
+        )
+
+        val spinner = Spinner(context).apply {
+            adapter = ArrayAdapter(context, android.R.layout.simple_spinner_item, frequencies).apply {
+                setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+            }
+
+            // Set default selection based on column options
+            val currentFrequency = columnOptions["frequency"]?.toString() ?: "Monthly"
+            val index = frequencies.indexOf(currentFrequency)
+            if (index >= 0) {
+                setSelection(index)
+            }
+
+            onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+                override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                    updateAllFormulas()
+                }
+                override fun onNothingSelected(parent: AdapterView<*>?) {}
+            }
+        }
+
+        container.addView(label)
+        container.addView(spinner)
+        formFields[column.name] = spinner
         return container
     }
 

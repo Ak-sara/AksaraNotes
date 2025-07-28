@@ -2,10 +2,13 @@ package com.aksara.notes.ui.database.view
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.aksara.notes.R
 import com.aksara.notes.databinding.ActivityDatasetViewBinding
 import com.aksara.notes.ui.database.DatabaseViewModel
 import com.aksara.notes.ui.database.forms.FormEditorActivity
@@ -30,7 +33,6 @@ class DatasetViewActivity : AppCompatActivity() {
         setupToolbar()
         setupRecyclerView()
         loadDataset()
-        setupFab()
     }
 
     private fun setupToolbar() {
@@ -69,13 +71,26 @@ class DatasetViewActivity : AppCompatActivity() {
         }
     }
 
-    private fun setupFab() {
-        binding.fabAddItem.setOnClickListener {
-            currentDataset?.let { dataset ->
-                val intent = Intent(this, FormEditorActivity::class.java)
-                intent.putExtra("dataset_id", dataset.id)
-                startActivity(intent)
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        menuInflater.inflate(R.menu.activity_dataset_view_menu, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.action_add_item -> {
+                currentDataset?.let { dataset ->
+                    val intent = Intent(this, FormEditorActivity::class.java)
+                    intent.putExtra("dataset_id", dataset.id)
+                    startActivity(intent)
+                }
+                true
             }
+            android.R.id.home -> {
+                finish()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
         }
     }
 

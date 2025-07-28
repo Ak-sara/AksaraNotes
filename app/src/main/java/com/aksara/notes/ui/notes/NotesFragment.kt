@@ -4,6 +4,9 @@ import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
@@ -13,6 +16,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.aksara.notes.MainActivity
+import com.aksara.notes.R
 import com.aksara.notes.databinding.FragmentNotesBinding
 import com.aksara.notes.data.database.entities.Note
 
@@ -36,13 +40,14 @@ class NotesFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        
+        // Enable options menu
+        setHasOptionsMenu(true)
 
         notesViewModel = ViewModelProvider(this)[NotesViewModel::class.java]
 
         setupRecyclerView()
         setupSearchView()
-        setupFab()
-        setupViewToggle()
         observeNotes()
     }
 
@@ -71,18 +76,34 @@ class NotesFragment : Fragment() {
         }
     }
 
-    private fun setupFab() {
-        binding.fabAddNote.setOnClickListener {
-            openNoteDetail(null) // null = create new note
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.fragment_notes_menu, menu)
+        
+        // Update view toggle icon based on current mode
+        val toggleItem = menu.findItem(R.id.action_toggle_view)
+        toggleItem?.setIcon(if (isGridView) R.drawable.ic_view_list else R.drawable.ic_view_grid)
+        toggleItem?.setTitle(if (isGridView) "List View" else "Grid View")
+        
+        super.onCreateOptionsMenu(menu, inflater)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.action_toggle_view -> {
+                isGridView = !isGridView
+                updateLayoutManager()
+                // Refresh menu to update icon
+                activity?.invalidateOptionsMenu()
+                true
+            }
+            R.id.action_add_note -> {
+                openNoteDetail(null) // null = create new note
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
         }
     }
 
-    private fun setupViewToggle() {
-        binding.btnViewToggle.setOnClickListener {
-            isGridView = !isGridView
-            updateLayoutManager()
-        }
-    }
 
     private fun updateLayoutManager() {
         binding.rvNotes.layoutManager = if (isGridView) {
@@ -90,8 +111,6 @@ class NotesFragment : Fragment() {
         } else {
             LinearLayoutManager(requireContext())
         }
-
-        binding.btnViewToggle.text = if (isGridView) "📋" else "⊞"
     }
 
     private fun observeNotes() {
@@ -109,9 +128,6 @@ class NotesFragment : Fragment() {
             binding.rvNotes.visibility = View.VISIBLE
             notesAdapter.submitList(notes)
         }
-
-        // Update notes count
-        binding.tvNotesCount.text = "${notes.size} notes"
     }
 
     private fun openNoteDetail(note: Note?) {
