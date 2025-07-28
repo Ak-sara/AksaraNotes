@@ -23,8 +23,12 @@ object RealmDatabase {
     private const val KEY_SIZE = 512 // Realm requires 64-byte (512-bit) encryption key
     private const val SALT = "AksaraNotes2024Salt" // Fixed salt for consistency
     
+    @Volatile
     private var realm: Realm? = null
     private var currentEncryptionKey: ByteArray? = null
+    
+    // Lock object for thread-safe singleton operations
+    private val lock = Any()
     
     /**
      * Initialize Realm with encryption using the master password
@@ -32,11 +36,18 @@ object RealmDatabase {
      * @param masterPassword The user's master password for encryption
      */
     fun initialize(context: Context, masterPassword: String? = null) {
-        try {
-            Log.d(TAG, "Initializing Realm database with encryption")
+        synchronized(lock) {
+            // Don't reinitialize if already initialized
+            if (realm != null && realm?.isClosed() == false) {
+                Log.d(TAG, "Realm already initialized and open")
+                return
+            }
             
-            // Store context reference for potential fallback initialization
-            contextRef = java.lang.ref.WeakReference(context)
+            try {
+                Log.d(TAG, "Initializing Realm database with encryption")
+                
+                // Store context reference for potential fallback initialization
+                contextRef = java.lang.ref.WeakReference(context)
             
             // Get master password from BiometricHelper if not provided
             val password = masterPassword ?: run {
@@ -70,9 +81,10 @@ object RealmDatabase {
             realm = Realm.open(config)
             Log.d(TAG, "Realm database initialized successfully with encryption")
             
-        } catch (e: Exception) {
-            Log.e(TAG, "Failed to initialize encrypted Realm database", e)
-            throw RuntimeException("Failed to initialize encrypted database: ${e.message}", e)
+            } catch (e: Exception) {
+                Log.e(TAG, "Failed to initialize encrypted Realm database", e)
+                throw RuntimeException("Failed to initialize encrypted database: ${e.message}", e)
+            }
         }
     }
     
@@ -80,8 +92,15 @@ object RealmDatabase {
      * Initialize without encryption (fallback for testing or migration)
      */
     fun initializeUnencrypted() {
-        try {
-            Log.d(TAG, "Initializing Realm database without encryption")
+        synchronized(lock) {
+            // Don't reinitialize if already initialized
+            if (realm != null && realm?.isClosed() == false) {
+                Log.d(TAG, "Realm already initialized and open")
+                return
+            }
+            
+            try {
+                Log.d(TAG, "Initializing Realm database without encryption")
             
             val config = RealmConfiguration.Builder(
                 schema = setOf(
@@ -100,28 +119,40 @@ object RealmDatabase {
             currentEncryptionKey = null
             Log.d(TAG, "Realm database initialized without encryption")
             
-        } catch (e: Exception) {
-            Log.e(TAG, "Failed to initialize Realm database", e)
-            throw RuntimeException("Failed to initialize database: ${e.message}", e)
+            } catch (e: Exception) {
+                Log.e(TAG, "Failed to initialize Realm database", e)
+                throw RuntimeException("Failed to initialize database: ${e.message}", e)
+            }
         }
     }
     
     fun getInstance(): Realm {
-        return realm ?: run {
-            Log.w(TAG, "Realm not initialized, attempting to initialize with default encryption")
-            try {
-                // Try to initialize with stored master password if available
-                // This is a fallback to prevent crashes during app startup
-                val context = getCurrentContext()
-                if (context != null) {
-                    initialize(context)
-                    realm ?: throw IllegalStateException("Failed to initialize Realm even with fallback")
-                } else {
-                    throw IllegalStateException("Realm not initialized and no context available. Call initialize() first.")
+        // Fast path: if realm exists and is not closed, return it without synchronization
+        realm?.let { currentRealm ->
+            if (!currentRealm.isClosed()) {
+                return currentRealm
+            }
+        }
+        
+        // Slow path: need to initialize or reinitialize
+        synchronized(lock) {
+            // Double-check pattern: check again inside synchronized block
+            return realm?.takeIf { !it.isClosed() } ?: run {
+                Log.w(TAG, "Realm not initialized or closed, attempting to initialize with default encryption")
+                try {
+                    // Try to initialize with stored master password if available
+                    // This is a fallback to prevent crashes during app startup
+                    val context = getCurrentContext()
+                    if (context != null) {
+                        initialize(context)
+                        realm?.takeIf { !it.isClosed() } ?: throw IllegalStateException("Failed to initialize Realm even with fallback")
+                    } else {
+                        throw IllegalStateException("Realm not initialized and no context available. Call initialize() first.")
+                    }
+                } catch (e: Exception) {
+                    Log.e(TAG, "Fallback Realm initialization failed", e)
+                    throw IllegalStateException("Realm not initialized. Call initialize() first.", e)
                 }
-            } catch (e: Exception) {
-                Log.e(TAG, "Fallback Realm initialization failed", e)
-                throw IllegalStateException("Realm not initialized. Call initialize() first.", e)
             }
         }
     }
@@ -134,9 +165,16 @@ object RealmDatabase {
     }
     
     fun close() {
-        realm?.close()
-        realm = null
-        currentEncryptionKey = null
+        synchronized(lock) {
+            realm?.let { realmInstance ->
+                if (!realmInstance.isClosed()) {
+                    Log.d(TAG, "Closing Realm database")
+                    realmInstance.close()
+                }
+            }
+            realm = null
+            currentEncryptionKey = null
+        }
     }
     
     /**
@@ -152,6 +190,12 @@ object RealmDatabase {
     fun isEncrypted(): Boolean {
         return currentEncryptionKey != null
     }
+    
+    /**
+     * Check if Realm database is initialized and not closed
+     */
+    val isInitialized: Boolean
+        get() = realm != null && realm?.isClosed() == false
     
     /**
      * Get the database file path

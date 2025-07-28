@@ -70,34 +70,31 @@ class NoteDetailActivity : AppCompatActivity() {
     }
 
     private fun checkNoteAccess(note: Note, onAccessGranted: () -> Unit) {
-        biometricHelper.authenticateUser(
-            onSuccess = {
-                hasAccessToNote = true
-                Toast.makeText(this, "🔓 Note unlocked", Toast.LENGTH_SHORT).show()
-                onAccessGranted()
-            },
-            onError = { error ->
-                Toast.makeText(this, "Access denied: $error", Toast.LENGTH_SHORT).show()
-                // Stay in access denied state
-            },
-            onPasswordFallback = {
-                biometricHelper.showPasswordDialog(
-                    onSuccess = {
-                        hasAccessToNote = true
-                        Toast.makeText(this, "🔓 Note unlocked", Toast.LENGTH_SHORT).show()
-                        onAccessGranted()
-                    },
-                    onError = { error ->
-                        Toast.makeText(this, "Access denied: $error", Toast.LENGTH_SHORT).show()
-                        // Stay in access denied state
-                    },
-                    onCancel = {
-                        Toast.makeText(this, "Authentication cancelled", Toast.LENGTH_SHORT).show()
-                        finish() // Close activity if user cancels
-                    }
-                )
-            }
-        )
+        // Check if PIN is enabled for note protection
+        if (biometricHelper.isPinEnabled()) {
+            // Use PIN for note authentication
+            biometricHelper.showPinDialog(
+                title = "Enter PIN",
+                message = "Enter your PIN to access this protected note",
+                onSuccess = {
+                    hasAccessToNote = true
+                    Toast.makeText(this, "🔓 Note unlocked", Toast.LENGTH_SHORT).show()
+                    onAccessGranted()
+                },
+                onError = { error ->
+                    Toast.makeText(this, "❌ $error", Toast.LENGTH_SHORT).show()
+                    // Stay in access denied state
+                },
+                onCancel = {
+                    Toast.makeText(this, "Authentication cancelled", Toast.LENGTH_SHORT).show()
+                    finish() // Close activity if user cancels
+                }
+            )
+        } else {
+            // Fallback: No PIN set up, request PIN setup
+            Toast.makeText(this, "❌ PIN not set up. Please set up a PIN in Security Settings first.", Toast.LENGTH_LONG).show()
+            finish() // Close activity since we can't access the note
+        }
     }
 
     private fun displayNoteContent(note: Note) {
@@ -246,28 +243,25 @@ class NoteDetailActivity : AppCompatActivity() {
     private fun togglePinProtection() {
         currentNote?.let { note ->
             if (!note.requiresPin) {
-                // Enabling PIN protection - ask for authentication to confirm
-                biometricHelper.authenticateUser(
-                    onSuccess = {
-                        updateNotePinProtection(note, true)
-                    },
-                    onError = { error ->
-                        Toast.makeText(this, "Cannot enable PIN protection: $error", Toast.LENGTH_SHORT).show()
-                    },
-                    onPasswordFallback = {
-                        biometricHelper.showPasswordDialog(
-                            onSuccess = {
-                                updateNotePinProtection(note, true)
-                            },
-                            onError = { error ->
-                                Toast.makeText(this, "Cannot enable PIN protection: $error", Toast.LENGTH_SHORT).show()
-                            },
-                            onCancel = {
-                                Toast.makeText(this, "Authentication cancelled", Toast.LENGTH_SHORT).show()
-                            }
-                        )
-                    }
-                )
+                // Enabling PIN protection - check if PIN is set up, if not auto-prompt setup
+                if (!biometricHelper.isPinEnabled()) {
+                    // PIN not set up, prompt user to set it up
+                    biometricHelper.showPinSetupDialog(
+                        onSuccess = {
+                            Toast.makeText(this, "✅ PIN set up successfully!", Toast.LENGTH_SHORT).show()
+                            updateNotePinProtection(note, true)
+                        },
+                        onError = { error ->
+                            Toast.makeText(this, "❌ $error", Toast.LENGTH_SHORT).show()
+                        },
+                        onCancel = {
+                            Toast.makeText(this, "PIN setup cancelled", Toast.LENGTH_SHORT).show()
+                        }
+                    )
+                } else {
+                    // PIN already set up, directly enable protection
+                    updateNotePinProtection(note, true)
+                }
             } else {
                 // Disabling PIN protection - just confirm
                 AlertDialog.Builder(this)

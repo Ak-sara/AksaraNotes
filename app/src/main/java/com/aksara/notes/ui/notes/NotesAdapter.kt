@@ -36,11 +36,13 @@ class NotesAdapter(
         fun bind(note: Note) {
             // Handle PIN-protected notes
             if (note.requiresPin) {
-                titleTextView.text = "🔒 ${note.title.ifEmpty { "Untitled" }}"
-                contentTextView.text = "Tap to unlock and view content..."
+                titleTextView.text = "🔒 ${if (note.title.isNotEmpty()) "•".repeat(note.title.length) else "Protected Note"}"
+                contentTextView.text = "••••••••••••••••••••••••••••••••\nTap to unlock and view content"
+                contentTextView.setTextColor(itemView.context.getColor(R.color.text_hint))
             } else {
                 titleTextView.text = note.title.ifEmpty { "Untitled" }
                 contentTextView.text = note.content.take(100) + if (note.content.length > 100) "..." else ""
+                contentTextView.setTextColor(itemView.context.getColor(R.color.text_primary))
             }
 
             // Format date
@@ -58,11 +60,14 @@ class NotesAdapter(
 
             // Visual styling for PIN-protected notes
             if (note.requiresPin) {
-                itemView.alpha = 0.8f
-                itemView.setBackgroundColor(itemView.context.getColor(R.color.secondary))
+                itemView.alpha = 0.85f
+                // Add subtle background tint for locked notes
+                itemView.setBackgroundResource(R.drawable.selectable_background)
+                titleTextView.setTextColor(itemView.context.getColor(R.color.text_secondary))
             } else {
                 itemView.alpha = 1.0f
-//                itemView.setBackgroundColor(itemView.context.getColor(R.color.secondary))
+                itemView.setBackgroundResource(R.drawable.selectable_background)
+                titleTextView.setTextColor(itemView.context.getColor(R.color.text_primary))
             }
 
             // Click listeners

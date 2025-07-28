@@ -9,11 +9,13 @@ Aksara Notes is more than just a note-taking app. It's a powerful personal infor
 ### 🔐 **Privacy First**
 - **Master Password Protection** - All your data is encrypted with your personal master password
 - **Biometric Login** - Quick access with fingerprint or face unlock
-- **PIN-Protected Notes** - Extra security for your most sensitive information
+- **4-Digit PIN Protection** - Separate PIN system for individual note security (no master password required)
+- **Content Masking** - Protected notes show masked content in lists for complete privacy
 - **Local Storage** - Your data stays on your device, never uploaded to external servers
 
 ### 📱 **Smart Note-Taking**
 - Write and organize your thoughts with a clean, distraction-free interface
+- **PIN-protect sensitive notes** with automatic content masking in lists
 - Mark important notes as favorites for quick access
 - Search through all your notes instantly
 - Auto-save ensures you never lose your work
@@ -52,7 +54,10 @@ Create custom databases for anything you want to track:
 - **End-to-end encryption** with your master password
 - **Biometric authentication** for quick, secure access
 - **Session timeout** - automatic logout for security
-- **PIN protection** for individual notes
+- **4-digit PIN system** - Independent protection for sensitive notes
+  - Auto-prompts PIN setup when locking notes
+  - Content masking in note lists
+  - PIN-only authentication
 - **Local data storage** - no cloud dependency
 
 ## 🎯 Why Choose Aksara Notes?
@@ -60,6 +65,19 @@ Create custom databases for anything you want to track:
 Unlike other apps that force you into rigid categories, Aksara Notes adapts to **your** way of organizing information. Whether you need a simple note or a complex database with calculations and calendar integration, Aksara Notes grows with your needs.
 
 **Your data, your way, your security.**
+
+## 🆕 Latest Updates (January 2025)
+
+### Enhanced PIN Security System
+- **Streamlined PIN Setup** - No master password required for PIN management
+- **Smart Auto-Prompting** - Automatically offers PIN setup when protecting notes
+- **Content Privacy** - Protected notes show masked titles and content in lists
+- **Improved User Experience** - Simplified security settings with intuitive PIN management
+
+### Technical Improvements  
+- **Fixed Database Issues** - Resolved "realm already closed" errors with thread-safe implementation
+- **Performance Optimizations** - Faster app startup and smoother navigation
+- **Enhanced Security Flow** - Separated PIN system from master password for better usability
 
 ---
 

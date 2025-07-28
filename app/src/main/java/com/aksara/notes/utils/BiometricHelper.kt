@@ -23,6 +23,8 @@ class BiometricHelper(private val context: Context) {
         private const val PREF_BIOMETRIC_ENABLED = "biometric_enabled"
         private const val PREF_AUTO_LOCK_ENABLED = "auto_lock_enabled"
         private const val PREF_AUTO_LOCK_TIMEOUT = "auto_lock_timeout"
+        private const val PREF_NOTE_PIN = "note_pin"
+        private const val PREF_PIN_ENABLED = "pin_enabled"
 
         // Default test password for development
         private const val DEFAULT_TEST_PASSWORD = "test123"
@@ -273,6 +275,224 @@ class BiometricHelper(private val context: Context) {
 
     fun setAutoLockTimeout(timeout: Long) {
         prefs.edit().putLong(PREF_AUTO_LOCK_TIMEOUT, timeout).apply()
+    }
+
+    // PIN management methods
+    fun isPinEnabled(): Boolean {
+        return prefs.getBoolean(PREF_PIN_ENABLED, false)
+    }
+
+    fun setPinEnabled(enabled: Boolean) {
+        prefs.edit().putBoolean(PREF_PIN_ENABLED, enabled).apply()
+    }
+
+    fun setupNotePin(pin: String): Boolean {
+        try {
+            if (pin.length != 4 || !pin.all { it.isDigit() }) {
+                return false
+            }
+            prefs.edit()
+                .putString(PREF_NOTE_PIN, pin)
+                .putBoolean(PREF_PIN_ENABLED, true)
+                .apply()
+            return true
+        } catch (e: Exception) {
+            Log.e(TAG, "Failed to setup PIN", e)
+            return false
+        }
+    }
+
+    fun verifyNotePin(pin: String): Boolean {
+        val storedPin = prefs.getString(PREF_NOTE_PIN, "")
+        return pin == storedPin && pin.isNotEmpty()
+    }
+
+    fun changeNotePin(currentPin: String, newPin: String): Boolean {
+        if (!verifyNotePin(currentPin)) {
+            return false
+        }
+        if (newPin.length != 4 || !newPin.all { it.isDigit() }) {
+            return false
+        }
+        prefs.edit().putString(PREF_NOTE_PIN, newPin).apply()
+        return true
+    }
+
+    fun clearNotePin() {
+        prefs.edit()
+            .remove(PREF_NOTE_PIN)
+            .putBoolean(PREF_PIN_ENABLED, false)
+            .apply()
+    }
+
+    fun getNotePin(): String? {
+        return prefs.getString(PREF_NOTE_PIN, null)
+    }
+
+    // Show PIN setup dialog for note protection
+    fun showPinSetupDialog(
+        onSuccess: () -> Unit,
+        onError: (String) -> Unit,
+        onCancel: () -> Unit
+    ) {
+        Log.d(TAG, "showPinSetupDialog called")
+
+        mainHandler.post {
+            try {
+                val dialogView = android.widget.LinearLayout(context).apply {
+                    orientation = android.widget.LinearLayout.VERTICAL
+                    setPadding(48, 24, 48, 24)
+                }
+
+                // New PIN
+                val pinLayout = TextInputLayout(context).apply {
+                    hint = "Enter PIN"
+                    boxBackgroundMode = TextInputLayout.BOX_BACKGROUND_OUTLINE
+                    
+                    val textColor = androidx.core.content.ContextCompat.getColor(context, R.color.text_primary)
+                    val hintColor = androidx.core.content.ContextCompat.getColor(context, R.color.text_hint)
+                    setHintTextColor(android.content.res.ColorStateList.valueOf(hintColor))
+                    boxStrokeColor = textColor
+                }
+
+                val pinEdit = TextInputEditText(context).apply {
+                    inputType = android.text.InputType.TYPE_CLASS_NUMBER or android.text.InputType.TYPE_NUMBER_VARIATION_PASSWORD
+                    filters = arrayOf(android.text.InputFilter.LengthFilter(4))
+                    
+                    val textColor = androidx.core.content.ContextCompat.getColor(context, R.color.text_primary)
+                    setTextColor(textColor)
+                }
+
+                // Confirm PIN
+                val confirmLayout = TextInputLayout(context).apply {
+                    hint = "Confirm PIN"
+                    boxBackgroundMode = TextInputLayout.BOX_BACKGROUND_OUTLINE
+                    
+                    val textColor = androidx.core.content.ContextCompat.getColor(context, R.color.text_primary)
+                    val hintColor = androidx.core.content.ContextCompat.getColor(context, R.color.text_hint)
+                    setHintTextColor(android.content.res.ColorStateList.valueOf(hintColor))
+                    boxStrokeColor = textColor
+                }
+
+                val confirmEdit = TextInputEditText(context).apply {
+                    inputType = android.text.InputType.TYPE_CLASS_NUMBER or android.text.InputType.TYPE_NUMBER_VARIATION_PASSWORD
+                    filters = arrayOf(android.text.InputFilter.LengthFilter(4))
+                    
+                    val textColor = androidx.core.content.ContextCompat.getColor(context, R.color.text_primary)
+                    setTextColor(textColor)
+                }
+
+                pinLayout.addView(pinEdit)
+                confirmLayout.addView(confirmEdit)
+                dialogView.addView(pinLayout)
+                dialogView.addView(confirmLayout)
+
+                AlertDialog.Builder(context)
+                    .setTitle("Set up PIN")
+                    .setMessage("Set up a 4-digit PIN to protect this note")
+                    .setView(dialogView)
+                    .setPositiveButton("Set PIN") { _, _ ->
+                        val pin = pinEdit.text?.toString() ?: ""
+                        val confirm = confirmEdit.text?.toString() ?: ""
+                        
+                        if (pin.length != 4 || !pin.all { it.isDigit() }) {
+                            onError("PIN must be exactly 4 digits")
+                            return@setPositiveButton
+                        }
+                        
+                        if (pin != confirm) {
+                            onError("PINs do not match")
+                            return@setPositiveButton
+                        }
+                        
+                        if (setupNotePin(pin)) {
+                            Log.d(TAG, "PIN setup succeeded")
+                            onSuccess()
+                        } else {
+                            Log.w(TAG, "PIN setup failed")
+                            onError("Failed to set up PIN")
+                        }
+                    }
+                    .setNegativeButton("Cancel") { _, _ ->
+                        Log.d(TAG, "PIN setup cancelled")
+                        onCancel()
+                    }
+                    .setCancelable(false)
+                    .show()
+
+            } catch (e: Exception) {
+                Log.e(TAG, "Exception in showPinSetupDialog", e)
+                onError("Failed to show PIN setup dialog")
+            }
+        }
+    }
+
+    // Show PIN input dialog for note access
+    fun showPinDialog(
+        title: String = "Enter PIN",
+        message: String = "Enter your PIN to access this note",
+        onSuccess: () -> Unit,
+        onError: (String) -> Unit,
+        onCancel: () -> Unit
+    ) {
+        Log.d(TAG, "showPinDialog called")
+
+        mainHandler.post {
+            try {
+                val dialogView = android.widget.LinearLayout(context).apply {
+                    orientation = android.widget.LinearLayout.VERTICAL
+                    setPadding(48, 24, 48, 24)
+                }
+
+                val pinLayout = TextInputLayout(context).apply {
+                    hint = "PIN"
+                    boxBackgroundMode = TextInputLayout.BOX_BACKGROUND_OUTLINE
+                    
+                    // Fix hint text color for better contrast in dark mode
+                    val textColor = androidx.core.content.ContextCompat.getColor(context, R.color.text_primary)
+                    val hintColor = androidx.core.content.ContextCompat.getColor(context, R.color.text_hint)
+                    setHintTextColor(android.content.res.ColorStateList.valueOf(hintColor))
+                    boxStrokeColor = textColor
+                }
+
+                val pinEdit = TextInputEditText(context).apply {
+                    inputType = android.text.InputType.TYPE_CLASS_NUMBER or android.text.InputType.TYPE_NUMBER_VARIATION_PASSWORD
+                    filters = arrayOf(android.text.InputFilter.LengthFilter(4))
+                    
+                    // Set text color for better contrast in dark mode
+                    val textColor = androidx.core.content.ContextCompat.getColor(context, R.color.text_primary)
+                    setTextColor(textColor)
+                }
+
+                pinLayout.addView(pinEdit)
+                dialogView.addView(pinLayout)
+
+                AlertDialog.Builder(context)
+                    .setTitle(title)
+                    .setMessage(message)
+                    .setView(dialogView)
+                    .setPositiveButton("Unlock") { _, _ ->
+                        val pin = pinEdit.text?.toString() ?: ""
+                        if (verifyNotePin(pin)) {
+                            Log.d(TAG, "PIN verification succeeded")
+                            onSuccess()
+                        } else {
+                            Log.w(TAG, "PIN verification failed")
+                            onError("Incorrect PIN")
+                        }
+                    }
+                    .setNegativeButton("Cancel") { _, _ ->
+                        Log.d(TAG, "PIN dialog cancelled")
+                        onCancel()
+                    }
+                    .setCancelable(false)
+                    .show()
+
+            } catch (e: Exception) {
+                Log.e(TAG, "Exception in showPinDialog", e)
+                onError("Failed to show PIN dialog")
+            }
+        }
     }
 
     // Timeout options for spinner

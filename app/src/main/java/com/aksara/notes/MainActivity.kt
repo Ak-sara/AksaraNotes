@@ -321,7 +321,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         try {
             Log.d(TAG, "Ensuring Realm database is initialized")
             // Just check if Realm is initialized without closing it
-            if (RealmDatabase.isInitialized()) {
+            if (RealmDatabase.isInitialized) {
                 Log.d(TAG, "Realm database is already initialized")
             } else {
                 Log.d(TAG, "Realm not initialized, attempting initialization")
@@ -451,20 +451,26 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }
     }
 
-    // Public method for PIN-protected notes to request additional authentication
+    // Public method for PIN-protected notes to request PIN authentication
     fun requestPinAuthentication(onSuccess: () -> Unit, onError: (String) -> Unit) {
         try {
-            biometricHelper.authenticateUser(
-                onSuccess = onSuccess,
-                onError = onError,
-                onPasswordFallback = {
-                    biometricHelper.showPasswordDialog(
-                        onSuccess = onSuccess,
-                        onError = onError,
-                        onCancel = { onError("Authentication cancelled") }
-                    )
-                }
-            )
+            // Check if PIN is enabled for note protection
+            if (biometricHelper.isPinEnabled()) {
+                // Use PIN for note authentication
+                biometricHelper.showPinDialog(
+                    title = "Enter PIN",
+                    message = "Enter your PIN to access this protected note",
+                    onSuccess = onSuccess,
+                    onError = onError,
+                    onCancel = {
+                        onError("PIN entry cancelled")
+                    }
+                )
+            } else {
+                // Fallback: No PIN set up, request PIN setup
+                showToast("❌ PIN not set up. Please set up a PIN in Security Settings first.")
+                onError("PIN not configured")
+            }
         } catch (e: Exception) {
             Log.e(TAG, "Error in requestPinAuthentication", e)
             onError("Authentication error: ${e.message}")

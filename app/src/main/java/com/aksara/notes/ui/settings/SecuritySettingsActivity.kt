@@ -58,6 +58,9 @@ class SecuritySettingsActivity : AppCompatActivity() {
         // Load biometric settings
         updateBiometricStatus()
 
+        // Load PIN settings
+        updatePinStatus()
+
         // Load auto-lock settings
         binding.switchAutoLock.isChecked = biometricHelper.isAutoLockEnabled()
         updateAutoLockUI()
@@ -104,6 +107,11 @@ class SecuritySettingsActivity : AppCompatActivity() {
             }
         }
 
+        // PIN Protection
+        binding.cardPinSetup.setOnClickListener {
+            showPinManagementDialog()
+        }
+
         // Auto-lock
         binding.switchAutoLock.setOnCheckedChangeListener { _, isChecked ->
             biometricHelper.setAutoLockEnabled(isChecked)
@@ -148,6 +156,16 @@ class SecuritySettingsActivity : AppCompatActivity() {
             !isAvailable -> "Biometric authentication is not available on this device"
             isEnabled -> "✅ Enabled - Use fingerprint or face unlock"
             else -> "⚪ Disabled - Use master password only"
+        }
+    }
+
+    private fun updatePinStatus() {
+        val isSet = biometricHelper.isPinEnabled()
+        
+        binding.tvPinStatus.text = if (isSet) {
+            "✅ PIN is set up - Tap to change or remove PIN"
+        } else {
+            "⚪ Tap to set up a 4-digit PIN for protecting sensitive notes"
         }
     }
 
@@ -307,6 +325,167 @@ class SecuritySettingsActivity : AppCompatActivity() {
         }
     }
 
+    private fun showPinManagementDialog() {
+        val isPinSet = biometricHelper.isPinEnabled()
+        
+        if (isPinSet) {
+            // Show options: Change PIN or Remove PIN
+            AlertDialog.Builder(this)
+                .setTitle("PIN Management")
+                .setMessage("Choose an option for your PIN:")
+                .setPositiveButton("Change PIN") { _, _ ->
+                    showChangePinDialog()
+                }
+                .setNeutralButton("Remove PIN") { _, _ ->
+                    showRemovePinDialog()
+                }
+                .setNegativeButton("Cancel", null)
+                .show()
+        } else {
+            // Direct setup - no master password required
+            showPinInputDialog(
+                title = "Set Up PIN",
+                message = "Enter a 4-digit PIN to protect sensitive notes",
+                isSetup = true
+            )
+        }
+    }
+
+    private fun showChangePinDialog() {
+        showPinInputDialog(
+            title = "Change PIN",
+            message = "Enter your current PIN, then set a new one",
+            isSetup = false
+        )
+    }
+
+    private fun showRemovePinDialog() {
+        AlertDialog.Builder(this)
+            .setTitle("Remove PIN")
+            .setMessage("Are you sure you want to remove PIN protection? This will not affect notes that are already marked as protected.")
+            .setPositiveButton("Remove") { _, _ ->
+                biometricHelper.clearNotePin()
+                updatePinStatus()
+                showToast("📌 PIN removed successfully")
+            }
+            .setNegativeButton("Cancel", null)
+            .show()
+    }
+
+    private fun showPinInputDialog(title: String, message: String, isSetup: Boolean) {
+        val dialogView = LinearLayout(this).apply {
+            orientation = LinearLayout.VERTICAL
+            setPadding(48, 24, 48, 24)
+        }
+
+        // Current PIN (only for change)
+        val currentPinLayout: TextInputLayout?
+        val currentPinEdit: TextInputEditText?
+        
+        if (!isSetup) {
+            currentPinLayout = TextInputLayout(this).apply {
+                hint = "Current PIN"
+                boxBackgroundMode = TextInputLayout.BOX_BACKGROUND_OUTLINE
+            }
+            currentPinEdit = TextInputEditText(this).apply {
+                inputType = android.text.InputType.TYPE_CLASS_NUMBER or android.text.InputType.TYPE_NUMBER_VARIATION_PASSWORD
+                filters = arrayOf(android.text.InputFilter.LengthFilter(4))
+            }
+            currentPinLayout.addView(currentPinEdit)
+            dialogView.addView(currentPinLayout)
+        } else {
+            currentPinLayout = null
+            currentPinEdit = null
+        }
+
+        // New PIN
+        val newPinLayout = TextInputLayout(this).apply {
+            hint = if (isSetup) "Enter PIN" else "New PIN"
+            boxBackgroundMode = TextInputLayout.BOX_BACKGROUND_OUTLINE
+        }
+        val newPinEdit = TextInputEditText(this).apply {
+            inputType = android.text.InputType.TYPE_CLASS_NUMBER or android.text.InputType.TYPE_NUMBER_VARIATION_PASSWORD
+            filters = arrayOf(android.text.InputFilter.LengthFilter(4))
+        }
+        newPinLayout.addView(newPinEdit)
+
+        // Confirm PIN
+        val confirmPinLayout = TextInputLayout(this).apply {
+            hint = "Confirm PIN"
+            boxBackgroundMode = TextInputLayout.BOX_BACKGROUND_OUTLINE
+        }
+        val confirmPinEdit = TextInputEditText(this).apply {
+            inputType = android.text.InputType.TYPE_CLASS_NUMBER or android.text.InputType.TYPE_NUMBER_VARIATION_PASSWORD
+            filters = arrayOf(android.text.InputFilter.LengthFilter(4))
+        }
+        confirmPinLayout.addView(confirmPinEdit)
+
+        dialogView.addView(newPinLayout)
+        dialogView.addView(confirmPinLayout)
+
+        AlertDialog.Builder(this)
+            .setTitle(title)
+            .setMessage(message)
+            .setView(dialogView)
+            .setPositiveButton(if (isSetup) "Set PIN" else "Change PIN") { _, _ ->
+                val currentPin = currentPinEdit?.text?.toString() ?: ""
+                val newPin = newPinEdit.text?.toString() ?: ""
+                val confirmPin = confirmPinEdit.text?.toString() ?: ""
+
+                if (isSetup) {
+                    setupPin(newPin, confirmPin)
+                } else {
+                    changePin(currentPin, newPin, confirmPin)
+                }
+            }
+            .setNegativeButton("Cancel", null)
+            .show()
+    }
+
+    private fun setupPin(pin: String, confirmPin: String) {
+        if (pin.length != 4 || !pin.all { it.isDigit() }) {
+            showToast("❌ PIN must be exactly 4 digits")
+            return
+        }
+
+        if (pin != confirmPin) {
+            showToast("❌ PINs do not match")
+            return
+        }
+
+        val success = biometricHelper.setupNotePin(pin)
+        if (success) {
+            updatePinStatus()
+            showToast("✅ PIN set up successfully!")
+        } else {
+            showToast("❌ Failed to set up PIN")
+        }
+    }
+
+    private fun changePin(currentPin: String, newPin: String, confirmPin: String) {
+        if (currentPin.isEmpty()) {
+            showToast("❌ Enter your current PIN")
+            return
+        }
+
+        if (newPin.length != 4 || !newPin.all { it.isDigit() }) {
+            showToast("❌ New PIN must be exactly 4 digits")
+            return
+        }
+
+        if (newPin != confirmPin) {
+            showToast("❌ New PINs do not match")
+            return
+        }
+
+        val success = biometricHelper.changeNotePin(currentPin, newPin)
+        if (success) {
+            showToast("✅ PIN changed successfully!")
+        } else {
+            showToast("❌ Current PIN is incorrect")
+        }
+    }
+
     private fun verifyCurrentAuthentication(onResult: (Boolean) -> Unit) {
         biometricHelper.authenticateUser(
             onSuccess = { onResult(true) },
@@ -353,11 +532,18 @@ class SecuritySettingsActivity : AppCompatActivity() {
             appendLine()
             appendLine("• Master Password: Encrypts and protects all your data")
             appendLine("• Biometric Auth: Quick access using fingerprint/face")
+            appendLine("• Note PIN: 4-digit PIN for individual note protection")
             appendLine("• Auto-lock: Automatically secures app when inactive")
-            appendLine("• PIN Protection: Additional security for sensitive notes")
+            appendLine()
+            appendLine("📌 PIN Protection Features:")
+            appendLine("• Content masking in note list")
+            appendLine("• PIN required to view protected notes")
+            appendLine("• Separate from master password")
+            appendLine("• Independent security layer")
             appendLine()
             appendLine("⚠️ Important:")
             appendLine("• Master password cannot be recovered if forgotten")
+            appendLine("• PIN can be changed in Security Settings")
             appendLine("• Biometric data is stored securely on your device")
             appendLine("• All data is encrypted using industry-standard methods")
         }
@@ -372,7 +558,7 @@ class SecuritySettingsActivity : AppCompatActivity() {
     private fun showResetSecurityDialog() {
         AlertDialog.Builder(this)
             .setTitle("⚠️ Reset Security Settings")
-            .setMessage("This will:\n\n• Reset master password\n• Disable biometric authentication\n• Clear all security preferences\n• ERASE ALL DATA\n\nThis action cannot be undone!")
+            .setMessage("This will:\n\n• Reset master password\n• Disable biometric authentication\n• Clear PIN protection\n• Clear all security preferences\n• ERASE ALL DATA\n\nThis action cannot be undone!")
             .setPositiveButton("Reset Everything") { _, _ ->
                 confirmResetSecurity()
             }

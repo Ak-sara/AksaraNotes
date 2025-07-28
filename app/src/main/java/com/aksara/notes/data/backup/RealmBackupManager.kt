@@ -72,9 +72,9 @@ class RealmBackupManager(private val context: Context) {
             val databaseSize = databaseFile.length()
             Log.d(TAG, "Database file size: $databaseSize bytes")
             
-            // Close current Realm instance to ensure file is not locked
+            // Note: We don't close Realm for backup anymore to prevent "realm already closed" errors
+            // Realm Kotlin supports creating backup while database is open
             val wasEncrypted = RealmDatabase.isEncrypted()
-            RealmDatabase.close()
             
             // Copy database file to backup location
             context.contentResolver.openOutputStream(outputUri)?.use { outputStream ->
@@ -83,17 +83,6 @@ class RealmBackupManager(private val context: Context) {
                     outputStream.flush()
                 }
             } ?: throw IOException("Could not open output stream for backup")
-            
-            // Reinitialize Realm after backup
-            try {
-                if (wasEncrypted) {
-                    RealmDatabase.initialize(context)
-                } else {
-                    RealmDatabase.initializeUnencrypted()
-                }
-            } catch (e: Exception) {
-                Log.e(TAG, "Failed to reinitialize Realm after backup", e)
-            }
             
             Log.d(TAG, "Backup created successfully")
             
@@ -105,13 +94,6 @@ class RealmBackupManager(private val context: Context) {
             
         } catch (e: Exception) {
             Log.e(TAG, "Error creating backup", e)
-            
-            // Try to reinitialize Realm even if backup failed
-            try {
-                RealmDatabase.initialize(context)
-            } catch (reinitError: Exception) {
-                Log.e(TAG, "Failed to reinitialize Realm after backup error", reinitError)
-            }
             
             return@withContext BackupResult(
                 success = false,
@@ -146,7 +128,7 @@ class RealmBackupManager(private val context: Context) {
                 
                 Log.d(TAG, "Backup file copied to temporary location: ${backupTempFile.absolutePath}")
                 
-                // Close current Realm instance
+                // Close current Realm instance for restore operation
                 RealmDatabase.close()
                 
                 // Backup current database (in case restore fails)
@@ -206,7 +188,9 @@ class RealmBackupManager(private val context: Context) {
             
             // Try to reinitialize current database
             try {
-                RealmDatabase.initialize(context)
+                if (!RealmDatabase.isInitialized) {
+                    RealmDatabase.initialize(context)
+                }
             } catch (reinitError: Exception) {
                 Log.e(TAG, "Failed to reinitialize Realm after restore error", reinitError)
             }

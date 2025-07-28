@@ -181,17 +181,25 @@ class NotesFragment : Fragment() {
 
     private fun togglePinProtection(note: Note) {
         if (!note.requiresPin) {
-            // Enabling PIN protection - ask for authentication to confirm
-            val mainActivity = activity as? MainActivity
-            mainActivity?.requestPinAuthentication(
-                onSuccess = {
-                    updateNotePinProtection(note, true)
-                },
-                onError = { error ->
-                    showToast("Cannot enable PIN protection: $error")
-                }
-            ) ?: run {
-                showToast("Authentication unavailable")
+            // Enabling PIN protection - check if PIN is set up, if not auto-prompt setup
+            val biometricHelper = com.aksara.notes.utils.BiometricHelper(requireContext())
+            if (!biometricHelper.isPinEnabled()) {
+                // PIN not set up, prompt user to set it up
+                biometricHelper.showPinSetupDialog(
+                    onSuccess = {
+                        showToast("✅ PIN set up successfully!")
+                        updateNotePinProtection(note, true)
+                    },
+                    onError = { error ->
+                        showToast("❌ $error")
+                    },
+                    onCancel = {
+                        showToast("PIN setup cancelled")
+                    }
+                )
+            } else {
+                // PIN already set up, directly enable protection
+                updateNotePinProtection(note, true)
             }
         } else {
             // Disabling PIN protection - just confirm
