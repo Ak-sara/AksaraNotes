@@ -27,7 +27,7 @@ class BiometricHelper(private val context: Context) {
         private const val PREF_PIN_ENABLED = "pin_enabled"
 
         // Default test password for development
-        private const val DEFAULT_TEST_PASSWORD = "test123"
+//        private const val DEFAULT_TEST_PASSWORD = "test123"
     }
 
     private val prefs = context.getSharedPreferences(PREF_APP_SETUP, Context.MODE_PRIVATE)
@@ -235,9 +235,7 @@ class BiometricHelper(private val context: Context) {
         }
 
         // Fallback to default test password for testing
-        if (password == DEFAULT_TEST_PASSWORD) {
-            return true
-        }
+//        if (password == DEFAULT_TEST_PASSWORD)  return true
 
         return false
     }
