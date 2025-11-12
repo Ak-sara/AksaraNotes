@@ -31,7 +31,7 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:padding="16dp"
-            android:background="@color/primary_dark">
+            android:background="?attr/colorPrimaryContainer">
 
             <TextView
                 android:id="@+id/tv_items_count"

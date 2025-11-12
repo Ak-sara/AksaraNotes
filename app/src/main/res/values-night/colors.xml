@@ -1,67 +1,90 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Dark Mode - Dark Purple Base Theme -->
-    <!-- Primary Colors (Purple Base) -->
-    <color name="primary">#9C27B0</color> <!-- Medium purple -->
-    <color name="primary_variant">#6A1B9A</color> <!-- Darker purple -->
-    <color name="primary_dark">#4A148C</color> <!-- Deep purple -->
-    <color name="on_primary">#FFFFFF</color> <!-- White text on purple -->
+    <!-- Dark Theme - Deep Purple Base -->
+    <color name="primary">#BA68C8</color> <!-- Medium purple -->
+    <color name="on_primary">#FFFFFF</color>
+    <color name="primary_variant">#8E44AD</color> <!-- Rich purple -->
+    <color name="primary_container">#5A2B62</color> <!-- Purple container -->
+    <color name="on_primary_container">#E8DDF3</color> <!-- Light text on primary container -->
 
-    <!-- Secondary Colors (Complementary) -->
-    <color name="secondary">#FFB74D</color> <!-- Warm orange -->
-    <color name="secondary_variant">#FF9800</color> <!-- Deeper orange -->
-    <color name="on_secondary">#000000</color> <!-- Black text on orange -->
+    <color name="secondary">#FFB74D</color> <!-- Warm amber -->
+    <color name="on_secondary">#000000</color>
+    <color name="secondary_variant">#C98A00</color> <!-- Darker amber -->
+    <color name="secondary_container">#C98A00</color> <!-- Amber container -->
+    <color name="on_secondary_container">#FFFFFF</color> <!-- Light text on secondary container -->
 
-    <!-- Background and Surface Colors -->
-    <color name="background">#1A0E1A</color> <!-- Very dark purple -->
-    <color name="surface">#2D1B2D</color> <!-- Dark purple for cards -->
-    <color name="surface_variant">#3E2723</color> <!-- Brown-purple tint -->
-    <color name="on_background">#E8D5E8</color> <!-- Light purple text -->
-    <color name="on_surface">#E8D5E8</color> <!-- Light purple text -->
-    <color name="on_surface_variant">#C4A4C4</color> <!-- Medium purple text -->
+    <!-- Dark backgrounds (avoiding grey) -->
+    <color name="background">#1A0E25</color> <!-- Deep purple-black -->
+    <color name="surface">#2D1B3D</color> <!-- Dark purple -->
+    <color name="surface_variant">#4A4552</color> <!-- Medium dark surface -->
+    <color name="on_background">#E6DDEF</color> <!-- Light purple text -->
+    <color name="on_surface">#E6DDEF</color>
+    <color name="on_surface_variant">#CDC6D4</color> <!-- Medium text on variant surfaces -->
 
     <!-- Utility Colors -->
-    <color name="error">#F48FB1</color>
-    <color name="on_error">#000000</color>
-    <color name="divider">#1FE8D5E8</color> <!-- 12% light purple -->
-    <color name="ripple">#339C27B0</color> <!-- 20% primary purple -->
+    <color name="error">#FFB4A9</color> <!-- Light error red -->
+    <color name="on_error">#680003</color> <!-- Dark text on error -->
+    <color name="error_container">#930006</color> <!-- Error container -->
+    <color name="on_error_container">#FFDAD4</color> <!-- Light text on error container -->
+    <color name="divider">#1FE6DDEF</color> <!-- 12% light purple -->
+    <color name="ripple">#33BA68C8</color> <!-- 20% primary purple -->
 
     <!-- Text Colors -->
-    <color name="text_primary">#DEE8D5E8</color> <!-- 87% light purple -->
-    <color name="text_secondary">#8AE8D5E8</color> <!-- 54% light purple -->
+    <color name="text_primary">#DEE6DDEF</color> <!-- 87% light purple -->
+    <color name="text_secondary">#8AE6DDEF</color> <!-- 54% light purple -->
     <color name="text_hint">#61C4A4C4</color> <!-- 38% medium purple -->
     <color name="text_on_primary">@color/on_primary</color>
     <color name="text_on_surface">@color/on_surface</color>
 
-    <!-- Missing Color References -->
-    <color name="black">#FFFFFF</color>
-    <color name="divider_color">@color/divider</color>
+    <!-- Tertiary Colors (for more variety) -->
+    <color name="tertiary">#4DD0E1</color> <!-- Pastel blue -->
+    <color name="on_tertiary">#000000</color>
+    <color name="tertiary_container">#0097A7</color> <!-- Dark blue container -->
+    <color name="on_tertiary_container">#FFFFFF</color> <!-- Light text on tertiary container -->
 
-    <!-- Semantic Colors for App Features (Dark Mode) -->
+    <!-- Outline Colors -->
+    <color name="outline">#96909F</color>
+    <color name="outline_variant">#4A4552</color>
+
+    <!-- Inverse Colors -->
+    <color name="inverse_surface">#E6DDEF</color>
+    <color name="inverse_on_surface">#322F42</color>
+    <color name="inverse_primary">#705577</color>
+
+    <!-- Surface Variants -->
+    <color name="surface_bright">#3F344D</color>
+    <color name="surface_dim">#1A0E25</color>
+    <color name="surface_container_lowest">#12071D</color>
+    <color name="surface_container_low">#22172D</color>
+    <color name="surface_container">#271C33</color>
+    <color name="surface_container_high">#32273D</color>
+    <color name="surface_container_highest">#3D3149</color>
+
+    <!-- Old color names for backward compatibility with Material Components -->
+    <color name="primary_dark">#8E44AD</color> <!-- Rich purple for backward compatibility -->
+
+    <!-- Semantic Colors for App Features -->
     <!-- Password Strength Colors -->
-    <color name="password_weak">#F48FB1</color> <!-- Light Red -->
-    <color name="password_fair">#FFB74D</color> <!-- Light Orange -->
-    <color name="password_good">#81C784</color> <!-- Light Green -->
-    <color name="password_strong">#66BB6A</color> <!-- Lighter Green -->
-    
-    <!-- Calendar Event Colors -->
-    <color name="calendar_overdue">#F48FB1</color> <!-- Light Red -->
-    <color name="calendar_due_today">#FFB74D</color> <!-- Light Orange -->
-    <color name="calendar_upcoming">#81C784</color> <!-- Light Green -->
-    <color name="calendar_reminder">#CE93D8</color> <!-- Light Purple -->
-    <color name="calendar_subscription">#FFB74D</color> <!-- Light Orange -->
-    <color name="calendar_investment">#81C784</color> <!-- Light Green -->
-    <color name="calendar_task">#CE93D8</color> <!-- Light Purple -->
-    <color name="calendar_default">#BDBDBD</color> <!-- Light Gray -->
-    
+    <color name="password_weak">#C85A50</color> <!-- Darker red -->
+    <color name="password_fair">#C8A448</color> <!-- Darker orange -->
+    <color name="password_good">#509859</color> <!-- Darker green -->
+    <color name="password_strong">#3D854D</color> <!-- Darker green -->
+
+    <!-- Calendar Event Colors - Darker versions -->
+    <color name="calendar_overdue">#C85A50</color> <!-- Darker red -->
+    <color name="calendar_due_today">#C8A448</color> <!-- Darker orange -->
+    <color name="calendar_upcoming">#509859</color> <!-- Darker green -->
+    <color name="calendar_reminder">#A06DC4</color> <!-- Darker purple -->
+    <color name="calendar_subscription">#C8A448</color> <!-- Darker orange -->
+    <color name="calendar_investment">#509859</color> <!-- Darker green -->
+    <color name="calendar_task">#A06DC4</color> <!-- Darker purple -->
+    <color name="calendar_default">#7A7A7A</color> <!-- Darker gray -->
+
     <!-- Text Colors for Dynamic Content -->
     <color name="text_on_colored_background">#000000</color>
     <color name="text_muted">@color/text_secondary</color>
-    
-    <!-- Legacy Colors for Backward Compatibility -->
-    <color name="accent">@color/secondary</color>
-    <color name="primary_blue">@color/primary</color>
-    <color name="background_light">@color/background</color>
-    <color name="white">@color/surface</color>
-    <color name="red">#E57373</color>
+
+    <!-- Basic utility colors -->
+    <color name="black">#FFFFFF</color>
+    <color name="white">@color/background</color> <!-- Using our dark purple background -->
 </resources>

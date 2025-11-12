@@ -425,7 +425,7 @@
                 android:text="⚠️ Danger Zone"
                 android:textSize="18sp"
                 android:textStyle="bold"
-                android:textColor="@android:color/holo_red_dark"
+                android:textColor="?attr/colorError"
                 android:layout_marginBottom="12dp"
                 android:layout_marginTop="24dp" />
 
@@ -436,7 +436,7 @@
                 app:cardElevation="2dp"
                 app:cardCornerRadius="8dp"
                 app:strokeWidth="2dp"
-                app:strokeColor="@android:color/holo_red_light">
+                app:strokeColor="?attr/colorError">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -450,7 +450,7 @@
                         android:text="⚠️ Reset All Security Settings"
                         android:textSize="16sp"
                         android:textStyle="bold"
-                        android:textColor="@android:color/holo_red_dark"
+                        android:textColor="?attr/colorError"
                         android:layout_marginBottom="8dp" />
 
                     <TextView
@@ -466,8 +466,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Reset Everything"
-                        android:textColor="@android:color/white"
-                        android:backgroundTint="@android:color/holo_red_dark"
+                        android:textColor="?attr/colorOnError"
+                        android:backgroundTint="?attr/colorError"
                         style="@style/Widget.Material3.Button" />
 
                 </LinearLayout>

@@ -59,11 +59,11 @@ class CalendarAdapter(
             when {
                 day.isToday -> {
                     itemView.setBackgroundResource(R.drawable.calendar_today_background)
-                    dayNumber.setTextColor(Color.WHITE)
+                    dayNumber.setTextColor(ContextCompat.getColor(itemView.context, R.color.on_primary))
                 }
                 selectedDate != null && isSameDay(day.date, selectedDate!!) -> {
                     itemView.setBackgroundResource(R.drawable.calendar_selected_background)
-                    dayNumber.setTextColor(ContextCompat.getColor(itemView.context, R.color.primary_blue))
+                    dayNumber.setTextColor(ContextCompat.getColor(itemView.context, R.color.primary))
                 }
                 else -> {
                     itemView.setBackgroundResource(R.drawable.calendar_day_background)
@@ -109,7 +109,7 @@ class CalendarAdapter(
                 val moreView = TextView(itemView.context).apply {
                     text = "+${events.size - 3}"
                     textSize = 6f
-                    setTextColor(Color.GRAY)
+                    setTextColor(ContextCompat.getColor(itemView.context, R.color.text_hint))
                 }
                 eventsLayout.addView(moreView)
             }
@@ -117,20 +117,20 @@ class CalendarAdapter(
 
         private fun getEventColor(eventType: EventType): Int {
             return when (eventType) {
-                // Legacy event colors
-                EventType.SUBSCRIPTION_OVERDUE -> Color.RED
-                EventType.SUBSCRIPTION_DUE_TODAY -> Color.parseColor("#FFA500") // Orange
-                EventType.SUBSCRIPTION_UPCOMING -> Color.GREEN
-                EventType.CUSTOM_EVENT -> ContextCompat.getColor(itemView.context, R.color.primary_blue)
-                EventType.NOTE_REMINDER -> Color.parseColor("#800080") // Purple
+                // Legacy event colors - using theme calendar colors
+                EventType.SUBSCRIPTION_OVERDUE -> ContextCompat.getColor(itemView.context, R.color.calendar_overdue)
+                EventType.SUBSCRIPTION_DUE_TODAY -> ContextCompat.getColor(itemView.context, R.color.calendar_due_today)
+                EventType.SUBSCRIPTION_UPCOMING -> ContextCompat.getColor(itemView.context, R.color.calendar_upcoming)
+                EventType.CUSTOM_EVENT -> ContextCompat.getColor(itemView.context, R.color.primary)
+                EventType.NOTE_REMINDER -> ContextCompat.getColor(itemView.context, R.color.calendar_reminder)
 
-                // New table-based event colors
-                EventType.TABLE_SUBSCRIPTION -> Color.parseColor("#FF6B35") // Orange-red for subscriptions
-                EventType.TABLE_INVESTMENT -> Color.parseColor("#4CAF50") // Green for investments/bonds
-                EventType.TABLE_MEETING -> Color.parseColor("#2196F3") // Blue for meetings
-                EventType.TABLE_TASK -> Color.parseColor("#9C27B0") // Purple for tasks
-                EventType.TABLE_DATE -> Color.parseColor("#607D8B") // Blue-grey for generic dates
-                EventType.TABLE_RECURRING -> Color.parseColor("#9E9E9E") // Grey for recurring predictions
+                // New table-based event colors - using theme calendar colors
+                EventType.TABLE_SUBSCRIPTION -> ContextCompat.getColor(itemView.context, R.color.calendar_subscription)
+                EventType.TABLE_INVESTMENT -> ContextCompat.getColor(itemView.context, R.color.calendar_investment)
+                EventType.TABLE_MEETING -> ContextCompat.getColor(itemView.context, R.color.tertiary)
+                EventType.TABLE_TASK -> ContextCompat.getColor(itemView.context, R.color.calendar_task)
+                EventType.TABLE_DATE -> ContextCompat.getColor(itemView.context, R.color.on_surface_variant)
+                EventType.TABLE_RECURRING -> ContextCompat.getColor(itemView.context, R.color.outline)
             }
         }
 

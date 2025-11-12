@@ -50,7 +50,7 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:paddingHorizontal="8dp"
-        android:background="@color/primary_dark">
+        android:background="?attr/colorPrimaryContainer">
 
         <TextView
             android:layout_width="0dp"
@@ -139,7 +139,7 @@
         android:layout_height="200dp"
         android:orientation="vertical"
         android:padding="16dp"
-        android:background="#F8F8F8"
+        android:background="?attr/colorSurface"
         android:visibility="gone">
 
         <TextView
