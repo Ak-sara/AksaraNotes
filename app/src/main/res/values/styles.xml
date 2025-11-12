@@ -89,7 +89,7 @@
     <!-- Toolbar Styles -->
     <style name="Widget.AksaraNotes.Toolbar" parent="Widget.Material3.Toolbar">
         <item name="android:background">?attr/colorSurface</item>
-        <item name="titleTextColor">?attr/colorOnSurface</item>
+        <item name="titleTextColor">@color/on_surface</item>
         <item name="subtitleTextColor">?attr/colorOnSurfaceVariant</item>
         <item name="android:elevation">4dp</item>
     </style>

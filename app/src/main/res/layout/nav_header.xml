@@ -3,24 +3,27 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal" >
+    android:orientation="horizontal">
+
     <ImageView
         android:layout_width="64dp"
         android:layout_height="64dp"
         android:layout_marginRight="12dp"
-        android:src="@mipmap/ic_launcher" />
+        android:src="@drawable/ic_logo" />
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical">
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Notes"
+            android:textColor="?attr/colorPrimary"
             android:textSize="28sp"
-            android:textStyle="bold"
-            android:textColor="?attr/colorPrimary"  />
+            android:textStyle="bold" />
+
         <TextView
             android:id="@+id/tv_build_info"
             android:layout_width="wrap_content"
