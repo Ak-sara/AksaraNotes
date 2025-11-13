@@ -81,10 +81,10 @@
     <color name="calendar_default">#BDBDBD</color> <!-- Light gray -->
 
     <!-- Text Colors for Dynamic Content -->
-    <color name="text_on_colored_background">#000000</color>
+    <color name="text_on_colored_background">#FFFFFF</color>
     <color name="text_muted">@color/text_secondary</color>
 
     <!-- Basic utility colors -->
-    <color name="black">#FFFFFF</color>
-    <color name="white">@color/background</color> <!-- Using our dark purple background -->
+    <color name="black">#000000</color>
+    <color name="white">#FFFFFF</color> <!-- Using pure white -->
 </resources>

@@ -16,13 +16,11 @@
         <!-- Toolbar -->
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
-            style="@style/Widget.AksaraNotes.Toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="?attr/colorPrimary"
-            app:titleTextColor="?attr/colorSurface"
-            app:navigationIconTint="?attr/colorSurface"
-            app:popupTheme="@style/ThemeOverlay.MaterialComponents.Light" />
+            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
 
         <!-- Fragment Container -->
         <FrameLayout
