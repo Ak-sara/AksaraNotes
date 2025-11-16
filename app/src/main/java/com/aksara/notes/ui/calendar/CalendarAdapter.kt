@@ -109,7 +109,7 @@ class CalendarAdapter(
                 val moreView = TextView(itemView.context).apply {
                     text = "+${events.size - 3}"
                     textSize = 6f
-                    setTextColor(ContextCompat.getColor(itemView.context, R.color.text_hint))
+                    setTextColor(ContextCompat.getColor(itemView.context, R.color.on_surface_variant))
                 }
                 eventsLayout.addView(moreView)
             }

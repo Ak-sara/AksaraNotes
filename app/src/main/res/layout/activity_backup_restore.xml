@@ -13,7 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="?attr/colorPrimary"
-        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        style="@style/Widget.AksaraNotes.Toolbar"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
         app:navigationIcon="?attr/homeAsUpIndicator"
         app:title="Backup &amp; Restore" />
@@ -23,9 +23,10 @@
         android:layout_height="match_parent"
         android:fillViewport="true">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:orientation="vertical"
             android:padding="16dp">
 
             <!-- Backup Section -->
@@ -35,10 +36,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
                 app:cardCornerRadius="12dp"
-                app:cardElevation="2dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
+                app:cardElevation="2dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -184,10 +182,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
                 app:cardCornerRadius="12dp"
-                app:cardElevation="2dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/card_backup">
+                app:cardElevation="2dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -292,10 +287,7 @@
                 android:layout_height="wrap_content"
                 app:cardBackgroundColor="?attr/colorTertiaryContainer"
                 app:cardCornerRadius="12dp"
-                app:cardElevation="0dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/card_restore">
+                app:cardElevation="0dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -315,7 +307,7 @@
                             android:layout_width="24dp"
                             android:layout_height="24dp"
                             android:layout_marginEnd="8dp"
-                            android:src="@drawable/ic_lock"
+                            android:src="@drawable/ic_lock_surface"
                             android:tint="?attr/colorOnTertiaryContainer" />
 
                         <TextView
@@ -333,10 +325,10 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:lineSpacingExtra="2dp"
                         android:text="• Backups are encrypted with AES-256-GCM\n• Key derivation uses PBKDF2 with 100,000 iterations\n• Your master password is required for decryption\n• Backup files cannot be opened without the correct password"
                         android:textColor="?attr/colorOnTertiaryContainer"
-                        android:textSize="13sp"
-                        android:lineSpacingExtra="2dp" />
+                        android:textSize="13sp" />
 
                 </LinearLayout>
 
@@ -348,10 +340,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:visibility="gone"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/card_security_info" />
+                android:visibility="gone" />
 
             <!-- Progress Text (initially hidden) -->
             <TextView
@@ -363,12 +352,9 @@
                 android:text="Processing..."
                 android:textColor="?attr/colorOnSurfaceVariant"
                 android:textSize="14sp"
-                android:visibility="gone"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/progress_bar" />
+                android:visibility="gone" />
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
+        </LinearLayout>
 
     </ScrollView>
 

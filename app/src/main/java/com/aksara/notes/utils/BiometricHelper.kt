@@ -180,8 +180,8 @@ class BiometricHelper(private val context: Context) {
                     boxBackgroundMode = TextInputLayout.BOX_BACKGROUND_OUTLINE
                     
                     // Fix hint text color for better contrast in dark mode
-                    val textColor = androidx.core.content.ContextCompat.getColor(context, R.color.text_primary)
-                    val hintColor = androidx.core.content.ContextCompat.getColor(context, R.color.text_hint)
+                    val textColor = androidx.core.content.ContextCompat.getColor(context, R.color.on_background)
+                    val hintColor = androidx.core.content.ContextCompat.getColor(context, R.color.on_surface_variant)
                     setHintTextColor(android.content.res.ColorStateList.valueOf(hintColor))
                     boxStrokeColor = textColor
                 }
@@ -190,7 +190,7 @@ class BiometricHelper(private val context: Context) {
                     inputType = android.text.InputType.TYPE_CLASS_TEXT or android.text.InputType.TYPE_TEXT_VARIATION_PASSWORD
                     
                     // Set text color for better contrast in dark mode
-                    val textColor = androidx.core.content.ContextCompat.getColor(context, R.color.text_primary)
+                    val textColor = androidx.core.content.ContextCompat.getColor(context, R.color.on_background)
                     setTextColor(textColor)
                 }
 
@@ -347,8 +347,8 @@ class BiometricHelper(private val context: Context) {
                     hint = "Enter PIN"
                     boxBackgroundMode = TextInputLayout.BOX_BACKGROUND_OUTLINE
                     
-                    val textColor = androidx.core.content.ContextCompat.getColor(context, R.color.text_primary)
-                    val hintColor = androidx.core.content.ContextCompat.getColor(context, R.color.text_hint)
+                    val textColor = androidx.core.content.ContextCompat.getColor(context, R.color.on_background)
+                    val hintColor = androidx.core.content.ContextCompat.getColor(context, R.color.on_surface_variant)
                     setHintTextColor(android.content.res.ColorStateList.valueOf(hintColor))
                     boxStrokeColor = textColor
                 }
@@ -357,7 +357,7 @@ class BiometricHelper(private val context: Context) {
                     inputType = android.text.InputType.TYPE_CLASS_NUMBER or android.text.InputType.TYPE_NUMBER_VARIATION_PASSWORD
                     filters = arrayOf(android.text.InputFilter.LengthFilter(4))
                     
-                    val textColor = androidx.core.content.ContextCompat.getColor(context, R.color.text_primary)
+                    val textColor = androidx.core.content.ContextCompat.getColor(context, R.color.on_background)
                     setTextColor(textColor)
                 }
 
@@ -366,8 +366,8 @@ class BiometricHelper(private val context: Context) {
                     hint = "Confirm PIN"
                     boxBackgroundMode = TextInputLayout.BOX_BACKGROUND_OUTLINE
                     
-                    val textColor = androidx.core.content.ContextCompat.getColor(context, R.color.text_primary)
-                    val hintColor = androidx.core.content.ContextCompat.getColor(context, R.color.text_hint)
+                    val textColor = androidx.core.content.ContextCompat.getColor(context, R.color.on_background)
+                    val hintColor = androidx.core.content.ContextCompat.getColor(context, R.color.on_surface_variant)
                     setHintTextColor(android.content.res.ColorStateList.valueOf(hintColor))
                     boxStrokeColor = textColor
                 }
@@ -376,7 +376,7 @@ class BiometricHelper(private val context: Context) {
                     inputType = android.text.InputType.TYPE_CLASS_NUMBER or android.text.InputType.TYPE_NUMBER_VARIATION_PASSWORD
                     filters = arrayOf(android.text.InputFilter.LengthFilter(4))
                     
-                    val textColor = androidx.core.content.ContextCompat.getColor(context, R.color.text_primary)
+                    val textColor = androidx.core.content.ContextCompat.getColor(context, R.color.on_background)
                     setTextColor(textColor)
                 }
 
@@ -447,8 +447,8 @@ class BiometricHelper(private val context: Context) {
                     boxBackgroundMode = TextInputLayout.BOX_BACKGROUND_OUTLINE
                     
                     // Fix hint text color for better contrast in dark mode
-                    val textColor = androidx.core.content.ContextCompat.getColor(context, R.color.text_primary)
-                    val hintColor = androidx.core.content.ContextCompat.getColor(context, R.color.text_hint)
+                    val textColor = androidx.core.content.ContextCompat.getColor(context, R.color.on_background)
+                    val hintColor = androidx.core.content.ContextCompat.getColor(context, R.color.on_surface_variant)
                     setHintTextColor(android.content.res.ColorStateList.valueOf(hintColor))
                     boxStrokeColor = textColor
                 }
@@ -458,7 +458,7 @@ class BiometricHelper(private val context: Context) {
                     filters = arrayOf(android.text.InputFilter.LengthFilter(4))
                     
                     // Set text color for better contrast in dark mode
-                    val textColor = androidx.core.content.ContextCompat.getColor(context, R.color.text_primary)
+                    val textColor = androidx.core.content.ContextCompat.getColor(context, R.color.on_background)
                     setTextColor(textColor)
                 }
 

@@ -1,49 +1,47 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
+    <!-- ============================================ -->
+    <!-- DARK THEME - Purple Based                    -->
+    <!-- ============================================ -->
     <style name="Base.Theme.AksaraNotes" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Primary brand colors -->
+        <!-- PRIMARY: Toolbar, important actions -->
         <item name="colorPrimary">@color/primary</item>
         <item name="colorOnPrimary">@color/on_primary</item>
-        <item name="colorPrimaryContainer">@color/primary_variant</item>
-        <item name="colorOnPrimaryContainer">@color/on_primary</item>
-        
-        <!-- Secondary brand colors -->
+
+        <!-- SECONDARY: Accents -->
         <item name="colorSecondary">@color/secondary</item>
         <item name="colorOnSecondary">@color/on_secondary</item>
-        
-        <!-- Status bar and navigation -->
-        <item name="android:statusBarColor">@color/background</item>
+
+        <!-- BACKGROUND: App background -->
+        <item name="android:colorBackground">@color/background</item>
+        <item name="colorOnBackground">@color/on_background</item>
+
+        <!-- SURFACE: Cards, toolbar, bottom nav, dialogs -->
+        <item name="colorSurface">@color/surface</item>
+        <item name="colorOnSurface">@color/on_surface</item>
+        <item name="colorSurfaceVariant">@color/surface_variant</item>
+        <item name="colorOnSurfaceVariant">@color/on_surface_variant</item>
+
+        <!-- ERROR -->
+        <item name="colorError">@color/error</item>
+        <item name="colorOnError">@color/on_error</item>
+
+        <!-- OUTLINE -->
+        <item name="colorOutline">@color/outline</item>
+
+        <!-- STATUS BAR & NAVIGATION BAR -->
+        <item name="android:statusBarColor">@color/primary</item>
         <item name="android:navigationBarColor">@color/background</item>
         <item name="android:windowLightStatusBar">false</item>
         <item name="android:windowLightNavigationBar" tools:targetApi="27">false</item>
 
-        <!-- Surface colors -->
-        <item name="android:colorBackground">@color/background</item>
-        <item name="colorSurface">@color/surface</item>
-        <item name="colorOnBackground">@color/on_background</item>
-        <item name="colorOnSurface">@color/on_surface</item>
-        
-        <!-- Text colors -->
-        <item name="android:textColorPrimary">@color/text_primary</item>
-        <item name="android:textColorSecondary">@color/text_secondary</item>
-        <item name="android:textColorHint">@color/text_hint</item>
-        
-        <!-- Component colors -->
-        <item name="colorError">@color/error</item>
-        <item name="colorOnError">@color/on_error</item>
-        <item name="colorControlHighlight">@color/ripple</item>
-        
-        <!-- Material elevations and shapes -->
-        <item name="elevationOverlayEnabled">true</item>
-        
-        <!-- Custom styles -->
+        <!-- APPLY CUSTOM STYLES -->
         <item name="materialCardViewStyle">@style/Widget.AksaraNotes.CardView</item>
         <item name="materialButtonStyle">@style/Widget.AksaraNotes.Button</item>
         <item name="textInputStyle">@style/Widget.AksaraNotes.TextInputLayout</item>
         <item name="bottomNavigationStyle">@style/Widget.AksaraNotes.BottomNavigation</item>
         <item name="toolbarStyle">@style/Widget.AksaraNotes.Toolbar</item>
-        
-        <!-- Legacy support -->
-        <item name="colorAccent">?attr/colorSecondary</item>
+
+        <!-- Enable elevation overlay for dark theme depth -->
+        <item name="elevationOverlayEnabled">true</item>
     </style>
 </resources>

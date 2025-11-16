@@ -71,7 +71,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Master Password"
-            app:startIconDrawable="@drawable/ic_lock"
+            app:startIconDrawable="@drawable/ic_lock_surface"
             app:endIconMode="password_toggle"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_marginBottom="8dp">
@@ -101,7 +101,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Confirm Password"
-            app:startIconDrawable="@drawable/ic_lock"
+            app:startIconDrawable="@drawable/ic_lock_surface"
             app:endIconMode="password_toggle"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_marginBottom="24dp">

@@ -1,90 +1,60 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Light Theme - Amber Base -->
-    <color name="primary">#FFC107</color> <!-- Vibrant amber -->
-    <color name="on_primary">#000000</color>
-    <color name="primary_variant">#FFA000</color> <!-- Richer amber -->
-    <color name="primary_container">#FFF9C4</color> <!-- Light amber container -->
-    <color name="on_primary_container">#292100</color> <!-- Dark text on primary container -->
+    <!-- ============================================ -->
+    <!-- LIGHT THEME - Gold/Amber Base                -->
+    <!-- ============================================ -->
 
-    <color name="secondary">#7E57C2</color> <!-- Complementary purple -->
+    <!-- PRIMARY: Used for header/toolbar/important actions -->
+    <color name="primary">#FFA000</color> <!-- Rich amber/gold -->
+    <color name="on_primary">#FFFFFF</color> <!-- White text/icons on gold header -->
+
+    <!-- SECONDARY: Used for FABs, switches, checkboxes -->
+    <color name="secondary">#7E57C2</color> <!-- Purple accent -->
     <color name="on_secondary">#FFFFFF</color>
-    <color name="secondary_variant">#5E35B1</color> <!-- Deeper purple -->
-    <color name="secondary_container">#EDE7F6</color> <!-- Light purple container -->
-    <color name="on_secondary_container">#240051</color> <!-- Dark text on secondary container -->
 
-    <!-- Background using warm cream (amber-tinged) -->
-    <color name="background">#FFF8E1</color> <!-- Light amber-tinged background -->
+    <!-- BACKGROUND: App-wide background -->
+    <color name="background">#FFE7B5</color> <!-- Light warm amber-tinged -->
+    <color name="on_background">#3B2F04</color> <!-- Dark brown text on background -->
+
+    <!-- SURFACE: Cards, bottom nav, dialogs -->
     <color name="surface">#FFFEF0</color> <!-- Near-white with warm undertones -->
-    <color name="surface_variant">#EFE5D0</color> <!-- Warm neutral surface -->
-    <color name="on_background">#3B2F04</color> <!-- Dark warm brown text -->
-    <color name="on_surface">#3B2F04</color>
-    <color name="on_surface_variant">#5D5438</color> <!-- Medium text on variant surfaces -->
+    <color name="on_surface">#3B2F04</color> <!-- Dark brown text/icons on cards -->
 
-    <!-- Utility Colors -->
+    <!-- SURFACE VARIANT: Slightly different surface for depth -->
+    <color name="surface_variant">#EFE5D0</color> <!-- Warm neutral -->
+    <color name="on_surface_variant">#5D5438</color> <!-- Medium brown for secondary text -->
+
+    <!-- ERROR: Error states -->
     <color name="error">#BA1B1B</color>
     <color name="on_error">#FFFFFF</color>
-    <color name="error_container">#FFDAD4</color> <!-- Red container -->
-    <color name="on_error_container">#410001</color> <!-- Dark text on error container -->
-    <color name="divider">#1F3B2F04</color> <!-- 12% dark warm brown -->
-    <color name="ripple">#33FFC107</color> <!-- 20% primary amber -->
 
-    <!-- Text Colors -->
-    <color name="text_primary">#8C6900</color> <!-- Dark yellow-brown -->
-    <color name="text_secondary">#5D4B00</color> <!-- Medium yellow-brown -->
-    <color name="text_hint">#4A3C00</color> <!-- Light yellow-brown -->
-    <color name="text_on_primary">@color/on_primary</color>
-    <color name="text_on_surface">@color/on_surface</color>
-
-    <!-- Tertiary Colors (for more variety) -->
-    <color name="tertiary">#0288D1</color> <!-- Deep blue -->
-    <color name="on_tertiary">#FFFFFF</color>
-    <color name="tertiary_container">#BDE2FF</color> <!-- Light blue container -->
-    <color name="on_tertiary_container">#001F35</color> <!-- Dark text on tertiary container -->
-
-    <!-- Outline Colors -->
+    <!-- OUTLINE: Borders and dividers -->
     <color name="outline">#8D8669</color>
-    <color name="outline_variant">#CDC6AA</color>
 
-    <!-- Inverse Colors -->
-    <color name="inverse_surface">#3B2F04</color>
-    <color name="inverse_on_surface">#FFEFB8</color>
-    <color name="inverse_primary">#FFDD55</color>
+    <!-- ============================================ -->
+    <!-- SEMANTIC COLORS (App Features)               -->
+    <!-- ============================================ -->
 
-    <!-- Surface Variants -->
-    <color name="surface_bright">#FFFEF0</color>
-    <color name="surface_dim">#E8DCC0</color>
-    <color name="surface_container_lowest">#FFFFFF</color>
-    <color name="surface_container_low">#FDF6E8</color>
-    <color name="surface_container">#F7F0E2</color>
-    <color name="surface_container_high">#F2EBDC</color>
-    <color name="surface_container_highest">#EDE6D7</color>
+    <!-- Password Strength -->
+    <color name="password_weak">#D32F2F</color>
+    <color name="password_fair">#FF8F00</color>
+    <color name="password_good">#388E3C</color>
+    <color name="password_strong">#1B5E20</color>
 
-    <!-- Old color names for backward compatibility with Material Components -->
-    <color name="primary_dark">#FFA000</color> <!-- Rich amber for backward compatibility -->
+    <!-- Calendar Events -->
+    <color name="calendar_overdue">#D32F2F</color>
+    <color name="calendar_due_today">#FF8F00</color>
+    <color name="calendar_upcoming">#388E3C</color>
+    <color name="calendar_reminder">#FFA000</color>
+    <color name="calendar_subscription">#0288D1</color>
+    <color name="calendar_investment">#388E3C</color>
+    <color name="calendar_task">#7E57C2</color>
+    <color name="calendar_default">#757575</color>
+    <color name="tertiary">#0288D1</color> <!-- For TABLE_MEETING events -->
 
-    <!-- Semantic Colors for App Features -->
-    <!-- Password Strength Colors -->
-    <color name="password_weak">#D32F2F</color> <!-- Deep red -->
-    <color name="password_fair">#FF8F00</color> <!-- Amber orange -->
-    <color name="password_good">#388E3C</color> <!-- Deep green -->
-    <color name="password_strong">#1B5E20</color> <!-- Darker green -->
-
-    <!-- Calendar Event Colors - Refined versions -->
-    <color name="calendar_overdue">#D32F2F</color> <!-- Deep red -->
-    <color name="calendar_due_today">#FF8F00</color> <!-- Amber orange -->
-    <color name="calendar_upcoming">#388E3C</color> <!-- Deep green -->
-    <color name="calendar_reminder">#FFC107</color> <!-- Primary amber -->
-    <color name="calendar_subscription">#0288D1</color> <!-- Tertiary blue -->
-    <color name="calendar_investment">#388E3C</color> <!-- Deep green -->
-    <color name="calendar_task">#7E57C2</color> <!-- Secondary purple -->
-    <color name="calendar_default">#757575</color> <!-- Medium gray -->
-
-    <!-- Text Colors for Dynamic Content -->
-    <color name="text_on_colored_background">#000000</color>
-    <color name="text_muted">@color/text_secondary</color>
-
-    <!-- Basic utility colors -->
+    <!-- ============================================ -->
+    <!-- UTILITY (for reference in code)              -->
+    <!-- ============================================ -->
     <color name="black">#000000</color>
-    <color name="white">#FFFFFF</color> <!-- Using pure white -->
+    <color name="white">#FFFFFF</color>
 </resources>

@@ -38,11 +38,11 @@ class NotesAdapter(
             if (note.requiresPin) {
                 titleTextView.text = "🔒 ${if (note.title.isNotEmpty()) "•".repeat(note.title.length) else "Protected Note"}"
                 contentTextView.text = "••••••••••••••••••••••••••••••••\nTap to unlock and view content"
-                contentTextView.setTextColor(itemView.context.getColor(R.color.text_hint))
+                contentTextView.setTextColor(itemView.context.getColor(R.color.on_surface_variant))
             } else {
                 titleTextView.text = note.title.ifEmpty { "Untitled" }
                 contentTextView.text = note.content.take(100) + if (note.content.length > 100) "..." else ""
-                contentTextView.setTextColor(itemView.context.getColor(R.color.text_primary))
+                contentTextView.setTextColor(itemView.context.getColor(R.color.on_background))
             }
 
             // Format date
@@ -63,11 +63,11 @@ class NotesAdapter(
                 itemView.alpha = 0.85f
                 // Add subtle background tint for locked notes
                 itemView.setBackgroundResource(R.drawable.selectable_background)
-                titleTextView.setTextColor(itemView.context.getColor(R.color.text_secondary))
+                titleTextView.setTextColor(itemView.context.getColor(R.color.on_surface_variant))
             } else {
                 itemView.alpha = 1.0f
                 itemView.setBackgroundResource(R.drawable.selectable_background)
-                titleTextView.setTextColor(itemView.context.getColor(R.color.text_primary))
+                titleTextView.setTextColor(itemView.context.getColor(R.color.on_background))
             }
 
             // Click listeners

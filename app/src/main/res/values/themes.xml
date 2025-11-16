@@ -1,89 +1,45 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
+    <!-- ============================================ -->
+    <!-- LIGHT THEME - Gold/Amber Based               -->
+    <!-- ============================================ -->
     <style name="Base.Theme.AksaraNotes" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Primary brand colors -->
+        <!-- PRIMARY: Toolbar, important actions -->
         <item name="colorPrimary">@color/primary</item>
         <item name="colorOnPrimary">@color/on_primary</item>
-        <item name="colorPrimaryContainer">@color/primary_container</item>
-        <item name="colorOnPrimaryContainer">@color/on_primary_container</item>
-        
-        <!-- Secondary brand colors -->
+
+        <!-- SECONDARY: Accents -->
         <item name="colorSecondary">@color/secondary</item>
         <item name="colorOnSecondary">@color/on_secondary</item>
-        <item name="colorSecondaryContainer">@color/secondary_container</item>
-        <item name="colorOnSecondaryContainer">@color/on_secondary_container</item>
-        
-        <!-- Tertiary colors -->
-        <item name="colorTertiary">@color/tertiary</item>
-        <item name="colorOnTertiary">@color/on_tertiary</item>
-        <item name="colorTertiaryContainer">@color/tertiary_container</item>
-        <item name="colorOnTertiaryContainer">@color/on_tertiary_container</item>
-        
-        <!-- Status bar and navigation -->
-        <item name="android:statusBarColor">@color/background</item>
-        <item name="android:navigationBarColor">@color/background</item>
-        <item name="android:windowLightStatusBar">true</item>
-        <item name="android:windowLightNavigationBar" tools:targetApi="27">true</item>
 
-        <!-- Surface colors -->
+        <!-- BACKGROUND: App background -->
         <item name="android:colorBackground">@color/background</item>
-        <item name="colorSurface">@color/surface</item>
-        <item name="colorSurfaceVariant">@color/surface_variant</item>
         <item name="colorOnBackground">@color/on_background</item>
+
+        <!-- SURFACE: Cards, bottom nav, dialogs -->
+        <item name="colorSurface">@color/surface</item>
         <item name="colorOnSurface">@color/on_surface</item>
+        <item name="colorSurfaceVariant">@color/surface_variant</item>
         <item name="colorOnSurfaceVariant">@color/on_surface_variant</item>
-        
-        <!-- Outline colors -->
-        <item name="colorOutline">@color/outline</item>
-        <item name="colorOutlineVariant">@color/outline_variant</item>
-        
-        <!-- Inverse colors -->
-        <item name="colorOnSurfaceInverse">@color/inverse_on_surface</item>
-        <item name="colorSurfaceInverse">@color/inverse_surface</item>
-        
-        <!-- Text colors -->
-        <item name="android:textColorPrimary">@color/text_primary</item>
-        <item name="android:textColorSecondary">@color/text_secondary</item>
-        <item name="android:textColorHint">@color/text_hint</item>
-        
-        <!-- Component colors -->
+
+        <!-- ERROR -->
         <item name="colorError">@color/error</item>
         <item name="colorOnError">@color/on_error</item>
-        <item name="colorErrorContainer">@color/error_container</item>
-        <item name="colorOnErrorContainer">@color/on_error_container</item>
-        <item name="colorControlHighlight">@color/ripple</item>
-        
-        <!-- Custom semantic colors -->
-        <item name="passwordWeakColor">@color/password_weak</item>
-        <item name="passwordFairColor">@color/password_fair</item>
-        <item name="passwordGoodColor">@color/password_good</item>
-        <item name="passwordStrongColor">@color/password_strong</item>
-        
-        <!-- Calendar custom attributes -->
-        <item name="calendarOverdueColor">@color/calendar_overdue</item>
-        <item name="calendarDueTodayColor">@color/calendar_due_today</item>
-        <item name="calendarUpcomingColor">@color/calendar_upcoming</item>
-        <item name="calendarReminderColor">@color/calendar_reminder</item>
-        <item name="calendarSubscriptionColor">@color/calendar_subscription</item>
-        <item name="calendarInvestmentColor">@color/calendar_investment</item>
-        <item name="calendarTaskColor">@color/calendar_task</item>
-        <item name="calendarDefaultColor">@color/calendar_default</item>
-        
-        <item name="textOnColoredBackground">@color/text_on_colored_background</item>
-        <item name="textMuted">@color/text_muted</item>
-        
-        <!-- Material elevations and shapes -->
-        <item name="elevationOverlayEnabled">false</item>
-        
-        <!-- Custom styles -->
+
+        <!-- OUTLINE -->
+        <item name="colorOutline">@color/outline</item>
+
+        <!-- STATUS BAR & NAVIGATION BAR -->
+        <item name="android:statusBarColor">@color/primary</item>
+        <item name="android:navigationBarColor">@color/background</item>
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="android:windowLightNavigationBar" tools:targetApi="27">true</item>
+
+        <!-- APPLY CUSTOM STYLES -->
         <item name="materialCardViewStyle">@style/Widget.AksaraNotes.CardView</item>
         <item name="materialButtonStyle">@style/Widget.AksaraNotes.Button</item>
         <item name="textInputStyle">@style/Widget.AksaraNotes.TextInputLayout</item>
         <item name="bottomNavigationStyle">@style/Widget.AksaraNotes.BottomNavigation</item>
         <item name="toolbarStyle">@style/Widget.AksaraNotes.Toolbar</item>
-        
-        <!-- Legacy support -->
-        <item name="colorAccent">?attr/colorSecondary</item>
     </style>
 
     <style name="Theme.AksaraNotes" parent="Base.Theme.AksaraNotes" />

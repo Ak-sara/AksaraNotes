@@ -27,7 +27,7 @@
         <menu>
             <item
                 android:id="@+id/nav_security_settings"
-                android:icon="@drawable/ic_lock"
+                android:icon="@drawable/ic_lock_surface"
                 android:title="Security Settings" />
             <item
                 android:id="@+id/nav_backup_restore"
