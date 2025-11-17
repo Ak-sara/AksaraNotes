@@ -37,6 +37,7 @@ class DatasetOverviewAdapter(
         private val datasetDescription: TextView = itemView.findViewById(R.id.tv_table_description)
         private val formCount: TextView = itemView.findViewById(R.id.tv_item_count)
         private val datasetType: TextView = itemView.findViewById(R.id.tv_table_type)
+        private val menuButton: MaterialButton = itemView.findViewById(R.id.btn_menu)
 
         fun bind(item: DatasetOverviewItem) {
             val dataset = item.dataset
@@ -47,12 +48,12 @@ class DatasetOverviewAdapter(
             formCount.text = "${item.formCount} forms"
             datasetType.text = dataset.datasetType.replaceFirstChar { it.uppercase() }
 
+            // Card click opens dataset data view
             itemView.setOnClickListener { onDatasetClick(dataset) }
 
-            // Long press to edit dataset structure
-            itemView.setOnLongClickListener {
+            // Menu button shows options (Edit Structure / Delete)
+            menuButton.setOnClickListener {
                 showDatasetOptionsDialog(dataset)
-                true
             }
         }
 

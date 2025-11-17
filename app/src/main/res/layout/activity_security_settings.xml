@@ -28,33 +28,32 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
                 android:gravity="center"
-                android:layout_marginBottom="24dp">
+                android:orientation="vertical">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
                     android:text="🔐"
-                    android:textSize="48sp"
-                    android:layout_marginBottom="8dp" />
+                    android:textSize="48sp" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
                     android:text="Security Settings"
-                    android:textSize="24sp"
-                    android:textStyle="bold"
                     android:textColor="?attr/colorPrimary"
-                    android:layout_marginBottom="8dp" />
+                    android:textSize="24sp"
+                    android:textStyle="bold" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:gravity="center"
                     android:text="Manage your app security and authentication preferences"
-                    android:textSize="14sp"
                     android:textColor="?attr/colorOnSurfaceVariant"
-                    android:gravity="center" />
+                    android:textSize="14sp" />
 
             </LinearLayout>
 
@@ -62,37 +61,37 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
                 android:text="🔑 Authentication"
-                android:textSize="18sp"
-                android:textStyle="bold"
                 android:textColor="?attr/colorPrimary"
-                android:layout_marginBottom="12dp" />
+                android:textSize="18sp"
+                android:textStyle="bold" />
 
             <!-- Change Master Password -->
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/card_change_password"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="12dp"
-                app:cardElevation="2dp"
-                app:cardCornerRadius="8dp"
+                android:layout_marginTop="8dp"
                 android:clickable="true"
                 android:focusable="true"
-                android:foreground="?android:attr/selectableItemBackground">
+                android:foreground="?android:attr/selectableItemBackground"
+                app:cardCornerRadius="8dp"
+                app:cardElevation="2dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
                     android:orientation="horizontal"
-                    android:padding="16dp"
-                    android:gravity="center_vertical">
+                    android:padding="16dp">
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginEnd="16dp"
                         android:text="🔐"
-                        android:textSize="24sp"
-                        android:layout_marginEnd="16dp" />
+                        android:textSize="24sp" />
 
                     <LinearLayout
                         android:layout_width="0dp"
@@ -104,16 +103,16 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Change Master Password"
+                            android:textColor="?attr/colorOnSurface"
                             android:textSize="16sp"
-                            android:textStyle="bold"
-                            android:textColor="?attr/colorOnSurface" />
+                            android:textStyle="bold" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Update your master password for enhanced security"
-                            android:textSize="14sp"
-                            android:textColor="?attr/colorOnSurfaceVariant" />
+                            android:textColor="?attr/colorOnSurfaceVariant"
+                            android:textSize="14sp" />
 
                     </LinearLayout>
 
@@ -130,9 +129,9 @@
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="24dp"
-                app:cardElevation="2dp"
-                app:cardCornerRadius="8dp">
+                android:layout_marginTop="8dp"
+                app:cardCornerRadius="8dp"
+                app:cardElevation="2dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -143,16 +142,16 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
+                        android:layout_marginBottom="8dp"
                         android:gravity="center_vertical"
-                        android:layout_marginBottom="8dp">
+                        android:orientation="horizontal">
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_marginEnd="16dp"
                             android:text="👆"
-                            android:textSize="24sp"
-                            android:layout_marginEnd="16dp" />
+                            android:textSize="24sp" />
 
                         <LinearLayout
                             android:layout_width="0dp"
@@ -164,17 +163,17 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="Biometric Authentication"
+                                android:textColor="?attr/colorOnSurface"
                                 android:textSize="16sp"
-                                android:textStyle="bold"
-                                android:textColor="?attr/colorOnSurface" />
+                                android:textStyle="bold" />
 
                             <TextView
                                 android:id="@+id/tv_biometric_status"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="Use fingerprint or face unlock"
-                                android:textSize="14sp"
-                                android:textColor="?attr/colorOnSurfaceVariant" />
+                                android:textColor="?attr/colorOnSurfaceVariant"
+                                android:textSize="14sp" />
 
                         </LinearLayout>
 
@@ -194,26 +193,26 @@
                 android:id="@+id/card_pin_setup"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="12dp"
-                app:cardElevation="2dp"
-                app:cardCornerRadius="8dp"
+                android:layout_marginTop="8dp"
                 android:clickable="true"
                 android:focusable="true"
-                android:foreground="?android:attr/selectableItemBackground">
+                android:foreground="?android:attr/selectableItemBackground"
+                app:cardCornerRadius="8dp"
+                app:cardElevation="2dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
                     android:orientation="horizontal"
-                    android:padding="16dp"
-                    android:gravity="center_vertical">
+                    android:padding="16dp">
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginEnd="16dp"
                         android:text="📌"
-                        android:textSize="24sp"
-                        android:layout_marginEnd="16dp" />
+                        android:textSize="24sp" />
 
                     <LinearLayout
                         android:layout_width="0dp"
@@ -225,17 +224,17 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Note PIN Protection"
+                            android:textColor="?attr/colorOnSurface"
                             android:textSize="16sp"
-                            android:textStyle="bold"
-                            android:textColor="?attr/colorOnSurface" />
+                            android:textStyle="bold" />
 
                         <TextView
                             android:id="@+id/tv_pin_status"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Set up a 4-digit PIN for protecting sensitive notes"
-                            android:textSize="14sp"
-                            android:textColor="?attr/colorOnSurfaceVariant" />
+                            android:textColor="?attr/colorOnSurfaceVariant"
+                            android:textSize="14sp" />
 
                     </LinearLayout>
 
@@ -252,18 +251,18 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
                 android:text="🔒 Auto-Lock"
-                android:textSize="18sp"
-                android:textStyle="bold"
                 android:textColor="?attr/colorPrimary"
-                android:layout_marginBottom="12dp" />
+                android:textSize="18sp"
+                android:textStyle="bold" />
 
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="24dp"
-                app:cardElevation="2dp"
-                app:cardCornerRadius="8dp">
+                android:layout_marginTop="8dp"
+                app:cardCornerRadius="8dp"
+                app:cardElevation="2dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -275,16 +274,16 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
+                        android:layout_marginBottom="8dp"
                         android:gravity="center_vertical"
-                        android:layout_marginBottom="8dp">
+                        android:orientation="horizontal">
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_marginEnd="16dp"
                             android:text="⏰"
-                            android:textSize="24sp"
-                            android:layout_marginEnd="16dp" />
+                            android:textSize="24sp" />
 
                         <LinearLayout
                             android:layout_width="0dp"
@@ -296,17 +295,17 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="Enable Auto-Lock"
+                                android:textColor="?attr/colorOnSurface"
                                 android:textSize="16sp"
-                                android:textStyle="bold"
-                                android:textColor="?attr/colorOnSurface" />
+                                android:textStyle="bold" />
 
                             <TextView
                                 android:id="@+id/tv_auto_lock_description"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="Automatically lock app after inactivity"
-                                android:textSize="14sp"
-                                android:textColor="?attr/colorOnSurfaceVariant" />
+                                android:textColor="?attr/colorOnSurfaceVariant"
+                                android:textSize="14sp" />
 
                         </LinearLayout>
 
@@ -328,17 +327,17 @@
                         <View
                             android:layout_width="match_parent"
                             android:layout_height="1dp"
-                            android:background="?attr/colorOnSurfaceVariant"
-                            android:layout_marginVertical="8dp" />
+                            android:layout_marginVertical="8dp"
+                            android:background="?attr/colorOnSurfaceVariant" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_marginBottom="8dp"
                             android:text="Auto-Lock Timeout"
-                            android:textSize="14sp"
-                            android:textStyle="bold"
                             android:textColor="?attr/colorOnSurface"
-                            android:layout_marginBottom="8dp" />
+                            android:textSize="14sp"
+                            android:textStyle="bold" />
 
                         <Spinner
                             android:id="@+id/spinner_auto_lock_timeout"
@@ -356,36 +355,36 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
                 android:text="ℹ️ Information"
-                android:textSize="18sp"
-                android:textStyle="bold"
                 android:textColor="?attr/colorPrimary"
-                android:layout_marginBottom="12dp" />
+                android:textSize="18sp"
+                android:textStyle="bold" />
 
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/card_security_info"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="12dp"
-                app:cardElevation="2dp"
-                app:cardCornerRadius="8dp"
+                android:layout_marginTop="8dp"
                 android:clickable="true"
                 android:focusable="true"
-                android:foreground="?android:attr/selectableItemBackground">
+                android:foreground="?android:attr/selectableItemBackground"
+                app:cardCornerRadius="8dp"
+                app:cardElevation="2dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
                     android:orientation="horizontal"
-                    android:padding="16dp"
-                    android:gravity="center_vertical">
+                    android:padding="16dp">
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginEnd="16dp"
                         android:text="🛡️"
-                        android:textSize="24sp"
-                        android:layout_marginEnd="16dp" />
+                        android:textSize="24sp" />
 
                     <LinearLayout
                         android:layout_width="0dp"
@@ -397,16 +396,16 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Security Information"
+                            android:textColor="?attr/colorOnSurface"
                             android:textSize="16sp"
-                            android:textStyle="bold"
-                            android:textColor="?attr/colorOnSurface" />
+                            android:textStyle="bold" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Learn about encryption and security features"
-                            android:textSize="14sp"
-                            android:textColor="?attr/colorOnSurfaceVariant" />
+                            android:textColor="?attr/colorOnSurfaceVariant"
+                            android:textSize="14sp" />
 
                     </LinearLayout>
 
@@ -423,21 +422,20 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
                 android:text="⚠️ Danger Zone"
-                android:textSize="18sp"
-                android:textStyle="bold"
                 android:textColor="?attr/colorError"
-                android:layout_marginBottom="12dp"
-                android:layout_marginTop="24dp" />
+                android:textSize="18sp"
+                android:textStyle="bold" />
 
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                app:cardElevation="2dp"
+                android:layout_marginTop="8dp"
                 app:cardCornerRadius="8dp"
-                app:strokeWidth="2dp"
-                app:strokeColor="?attr/colorError">
+                app:cardElevation="2dp"
+                app:strokeColor="?attr/colorError"
+                app:strokeWidth="2dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -448,28 +446,28 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginBottom="8dp"
                         android:text="⚠️ Reset All Security Settings"
-                        android:textSize="16sp"
-                        android:textStyle="bold"
                         android:textColor="?attr/colorError"
-                        android:layout_marginBottom="8dp" />
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginBottom="16dp"
                         android:text="This will reset your master password, disable biometric authentication, and ERASE ALL DATA. This action cannot be undone!"
-                        android:textSize="14sp"
                         android:textColor="?attr/colorOnSurfaceVariant"
-                        android:layout_marginBottom="16dp" />
+                        android:textSize="14sp" />
 
                     <Button
                         android:id="@+id/btn_reset_security"
+                        style="@style/Widget.Material3.Button"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Reset Everything"
-                        android:textColor="?attr/colorOnError"
                         android:backgroundTint="?attr/colorError"
-                        style="@style/Widget.Material3.Button" />
+                        android:text="Reset Everything"
+                        android:textColor="?attr/colorOnError" />
 
                 </LinearLayout>
 

@@ -1,16 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
-    <!-- Selected state: rounded pill background -->
+    <!-- Selected state: bottom bar indicator -->
     <item android:state_checked="true">
-        <shape android:shape="rectangle">
-            <solid android:color="?attr/colorPrimary"/>
-            <corners android:radius="20dp"/>
-            <padding
-                android:left="12dp"
-                android:right="12dp"
-                android:top="4dp"
-                android:bottom="4dp"/>
-        </shape>
+        <layer-list>
+            <!-- Background with light tint -->
+            <item>
+                <shape android:shape="rectangle">
+                    <solid android:color="#1A000000"/>
+                    <corners android:radius="12dp"/>
+                </shape>
+            </item>
+            <!-- Bottom bar indicator -->
+            <item android:bottom="0dp" android:left="8dp" android:right="8dp">
+                <shape android:shape="rectangle">
+                    <solid android:color="?attr/colorPrimary"/>
+                    <size android:height="3dp"/>
+                    <corners android:bottomLeftRadius="2dp" android:bottomRightRadius="2dp"/>
+                </shape>
+            </item>
+        </layer-list>
     </item>
 
     <!-- Default state: transparent -->

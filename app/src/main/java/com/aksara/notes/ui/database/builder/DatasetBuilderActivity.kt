@@ -741,13 +741,21 @@ class DatasetBuilderActivity : AppCompatActivity() {
             "💡", "⭐", "🎯", "📊", "🎨", "🔧", "🏠", "🚗"
         )
 
-        AlertDialog.Builder(this)
-            .setTitle(getString(R.string.choose_icon_title))
-            .setItems(icons) { _, which ->
-                selectedIcon = icons[which]
-                binding.tvSelectedIcon.text = selectedIcon
-            }
-            .show()
+        val dialogView = layoutInflater.inflate(R.layout.dialog_icon_picker, null)
+        val gridView = dialogView.findViewById<android.widget.GridView>(R.id.grid_icons)
+
+        val dialog = AlertDialog.Builder(this)
+            .setView(dialogView)
+            .create()
+
+        val adapter = IconPickerAdapter(this, icons) { selectedIconValue ->
+            selectedIcon = selectedIconValue
+            binding.tvSelectedIcon.text = selectedIcon
+            dialog.dismiss()
+        }
+
+        gridView.adapter = adapter
+        dialog.show()
     }
 
     override fun onSupportNavigateUp(): Boolean {

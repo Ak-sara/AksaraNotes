@@ -6,6 +6,7 @@ import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
+import androidx.activity.addCallback
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
@@ -63,6 +64,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             setupToolbar()
             setupNavigationDrawer()
             setupBottomNavigation()
+            setupBackPressHandler()
 
             // Check if authentication is required
             Log.d(TAG, "Checking if authentication required...")
@@ -436,17 +438,19 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     // Handle back press - close drawer first, then allow normal back press
-    override fun onBackPressed() {
-        when {
-            binding.drawerLayout.isDrawerOpen(GravityCompat.START) -> {
-                binding.drawerLayout.closeDrawer(GravityCompat.START)
-            }
-            isAuthenticating -> {
-                showToast("Please complete authentication first")
-                return
-            }
-            else -> {
-                super.onBackPressed()
+    private fun setupBackPressHandler() {
+        onBackPressedDispatcher.addCallback(this) {
+            when {
+                binding.drawerLayout.isDrawerOpen(GravityCompat.START) -> {
+                    binding.drawerLayout.closeDrawer(GravityCompat.START)
+                }
+                isAuthenticating -> {
+                    showToast("Please complete authentication first")
+                }
+                else -> {
+                    isEnabled = false
+                    onBackPressedDispatcher.onBackPressed()
+                }
             }
         }
     }

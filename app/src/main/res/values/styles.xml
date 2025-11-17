@@ -76,4 +76,13 @@
         <item name="boxCornerRadiusBottomStart">12dp</item>
         <item name="boxCornerRadiusBottomEnd">12dp</item>
     </style>
+
+    <!-- ============================================ -->
+    <!-- FORM FIELDS                                  -->
+    <!-- ============================================ -->
+    <style name="Widget.AksaraNotes.FormFieldContainer" parent="">
+        <item name="android:orientation">vertical</item>
+        <item name="android:background">@drawable/form_field_background</item>
+        <item name="android:padding">16dp</item>
+    </style>
 </resources>

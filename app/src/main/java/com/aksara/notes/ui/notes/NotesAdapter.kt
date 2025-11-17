@@ -61,12 +61,9 @@ class NotesAdapter(
             // Visual styling for PIN-protected notes
             if (note.requiresPin) {
                 itemView.alpha = 0.85f
-                // Add subtle background tint for locked notes
-                itemView.setBackgroundResource(R.drawable.selectable_background)
                 titleTextView.setTextColor(itemView.context.getColor(R.color.on_surface_variant))
             } else {
                 itemView.alpha = 1.0f
-                itemView.setBackgroundResource(R.drawable.selectable_background)
                 titleTextView.setTextColor(itemView.context.getColor(R.color.on_background))
             }
 

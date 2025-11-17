@@ -82,16 +82,19 @@ class DynamicFormBuilder(
         }
     }
 
-    private fun createTextInput(column: TableColumn): View {
-        val container = LinearLayout(context).apply {
-            orientation = LinearLayout.VERTICAL
+    private fun createStyledContainer(): LinearLayout {
+        return LinearLayout(context, null, 0, R.style.Widget_AksaraNotes_FormFieldContainer).apply {
             layoutParams = LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT
             ).apply {
-                setMargins(0, 0, 0, 32)
+                setMargins(0, 0, 0, 16)
             }
         }
+    }
+
+    private fun createTextInput(column: TableColumn): View {
+        val container = createStyledContainer()
 
         val label = TextView(context).apply {
             text = column.name + if (column.required) " *" else ""
@@ -120,15 +123,7 @@ class DynamicFormBuilder(
     }
 
     private fun createNumberInput(column: TableColumn): View {
-        val container = LinearLayout(context).apply {
-            orientation = LinearLayout.VERTICAL
-            layoutParams = LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
-            ).apply {
-                setMargins(0, 0, 0, 32)
-            }
-        }
+        val container = createStyledContainer()
 
         val label = TextView(context).apply {
             text = column.name + if (column.required) " *" else ""
@@ -156,15 +151,7 @@ class DynamicFormBuilder(
     }
 
     private fun createCurrencyInput(column: TableColumn): View {
-        val container = LinearLayout(context).apply {
-            orientation = LinearLayout.VERTICAL
-            layoutParams = LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
-            ).apply {
-                setMargins(0, 0, 0, 32)
-            }
-        }
+        val container = createStyledContainer()
 
         // Parse options from JSON string
         val options = try {
@@ -226,15 +213,7 @@ class DynamicFormBuilder(
     }
 
     private fun createEmailInput(column: TableColumn): View {
-        val container = LinearLayout(context).apply {
-            orientation = LinearLayout.VERTICAL
-            layoutParams = LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
-            ).apply {
-                setMargins(0, 0, 0, 32)
-            }
-        }
+        val container = createStyledContainer()
 
         val label = TextView(context).apply {
             text = column.name + if (column.required) " *" else ""
@@ -262,15 +241,7 @@ class DynamicFormBuilder(
     }
 
     private fun createPhoneInput(column: TableColumn): View {
-        val container = LinearLayout(context).apply {
-            orientation = LinearLayout.VERTICAL
-            layoutParams = LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
-            ).apply {
-                setMargins(0, 0, 0, 32)
-            }
-        }
+        val container = createStyledContainer()
 
         val label = TextView(context).apply {
             text = column.name + if (column.required) " *" else ""
@@ -296,15 +267,7 @@ class DynamicFormBuilder(
     }
 
     private fun createUrlInput(column: TableColumn): View {
-        val container = LinearLayout(context).apply {
-            orientation = LinearLayout.VERTICAL
-            layoutParams = LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
-            ).apply {
-                setMargins(0, 0, 0, 32)
-            }
-        }
+        val container = createStyledContainer()
 
         val label = TextView(context).apply {
             text = column.name + if (column.required) " *" else ""
@@ -330,15 +293,7 @@ class DynamicFormBuilder(
     }
 
     private fun createDateInput(column: TableColumn): View {
-        val container = LinearLayout(context).apply {
-            orientation = LinearLayout.VERTICAL
-            layoutParams = LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
-            ).apply {
-                setMargins(0, 0, 0, 32)
-            }
-        }
+        val container = createStyledContainer()
 
         val label = TextView(context).apply {
             text = column.name + if (column.required) " *" else ""
@@ -372,15 +327,7 @@ class DynamicFormBuilder(
     }
 
     private fun createBooleanInput(column: TableColumn): View {
-        val container = LinearLayout(context).apply {
-            orientation = LinearLayout.VERTICAL
-            layoutParams = LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
-            ).apply {
-                setMargins(0, 0, 0, 32)
-            }
-        }
+        val container = createStyledContainer()
 
         val label = TextView(context).apply {
             text = column.name + if (column.required) " *" else ""
@@ -407,15 +354,7 @@ class DynamicFormBuilder(
     }
 
     private fun createSelectInput(column: TableColumn): View {
-        val container = LinearLayout(context).apply {
-            orientation = LinearLayout.VERTICAL
-            layoutParams = LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
-            ).apply {
-                setMargins(0, 0, 0, 32)
-            }
-        }
+        val container = createStyledContainer()
 
         val label = TextView(context).apply {
             text = column.name + if (column.required) " *" else ""
@@ -465,15 +404,7 @@ class DynamicFormBuilder(
     }
 
     private fun createRatingInput(column: TableColumn): View {
-        val container = LinearLayout(context).apply {
-            orientation = LinearLayout.VERTICAL
-            layoutParams = LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
-            ).apply {
-                setMargins(0, 0, 0, 32)
-            }
-        }
+        val container = createStyledContainer()
 
         val label = TextView(context).apply {
             text = column.name + if (column.required) " *" else ""
@@ -512,15 +443,7 @@ class DynamicFormBuilder(
     }
 
     private fun createFormulaInput(column: TableColumn): View {
-        val container = LinearLayout(context).apply {
-            orientation = LinearLayout.VERTICAL
-            layoutParams = LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
-            ).apply {
-                setMargins(0, 0, 0, 32)
-            }
-        }
+        val container = createStyledContainer()
 
         // Formula expression label (top)
         val formulaLabel = TextView(context).apply {
@@ -548,15 +471,7 @@ class DynamicFormBuilder(
     }
 
     private fun createFrequencyInput(column: TableColumn): View {
-        val container = LinearLayout(context).apply {
-            orientation = LinearLayout.VERTICAL
-            layoutParams = LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
-            ).apply {
-                setMargins(0, 0, 0, 32)
-            }
-        }
+        val container = createStyledContainer()
 
         val label = TextView(context).apply {
             text = column.name + if (column.required) " *" else ""

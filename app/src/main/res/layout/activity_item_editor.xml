@@ -11,8 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="?attr/colorPrimary"
-        style="@style/Widget.AksaraNotes.Toolbar"
-        app:navigationIconTint="?attr/colorSurface" />
+        style="@style/Widget.AksaraNotes.Toolbar" />
 
     <ScrollView
         android:layout_width="match_parent"
