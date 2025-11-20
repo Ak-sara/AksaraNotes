@@ -20,5 +20,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "Aksara Notes"
+rootProject.name = "Notes"
 include(":app")

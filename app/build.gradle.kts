@@ -6,25 +6,36 @@ plugins {
 
 android {
     namespace = "com.aksara.notes"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.aksara.notes"
-        minSdk = 31
-        targetSdk = 34
-        versionCode = 1
-        versionName = "1.0"
+        minSdk = 32
+        targetSdk = 35
+        versionCode = 6
+        versionName = "1.1"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        // Support for 16 KB page sizes
+        ndk {
+            //noinspection ChromeOsAbiSupport
+            abiFilters += listOf("armeabi-v7a", "arm64-v8a", "x86", "x86_64")
+        }
     }
 
     buildTypes {
         release {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
+            isShrinkResources = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            // Generate native debug symbols
+            ndk {
+                debugSymbolLevel = "FULL"
+            }
         }
     }
 
@@ -54,9 +65,8 @@ dependencies {
     implementation("androidx.navigation:navigation-fragment-ktx:2.7.6")
     implementation("androidx.navigation:navigation-ui-ktx:2.7.6")
 
-    // MongoDB Realm
-    implementation("io.realm.kotlin:library-base:1.11.0")
-    implementation("io.realm.kotlin:library-sync:1.11.0")
+    // MongoDB Realm (with 16 KB page size support)
+    implementation("io.realm.kotlin:library-base:3.0.0")
 
     // Biometric
     implementation("androidx.biometric:biometric:1.2.0-alpha05")

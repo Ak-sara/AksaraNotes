@@ -113,7 +113,7 @@ class AboutActivity : AppCompatActivity() {
 
     private fun shareApp() {
         val shareText = buildString {
-            appendLine("🚀 Check out Aksara Notes!")
+            appendLine("🚀 Check out Notes by Aksara!")
             appendLine()
             appendLine("📝 Secure Notes with PIN protection")
             appendLine("🗄️ Dynamic Database builder")
@@ -127,11 +127,11 @@ class AboutActivity : AppCompatActivity() {
         val intent = Intent(Intent.ACTION_SEND).apply {
             type = "text/plain"
             putExtra(Intent.EXTRA_TEXT, shareText)
-            putExtra(Intent.EXTRA_SUBJECT, "Aksara Notes - Secure Note Taking App")
+            putExtra(Intent.EXTRA_SUBJECT, "Notes by Aksara - Secure Note Taking App")
         }
 
         try {
-            startActivity(Intent.createChooser(intent, "Share Aksara Notes"))
+            startActivity(Intent.createChooser(intent, "Share Notes by Aksara"))
         } catch (e: Exception) {
             showToast("Unable to share app")
         }
@@ -195,9 +195,9 @@ class AboutActivity : AppCompatActivity() {
     private fun reportBug() {
         val intent = Intent(Intent.ACTION_SENDTO).apply {
             data = Uri.parse("mailto:contact.aksara@tuta.com")
-            putExtra(Intent.EXTRA_SUBJECT, "Aksara Notes - Bug Report")
+            putExtra(Intent.EXTRA_SUBJECT, "Notes by Aksara - Bug Report")
             putExtra(Intent.EXTRA_TEXT, buildString {
-                appendLine("Bug Report for Aksara Notes")
+                appendLine("Bug Report for Notes by Aksara")
                 appendLine()
                 appendLine("Device Info:")
                 appendLine("- Device: ${android.os.Build.MANUFACTURER} ${android.os.Build.MODEL}")
@@ -230,9 +230,9 @@ class AboutActivity : AppCompatActivity() {
     private fun requestFeature() {
         val intent = Intent(Intent.ACTION_SENDTO).apply {
             data = Uri.parse("mailto:contact.aksara@tuta.com")
-            putExtra(Intent.EXTRA_SUBJECT, "Aksara Notes - Feature Request")
+            putExtra(Intent.EXTRA_SUBJECT, "Notes by Aksara - Feature Request")
             putExtra(Intent.EXTRA_TEXT, buildString {
-                appendLine("Feature Request for Aksara Notes")
+                appendLine("Feature Request for Notes by Aksara")
                 appendLine()
                 appendLine("Requested Feature:")
                 appendLine()

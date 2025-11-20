@@ -144,7 +144,7 @@ class BiometricHelper(private val context: Context) {
             })
 
             val promptInfo = BiometricPrompt.PromptInfo.Builder()
-                .setTitle("Authenticate to Aksara Notes")
+                .setTitle("Authenticate to Notes by Aksara")
                 .setSubtitle("Use your fingerprint or face to access your secure data")
                 .setDescription("Place your finger on the sensor or look at the camera")
                 .setNegativeButtonText("Use Password")
