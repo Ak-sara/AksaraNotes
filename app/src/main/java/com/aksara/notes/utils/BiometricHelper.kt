@@ -52,6 +52,23 @@ class BiometricHelper(private val context: Context) {
         }
     }
 
+    // Disable encryption and clear all security settings
+    fun disableEncryption(): Boolean {
+        try {
+            prefs.edit()
+                .remove(PREF_MASTER_PASSWORD)
+                .putBoolean(PREF_SETUP_COMPLETE, false)
+                .putBoolean(PREF_BIOMETRIC_ENABLED, false)
+                .putBoolean(PREF_AUTO_LOCK_ENABLED, false)
+                .apply()
+            Log.d(TAG, "Encryption disabled, all security settings cleared")
+            return true
+        } catch (e: Exception) {
+            Log.e(TAG, "Failed to disable encryption", e)
+            return false
+        }
+    }
+
     // Setup biometric authentication
     fun setupBiometric(enabled: Boolean) {
         prefs.edit().putBoolean(PREF_BIOMETRIC_ENABLED, enabled).apply()

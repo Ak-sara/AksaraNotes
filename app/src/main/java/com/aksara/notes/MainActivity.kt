@@ -53,35 +53,62 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             sessionManager.initialize(this)
             Log.d(TAG, "BiometricHelper and SessionManager initialized")
 
-            // Check if app is set up, if not redirect to setup
-            if (!biometricHelper.isAppSetUp()) {
-                Log.d(TAG, "App not set up, redirecting to setup")
-                startActivity(Intent(this, SetupActivity::class.java))
-                finish()
-                return
-            }
-
             setupToolbar()
             setupNavigationDrawer()
             setupBottomNavigation()
             setupBackPressHandler()
 
-            // Check if authentication is required
-            Log.d(TAG, "Checking if authentication required...")
-            val authRequired = try {
-                sessionManager.isAuthenticationRequired(biometricHelper)
-            } catch (e: Exception) {
-                Log.e(TAG, "Error checking authentication requirement", e)
-                true // Default to requiring authentication if we can't check
+            // Check if encryption is enabled (app is set up)
+            var encryptionEnabled = biometricHelper.isAppSetUp()
+            Log.d(TAG, "Encryption enabled in settings: $encryptionEnabled")
+
+            // Detect actual database state to handle mismatches
+            if (encryptionEnabled) {
+                // First check with password if available
+                val password = biometricHelper.getMasterPassword()
+                val dbState = RealmDatabase.detectDatabaseState(this, password)
+                Log.d(TAG, "Actual database state: $dbState (password provided: ${password != null})")
+
+                // Only disable encryption if database is definitely unencrypted or missing
+                // Don't disable if "corrupted" - that might just mean we haven't authenticated yet
+                if (dbState == "unencrypted" || dbState == "missing") {
+                    // Database is not actually encrypted, fix the mismatch
+                    Log.w(TAG, "Encryption flag mismatch detected. Database is $dbState but settings say encrypted. Fixing...")
+                    biometricHelper.disableEncryption()
+                    encryptionEnabled = false
+                    showToast("Fixed encryption mismatch. App will now run without authentication.")
+                } else if (dbState == "corrupted") {
+                    // This might be encrypted but password wrong, or truly corrupted
+                    Log.w(TAG, "Database appears corrupted but encryption is enabled. Will try to authenticate.")
+                    // Don't disable encryption, let authentication flow handle it
+                } else {
+                    Log.d(TAG, "Database state is $dbState, encryption looks correct")
+                }
             }
 
-            Log.d(TAG, "Authentication required: $authRequired")
+            if (encryptionEnabled) {
+                // Encryption is enabled, check if authentication is required
+                Log.d(TAG, "Checking if authentication required...")
+                val authRequired = try {
+                    sessionManager.isAuthenticationRequired(biometricHelper)
+                } catch (e: Exception) {
+                    Log.e(TAG, "Error checking authentication requirement", e)
+                    true // Default to requiring authentication if we can't check
+                }
 
-            if (authRequired) {
-                startAuthenticationFlow()
+                Log.d(TAG, "Authentication required: $authRequired")
+
+                if (authRequired) {
+                    startAuthenticationFlow()
+                } else {
+                    Log.d(TAG, "Authentication not required, initializing database and showing UI")
+                    initializeDatabase()
+                    showUI()
+                }
             } else {
-                Log.d(TAG, "Authentication not required, initializing database and showing UI")
-                initializeEncryptedDatabase()
+                // Encryption is not enabled, use app without authentication
+                Log.d(TAG, "Encryption not enabled, using unencrypted database")
+                initializeDatabase()
                 showUI()
             }
 
@@ -153,14 +180,19 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         Log.d(TAG, "onResume called")
 
         try {
-            // Update activity timestamp to show app is actively being used
-            sessionManager.updateActivity()
-            sessionManager.onAppForegrounded()
+            // Only check for authentication if encryption is enabled
+            if (biometricHelper.isAppSetUp()) {
+                // Update activity timestamp to show app is actively being used
+                sessionManager.updateActivity()
+                sessionManager.onAppForegrounded()
 
-            // Check if we need to authenticate when resuming
-            if (!isAuthenticating && sessionManager.isAuthenticationRequired(biometricHelper)) {
-                Log.d(TAG, "Authentication required on resume, starting authentication flow")
-                startAuthenticationFlow()
+                // Check if we need to authenticate when resuming
+                if (!isAuthenticating && sessionManager.isAuthenticationRequired(biometricHelper)) {
+                    Log.d(TAG, "Authentication required on resume, starting authentication flow")
+                    startAuthenticationFlow()
+                }
+            } else {
+                Log.d(TAG, "Encryption not enabled, skipping authentication check")
             }
         } catch (e: Exception) {
             Log.e(TAG, "Error in onResume", e)
@@ -307,10 +339,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             // Mark authentication successful in session manager
             sessionManager.markAuthenticated()
             Log.d(TAG, "Session marked as authenticated")
-            
+
             // Initialize Realm database with encryption after successful authentication
-            initializeEncryptedDatabase()
-            
+            initializeDatabase()
+
         } catch (e: Exception) {
             Log.e(TAG, "Error marking authentication", e)
         }
@@ -318,17 +350,24 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         showToast("Welcome back!")
         showUI()
     }
-    
-    private fun initializeEncryptedDatabase() {
+
+    private fun initializeDatabase() {
         try {
             Log.d(TAG, "Ensuring Realm database is initialized")
             // Just check if Realm is initialized without closing it
             if (RealmDatabase.isInitialized) {
                 Log.d(TAG, "Realm database is already initialized")
             } else {
-                Log.d(TAG, "Realm not initialized, attempting initialization")
-                RealmDatabase.initialize(this)
-                Log.d(TAG, "Realm database initialized successfully")
+                // Check if encryption is enabled
+                if (biometricHelper.isAppSetUp()) {
+                    Log.d(TAG, "Realm not initialized, attempting encrypted initialization")
+                    RealmDatabase.initialize(this)
+                    Log.d(TAG, "Realm database initialized successfully with encryption")
+                } else {
+                    Log.d(TAG, "Realm not initialized, using unencrypted database")
+                    RealmDatabase.initializeUnencrypted()
+                    Log.d(TAG, "Realm database initialized successfully without encryption")
+                }
             }
         } catch (e: Exception) {
             Log.e(TAG, "Failed to initialize Realm database", e)

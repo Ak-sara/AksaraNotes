@@ -14,19 +14,59 @@ class AksaraApplication : Application() {
         AuthenticationManager.getInstance().initialize(this)
 
         // Initialize Realm database
+        // Default to unencrypted, will switch to encrypted when user enables encryption
         try {
-            // Try to initialize with encryption if app is set up
             val biometricHelper = com.aksara.notes.utils.BiometricHelper(this)
             if (biometricHelper.isAppSetUp()) {
-                Log.d("AksaraApplication", "App is set up, initializing encrypted Realm")
+                // User has enabled encryption
+                Log.d("AksaraApplication", "Encryption enabled in settings")
+
+                // Check if we need to migrate existing unencrypted data
+                try {
+                    val password = biometricHelper.getMasterPassword()
+                    Log.d("AksaraApplication", "Master password available: ${password != null}")
+
+                    val dbState = RealmDatabase.detectDatabaseState(this, password)
+                    Log.d("AksaraApplication", "Current database state: $dbState")
+
+                    if (dbState == "unencrypted") {
+                        // We have unencrypted data but encryption is enabled
+                        // This happens after SetupActivity enables encryption
+                        Log.d("AksaraApplication", "⚠️ Migrating unencrypted data to encrypted format...")
+
+                        if (password != null) {
+                            Log.d("AksaraApplication", "Starting migration with password...")
+                            val migrationSuccess = RealmDatabase.migrateToEncrypted(this, password)
+                            if (migrationSuccess) {
+                                Log.d("AksaraApplication", "✅ Migration to encrypted completed successfully")
+                            } else {
+                                Log.e("AksaraApplication", "❌ Migration to encrypted FAILED")
+                            }
+                        } else {
+                            Log.e("AksaraApplication", "❌ Cannot migrate - no password available")
+                        }
+                    } else if (dbState == "encrypted") {
+                        Log.d("AksaraApplication", "✅ Database already encrypted, no migration needed")
+                    } else if (dbState == "missing") {
+                        Log.d("AksaraApplication", "ℹ️ No database file exists yet, will create encrypted")
+                    } else {
+                        Log.w("AksaraApplication", "⚠️ Database state is $dbState")
+                    }
+                } catch (e: Exception) {
+                    Log.e("AksaraApplication", "❌ Error during migration check", e)
+                }
+
+                // Initialize with encryption
+                Log.d("AksaraApplication", "Initializing encrypted Realm")
                 RealmDatabase.initialize(this)
             } else {
-                Log.d("AksaraApplication", "App not set up yet, deferring Realm initialization")
-                // Don't initialize Realm yet - it will be done in SetupActivity
+                // User hasn't enabled encryption yet, use unencrypted database
+                Log.d("AksaraApplication", "Encryption not enabled, using unencrypted Realm")
+                RealmDatabase.initializeUnencrypted()
             }
         } catch (e: Exception) {
-            Log.e("AksaraApplication", "Failed to initialize encrypted Realm, using fallback", e)
-            // Fallback to unencrypted for now to prevent crashes
+            Log.e("AksaraApplication", "Failed to initialize Realm, using unencrypted fallback", e)
+            // Fallback to unencrypted to prevent crashes
             try {
                 RealmDatabase.initializeUnencrypted()
                 Log.w("AksaraApplication", "Using unencrypted Realm as fallback")

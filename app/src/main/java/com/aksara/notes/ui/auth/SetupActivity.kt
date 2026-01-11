@@ -189,23 +189,39 @@ class SetupActivity : AppCompatActivity() {
         val prefs = getSharedPreferences("app_setup", MODE_PRIVATE)
         prefs.edit().putBoolean("is_setup", true).apply()
 
-        // Initialize Realm database with the new password
+        // Migration must happen BEFORE marking as setup and with app restart
         try {
-            Log.d("SetupActivity", "Initializing Realm database with new master password")
-            RealmDatabase.initialize(this, password)
-            Log.d("SetupActivity", "Realm database initialized successfully")
+            Log.d("SetupActivity", "Checking for existing unencrypted data")
+            val hasUnencryptedData = RealmDatabase.hasUnencryptedData(this)
+
+            if (hasUnencryptedData) {
+                Log.d("SetupActivity", "Found unencrypted data, will migrate after app restart")
+                Toast.makeText(this, "Data will be migrated when app restarts...", Toast.LENGTH_LONG).show()
+
+                // Don't migrate here - the database is open in MainActivity
+                // Instead, mark that migration is needed and restart
+            } else {
+                Log.d("SetupActivity", "No existing data to migrate")
+            }
+
         } catch (e: Exception) {
-            Log.e("SetupActivity", "Failed to initialize Realm with new password", e)
-            Toast.makeText(this, "Warning: Database initialization failed", Toast.LENGTH_LONG).show()
-            // Continue anyway - the app can try to initialize later
+            Log.e("SetupActivity", "Error checking for data", e)
         }
 
-        Toast.makeText(this, "Master password created successfully!", Toast.LENGTH_SHORT).show()
+        Toast.makeText(this, "Encryption enabled! Restarting app...", Toast.LENGTH_SHORT).show()
 
-        // Navigate to main activity
+        // Kill the app completely and restart
+        // This ensures the database is fully closed before reopening with encryption
         val intent = Intent(this, MainActivity::class.java)
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-        startActivity(intent)
-        finish()
+
+        // Give user time to see the message
+        android.os.Handler(android.os.Looper.getMainLooper()).postDelayed({
+            startActivity(intent)
+            finishAffinity()
+
+            // Force kill the app process to ensure complete restart
+            android.os.Process.killProcess(android.os.Process.myPid())
+        }, 1000)
     }
 }

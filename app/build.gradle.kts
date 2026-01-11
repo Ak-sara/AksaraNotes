@@ -12,7 +12,7 @@ android {
         applicationId = "com.aksara.notes"
         minSdk = 32
         targetSdk = 35
-        versionCode = 6
+        versionCode = 7
         versionName = "1.1"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"

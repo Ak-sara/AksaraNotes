@@ -55,6 +55,9 @@ class SecuritySettingsActivity : AppCompatActivity() {
     }
 
     private fun loadCurrentSettings() {
+        // Load encryption status
+        updateEncryptionStatus()
+
         // Load biometric settings
         updateBiometricStatus()
 
@@ -74,10 +77,39 @@ class SecuritySettingsActivity : AppCompatActivity() {
         }
     }
 
+    private fun updateEncryptionStatus() {
+        // Check actual encryption state
+        val settingsSayEncrypted = biometricHelper.isAppSetUp()
+        if (settingsSayEncrypted) {
+            val password = biometricHelper.getMasterPassword()
+            val dbState = com.aksara.notes.data.database.RealmDatabase.detectDatabaseState(this, password)
+            android.util.Log.d("SecuritySettings", "Encryption in settings: $settingsSayEncrypted, Database state: $dbState, Password available: ${password != null}")
+
+            // Only fix mismatch if database is definitely unencrypted
+            // "corrupted" might mean encrypted but we can't verify right now
+            if (dbState == "unencrypted") {
+                // Mismatch detected - database is unencrypted but settings say encrypted
+                android.util.Log.w("SecuritySettings", "Encryption mismatch detected - database is unencrypted")
+                biometricHelper.disableEncryption()
+                showToast("⚠️ Encryption mismatch detected and fixed")
+            } else if (dbState == "encrypted") {
+                android.util.Log.d("SecuritySettings", "Encryption state is correct")
+            } else {
+                android.util.Log.d("SecuritySettings", "Database state is $dbState, not changing settings")
+            }
+        }
+    }
+
     private fun setupClickListeners() {
-        // Master Password
+        // Master Password / Enable Encryption
         binding.cardChangePassword.setOnClickListener {
-            showChangePasswordDialog()
+            if (biometricHelper.isAppSetUp()) {
+                // Encryption is enabled, show options
+                showEncryptionOptionsDialog()
+            } else {
+                // Encryption is not enabled, offer to enable it
+                showEnableEncryptionDialog()
+            }
         }
 
         // Biometric Authentication
@@ -292,6 +324,164 @@ class SecuritySettingsActivity : AppCompatActivity() {
         } else {
             showToast("❌ Failed to change password. Please try again.")
         }
+    }
+
+    private fun showEncryptionOptionsDialog() {
+        AlertDialog.Builder(this)
+            .setTitle("Encryption Options")
+            .setMessage("Choose an option:")
+            .setPositiveButton("Change Password") { _, _ ->
+                showChangePasswordDialog()
+            }
+            .setNegativeButton("Disable Encryption") { _, _ ->
+                showDisableEncryptionDialog()
+            }
+            .setNeutralButton("Cancel", null)
+            .show()
+    }
+
+    private fun showDisableEncryptionDialog() {
+        AlertDialog.Builder(this)
+            .setTitle("Disable Encryption")
+            .setMessage(
+                "⚠️ WARNING: Disabling encryption will:\n\n" +
+                "• Remove password protection\n" +
+                "• Store your notes without encryption\n" +
+                "• Make your data accessible without authentication\n" +
+                "• Disable biometric authentication\n\n" +
+                "Your data will be migrated to unencrypted format.\n" +
+                "A backup of your encrypted data will be kept.\n\n" +
+                "Are you sure you want to continue?"
+            )
+            .setPositiveButton("Disable Encryption") { _, _ ->
+                // Ask for password confirmation
+                showPasswordConfirmationForDisable()
+            }
+            .setNegativeButton("Cancel", null)
+            .show()
+    }
+
+    private fun showPasswordConfirmationForDisable() {
+        val dialogView = LinearLayout(this).apply {
+            orientation = LinearLayout.VERTICAL
+            setPadding(48, 24, 48, 24)
+        }
+
+        val passwordLayout = TextInputLayout(this).apply {
+            hint = "Enter Master Password to Confirm"
+            boxBackgroundMode = TextInputLayout.BOX_BACKGROUND_OUTLINE
+        }
+        val passwordEdit = TextInputEditText(this).apply {
+            inputType = android.text.InputType.TYPE_CLASS_TEXT or android.text.InputType.TYPE_TEXT_VARIATION_PASSWORD
+        }
+        passwordLayout.addView(passwordEdit)
+        dialogView.addView(passwordLayout)
+
+        AlertDialog.Builder(this)
+            .setTitle("Confirm Disable Encryption")
+            .setMessage("Enter your master password to disable encryption:")
+            .setView(dialogView)
+            .setPositiveButton("Confirm") { _, _ ->
+                val password = passwordEdit.text?.toString() ?: ""
+                disableEncryption(password)
+            }
+            .setNegativeButton("Cancel", null)
+            .show()
+    }
+
+    private fun disableEncryption(masterPassword: String) {
+        // Verify password
+        if (!biometricHelper.verifyMasterPassword(masterPassword)) {
+            showToast("❌ Incorrect password")
+            return
+        }
+
+        // Show progress dialog
+        val progressDialog = AlertDialog.Builder(this)
+            .setTitle("Disabling Encryption")
+            .setMessage("Migrating data to unencrypted format...\nPlease wait, do not close the app.")
+            .setCancelable(false)
+            .create()
+        progressDialog.show()
+
+        // Perform migration in background
+        Thread {
+            android.util.Log.d("SecuritySettings", "Starting disable encryption process")
+
+            // Give UI time to settle
+            Thread.sleep(500)
+
+            val success = com.aksara.notes.data.database.RealmDatabase.migrateToUnencrypted(this, masterPassword)
+
+            android.util.Log.d("SecuritySettings", "Migration result: $success")
+
+            runOnUiThread {
+                progressDialog.dismiss()
+
+                if (success) {
+                    // Clear encryption settings
+                    val clearSuccess = biometricHelper.disableEncryption()
+                    android.util.Log.d("SecuritySettings", "Clear encryption settings: $clearSuccess")
+
+                    showToast("✅ Encryption disabled successfully!")
+
+                    // Give user time to see the message
+                    Thread {
+                        Thread.sleep(1500)
+                        runOnUiThread {
+                            // Restart the app
+                            val intent = android.content.Intent(this, com.aksara.notes.MainActivity::class.java)
+                            intent.flags = android.content.Intent.FLAG_ACTIVITY_NEW_TASK or android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK
+                            startActivity(intent)
+                            finishAffinity() // Close all activities
+                        }
+                    }.start()
+                } else {
+                    showToast("❌ Failed to disable encryption. Check logs for details.")
+                    android.util.Log.e("SecuritySettings", "Migration failed - check RealmDatabase logs")
+                }
+            }
+        }.start()
+    }
+
+    private fun showEnableEncryptionDialog() {
+        // Check if there's existing data
+        val hasData = try {
+            com.aksara.notes.data.database.RealmDatabase.hasUnencryptedData(this)
+        } catch (e: Exception) {
+            false
+        }
+
+        val message = if (hasData) {
+            "Do you want to enable encryption for your notes?\n\n" +
+            "This will:\n" +
+            "• Protect your notes with a master password\n" +
+            "• Require authentication to access the app\n" +
+            "• Encrypt all your data with AES-256\n" +
+            "• Automatically migrate your existing notes\n\n" +
+            "✅ Your existing data will be safely migrated to encrypted format.\n" +
+            "📦 A backup will be created before migration."
+        } else {
+            "Do you want to enable encryption for your notes?\n\n" +
+            "This will:\n" +
+            "• Protect your notes with a master password\n" +
+            "• Require authentication to access the app\n" +
+            "• Encrypt all your data with AES-256\n\n" +
+            "Note: You can use the app without encryption if you prefer."
+        }
+
+        AlertDialog.Builder(this)
+            .setTitle("Enable Encryption")
+            .setMessage(message)
+            .setPositiveButton("Enable Encryption") { _, _ ->
+                // Redirect to SetupActivity to create master password
+                android.content.Intent(this, com.aksara.notes.ui.auth.SetupActivity::class.java).also {
+                    startActivity(it)
+                    finish()
+                }
+            }
+            .setNegativeButton("Not Now", null)
+            .show()
     }
 
     private fun checkPasswordStrength(password: String): Triple<String, PasswordStrength, Boolean> {
