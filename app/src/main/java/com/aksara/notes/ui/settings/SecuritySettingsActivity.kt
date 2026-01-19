@@ -301,19 +301,13 @@ class SecuritySettingsActivity : AppCompatActivity() {
         }
 
         // Validate new password
-        if (newPassword.length < 8) {
-            showToast("❌ New password must be at least 8 characters long")
+        if (newPassword.isEmpty()) {
+            showToast("❌ New password cannot be empty")
             return
         }
 
         if (newPassword != confirmPassword) {
             showToast("❌ New passwords do not match")
-            return
-        }
-
-        val strength = checkPasswordStrength(newPassword)
-        if (!strength.third) {
-            showToast("❌ Password is too weak. Please choose a stronger password.")
             return
         }
 
@@ -486,7 +480,8 @@ class SecuritySettingsActivity : AppCompatActivity() {
 
     private fun checkPasswordStrength(password: String): Triple<String, PasswordStrength, Boolean> {
         when {
-            password.length < 8 -> return Triple("Password too short (minimum 8 characters)", PasswordStrength.WEAK, false)
+            password.isEmpty() -> return Triple("Enter a password", PasswordStrength.WEAK, false)
+            password.length < 8 -> return Triple("Short password (8+ recommended)", PasswordStrength.WEAK, true)
             password.length < 12 -> {
                 val hasUpper = password.any { it.isUpperCase() }
                 val hasLower = password.any { it.isLowerCase() }

@@ -530,9 +530,9 @@ class BiometricHelper(private val context: Context) {
         prefs.edit().clear().apply()
     }
 
-    // Password validation
+    // Password validation - allows any non-empty password
     fun isValidPassword(password: String): Boolean {
-        return password.length >= 8
+        return password.isNotEmpty()
     }
 
     // Biometric availability check with detailed status
@@ -566,9 +566,9 @@ class BiometricHelper(private val context: Context) {
 
     fun validatePasswordStrength(password: String): Pair<Boolean, String> {
         return when {
-            password.length < 8 -> false to "Password must be at least 8 characters"
-            password.length >= 8 -> true to "Password is valid"
-            else -> false to "Invalid password"
+            password.isEmpty() -> false to "Password cannot be empty"
+            password.length < 8 -> true to "Short password (8+ recommended)"
+            else -> true to "Password is valid"
         }
     }
 

@@ -74,13 +74,14 @@ class SetupActivity : AppCompatActivity() {
             "Passwords do not match"
         } else null
 
-        // Enable button if all validations pass
-        binding.btnCreatePassword.isEnabled = strengthResult.third && passwordsMatch && password.length >= 8
+        // Enable button if passwords match and not empty
+        binding.btnCreatePassword.isEnabled = password.isNotEmpty() && passwordsMatch
     }
 
     private fun checkPasswordStrength(password: String): Triple<String, PasswordStrength, Boolean> {
         when {
-            password.length < 8 -> return Triple("Password too short (minimum 8 characters)", PasswordStrength.WEAK, false)
+            password.isEmpty() -> return Triple("Enter a password", PasswordStrength.WEAK, false)
+            password.length < 8 -> return Triple("Short password (8+ recommended)", PasswordStrength.WEAK, true)
             password.length < 12 -> {
                 val hasUpper = password.any { it.isUpperCase() }
                 val hasLower = password.any { it.isLowerCase() }
@@ -159,8 +160,8 @@ class SetupActivity : AppCompatActivity() {
         val confirmPassword = binding.etConfirmPassword.text?.toString() ?: ""
 
         // Final validation
-        if (password.length < 8) {
-            Toast.makeText(this, "Password must be at least 8 characters long", Toast.LENGTH_SHORT).show()
+        if (password.isEmpty()) {
+            Toast.makeText(this, "Password cannot be empty", Toast.LENGTH_SHORT).show()
             return
         }
 
