@@ -6,14 +6,14 @@ plugins {
 
 android {
     namespace = "com.aksara.notes"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.aksara.notes"
         minSdk = 32
-        targetSdk = 35
-        versionCode = 8
-        versionName = "1.2"
+        targetSdk = 36
+        versionCode = 9
+        versionName = "1.3"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
